@@ -1,6 +1,6 @@
-package inputs;
+package Inputs;
 
-import main.GamePanel;
+import Main.GamePanel;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -44,6 +44,6 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        //gamePanel.setPostion(e.getX(), e.getY());
+
     }
 }

@@ -1,7 +1,6 @@
-package inputs;
+package Inputs;
 
-import main.Game;
-import main.GamePanel;
+import Main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,20 +27,20 @@ public class KeyboardInputs implements KeyListener {
     public void keyReleased(KeyEvent e) {
         switch(e.getKeyCode()) {
             case KeyEvent.VK_W:
-                gamePanel.changeMoveY(-20);
-                System.out.println("Input: W");
+                    gamePanel.changeY(-20);
+//                System.out.println("Input: W");
                 break;
             case KeyEvent.VK_A:
-                gamePanel.changeMoveX(-20);
-                System.out.println("Input: A");
+                gamePanel.changeX(-20);
+//                System.out.println("Input: A");
                 break;
             case KeyEvent.VK_S:
-                gamePanel.changeMoveY(20);
-                System.out.println("Input: S");
+                gamePanel.changeY(20);
+//                System.out.println("Input: S");
                 break;
             case KeyEvent.VK_D:
-                gamePanel.changeMoveX(20);
-                System.out.println("Input: D");
+                gamePanel.changeX(20);
+//                System.out.println("Input: D");
                 break;
         }
     }
