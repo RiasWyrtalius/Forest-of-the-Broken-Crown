@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static utils.constants.PlayerConstants.*;
-import static utils.constants.Directions.*;
+import static utils.Constants.PlayerConstants.*;
+import static utils.Constants.Directions.*;
 
 public class GamePanel extends JPanel {
 
@@ -19,7 +19,7 @@ public class GamePanel extends JPanel {
     private int moveX = 1, moveY = 1;
     private BufferedImage img;
     private BufferedImage[][] sylvaraAnimation;
-    private int animationTick, animationIndex, animationSpeed = 15;
+    private int animationTick, animationIndex, animationSpeed = 30;
     private int playerAction = IDLE;
     private int playerDirection = -1;
     private boolean moving = false;
@@ -39,14 +39,11 @@ public class GamePanel extends JPanel {
         setFocusable(true);
     }
 
-    public void loadAnimations()
-    {
+    public void loadAnimations() {
         sylvaraAnimation = new BufferedImage[3][9];
 
-        for(int i = 0; i < sylvaraAnimation.length; i++)
-        {
-            for(int j = 0; j < sylvaraAnimation[i].length; j++)
-            {
+        for(int i = 0; i < sylvaraAnimation.length; i++) {
+            for(int j = 0; j < sylvaraAnimation[i].length; j++) {
                sylvaraAnimation[i][j] = img.getSubimage(j * 32, i * 32, 32, 32 );
             }
         }
@@ -70,12 +67,11 @@ public class GamePanel extends JPanel {
     }
 
     private void setPanelSize() {
-        Dimension size = new Dimension(1280, 800);
+        Dimension size = new Dimension(1920, 1080);
         setPreferredSize(size);
     }
 
-    public void setDirection(int direction)
-    {
+    public void setDirection(int direction) {
         this.playerDirection = direction;
         moving = true;
     }
@@ -85,39 +81,35 @@ public class GamePanel extends JPanel {
         this.moving = moving;
     }
 
-
-
-    public void updateAnimationTick()
-    {
+    public void updateAnimationTick() {
         animationTick++;
-        if(animationTick >= animationSpeed)
-        {
+        if(animationTick >= animationSpeed) {
             animationTick = 0;
             animationIndex++;
-            if(animationIndex >= GetSpriteAmount(playerAction))
-            {
+            if(animationIndex >= GetSpriteAmount(playerAction)) {
                 animationIndex = 0;
             }
         }
     }
 
-    private void setAnimation()
-    {
-        if(moving)
-        {
+    private void setAnimation() {
+        int startAni = playerAction;
+        if(moving) {
             if(playerDirection == RIGHT) playerAction = WALKR;
 
             if(playerDirection == LEFT) playerAction = WALKL;
         }
         else playerAction = IDLE;
+
+        if (startAni != playerAction) {
+            animationTick = 0;
+            animationIndex = 0;
+        }
     }
 
-    private void updatePos()
-    {
-        if(moving)
-        {
-            switch (playerDirection)
-            {
+    private void updatePos() {
+        if(moving) {
+            switch (playerDirection) {
                 case LEFT:
                     moveX -= 5;
                     break;
@@ -134,14 +126,15 @@ public class GamePanel extends JPanel {
         }
     }
 
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void updateGame() {
         updateAnimationTick();
-
         setAnimation();
         updatePos();
+    }
 
-        g.drawImage(sylvaraAnimation[playerAction][animationIndex], (int)moveX, (int)moveY, 250, 250, null);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(sylvaraAnimation[playerAction][animationIndex], (int)moveX, (int)moveY, 150, 150, null);
     }
 
 
