@@ -1,7 +1,6 @@
 package Utils;
 
-public class Constants
-{
+public class Constants {
     public static class Directions
     {
         public static final int LEFT = 0;

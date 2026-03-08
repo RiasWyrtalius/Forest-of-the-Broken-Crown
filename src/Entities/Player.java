@@ -1,14 +1,21 @@
 package Entities;
 
+import Entities.Projectiles.Projectile;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.Constants.PlayerConstants.IDLE;
 
 //TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
+/**
+ * NOTE : PROJECTILE SHOOTY THINGY IS TEMPORARY cuz i dont know crap about it.
+ * */
 
 public class Player extends Entity{
 
@@ -17,7 +24,15 @@ public class Player extends Entity{
     private int playerAction = IDLE;
     private boolean moving = false;
     private boolean up, down, left, right;
+    private int faceDirection = WALKR;
     private float playerSpeed = 2.0f;
+
+    //temp
+    private long lastAttackTime;
+    private long atkCd = 50;
+    private int lastDirection = 1;
+    private boolean attacking = false;
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public Player(float x, float y) {
         super(x, y);
@@ -28,10 +43,43 @@ public class Player extends Entity{
         updatePos();
         updateAnimationTick();
         setAnimation();
+        updateProjectiles();
+
+        if (attacking) {
+            shoot();
+        }
+    }
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    //temp
+    public void shoot() {
+        long currTime = System.currentTimeMillis();
+        if (currTime - lastAttackTime >= atkCd) {
+            projectiles.add(new Projectile((int)x, (int)y, lastDirection));
+            lastAttackTime = currTime;
+        }
     }
 
     public void render(Graphics g) {
         g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 150, 150, null);
+        for (Projectile p : projectiles) {
+            p.draw(g);
+        }
+    }
+
+    private void updateProjectiles() {
+        for (int i = 0; i < projectiles.size(); i++) {
+            Projectile p = projectiles.get(i);
+            if (p.isActive()) {
+                p.update();
+            } else {
+                projectiles.remove(i);
+                i--;
+            }
+        }
     }
 
     public void loadAnimations() {
@@ -80,8 +128,13 @@ public class Player extends Entity{
         if(moving) {
             if(isRight()) playerAction = WALKR;
             if(isLeft()) playerAction = WALKL;
+        }else {
+            if (faceDirection == WALKL) {
+                playerAction = WALKL;
+            } else {
+                playerAction = WALKR;
+            }
         }
-        else playerAction = IDLE;
 
         if (startAni != playerAction) {
             animationTick = 0;
@@ -96,9 +149,11 @@ public class Player extends Entity{
         if (left && !right) {
             x -= playerSpeed;
             moving = true;
+            faceDirection = WALKL;
         } else if (right && !left) {
             x += playerSpeed;
             moving = true;
+            faceDirection = WALKR;
         }
 
         if (up && !down) {
