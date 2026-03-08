@@ -5,7 +5,7 @@ import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static utils.Constants.Directions.*;
+import static Utils.Constants.Directions.*;
 
 public class KeyboardInputs implements KeyListener {
 
@@ -23,47 +23,17 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                gamePanel.setDirection(UP);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: W");
+            case KeyEvent.VK_W, KeyEvent.VK_UP:
+                gamePanel.getGame().getPlayer().setUp(true);
                 break;
-            case KeyEvent.VK_A:
-                gamePanel.setDirection(LEFT);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: A");
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT:
+                gamePanel.getGame().getPlayer().setLeft(true);
                 break;
-            case KeyEvent.VK_S:
-                gamePanel.setDirection(DOWN);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: S");
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN:
+                gamePanel.getGame().getPlayer().setDown(true);
                 break;
-            case KeyEvent.VK_D:
-                gamePanel.setDirection(RIGHT);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: D");
-                break;
-
-                //TODO: fix this weird arrow key shi! it keeps moving even when released.
-            case KeyEvent.VK_UP:
-                gamePanel.setDirection(UP);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: UP");
-                break;
-            case KeyEvent.VK_LEFT:
-                gamePanel.setDirection(LEFT);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: LEFT");
-                break;
-            case KeyEvent.VK_DOWN:
-                gamePanel.setDirection(DOWN);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: DOWN");
-                break;
-            case KeyEvent.VK_RIGHT:
-                gamePanel.setDirection(RIGHT);
-                gamePanel.setMoving(true);
-//                System.out.println("Input: RIGHT");
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
+                gamePanel.getGame().getPlayer().setRight(true);
                 break;
         }
     }
@@ -71,16 +41,17 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         switch(e.getKeyCode()) {
-            case KeyEvent.VK_W:
-            case KeyEvent.VK_A:
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_RIGHT:
-                gamePanel.setMoving(false);
-                //System.out.println("Key Released");
+            case KeyEvent.VK_W, KeyEvent.VK_UP:
+                gamePanel.getGame().getPlayer().setUp(false);
+                break;
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT:
+                gamePanel.getGame().getPlayer().setLeft(false);
+                break;
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN:
+                gamePanel.getGame().getPlayer().setDown(false);
+                break;
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
+                gamePanel.getGame().getPlayer().setRight(false);
                 break;
         }
     }
