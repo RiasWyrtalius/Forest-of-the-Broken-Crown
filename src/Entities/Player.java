@@ -43,11 +43,9 @@ public class Player extends Entity{
         updatePos();
         updateAnimationTick();
         setAnimation();
-        updateProjectiles();
 
-        if (attacking) {
-            shoot();
-        }
+        if (attacking) shoot();
+        updateProjectiles();
     }
 
     public void setAttacking(boolean attacking) {
@@ -56,9 +54,12 @@ public class Player extends Entity{
 
     //temp
     public void shoot() {
+
+        int projectileDirection = (faceDirection == WALKL) ? -1 : 1;
+
         long currTime = System.currentTimeMillis();
         if (currTime - lastAttackTime >= atkCd) {
-            projectiles.add(new Projectile((int)x, (int)y, lastDirection));
+            projectiles.add(new Projectile((int)x, (int)y, projectileDirection));
             lastAttackTime = currTime;
         }
     }
