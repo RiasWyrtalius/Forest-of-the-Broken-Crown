@@ -13,6 +13,7 @@ public class Constants {
         public static final int IDLE = 0;
         public static final int WALKR = 1;
         public static final int WALKL = 2;
+        public static final int ATK_1 = 3;
 
         public static int GetSpriteAmount(int player_action) {
             switch(player_action) {

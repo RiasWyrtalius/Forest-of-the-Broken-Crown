@@ -1,6 +1,7 @@
 package Entities;
 
 import Entities.Projectiles.Projectile;
+import Utils.LoadSave;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,7 +30,7 @@ public class Player extends Entity{
 
     //temp
     private long lastAttackTime;
-    private long atkCd = 50;
+    private long atkCd = 200;
     private int lastDirection = 1;
     private boolean attacking = false;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -52,7 +53,6 @@ public class Player extends Entity{
         this.attacking = attacking;
     }
 
-    //temp
     public void shoot() {
 
         int projectileDirection = (faceDirection == WALKL) ? -1 : 1;
@@ -65,7 +65,7 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 150, 150, null);
+        g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 100, 100, null);
         for (Projectile p : projectiles) {
             p.draw(g);
         }
@@ -84,27 +84,13 @@ public class Player extends Entity{
     }
 
     public void loadAnimations() {
-        String path = "/Characters/Sylvara/SylvaraSpriteSheet.png";
-        InputStream is = getClass().getResourceAsStream(path);
+        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
 
-        try {
-            BufferedImage img = ImageIO.read(is);
+        animations = new BufferedImage[3][9];
 
-            animations = new BufferedImage[3][9];
-
-            for(int i = 0; i < animations.length; i++) {
-                for(int j = 0; j < animations[i].length; j++) {
-                    animations[i][j] = img.getSubimage(j * 32, i * 32, 32, 32 );
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch(IOException e) {
-                e.printStackTrace();
+        for(int i = 0; i < animations.length; i++) {
+            for(int j = 0; j < animations[i].length; j++) {
+                animations[i][j] = img.getSubimage(j * 32, i * 32, 32, 32 );
             }
         }
     }
@@ -141,6 +127,10 @@ public class Player extends Entity{
             animationTick = 0;
             animationIndex = 0;
         }
+
+//        if (attacking) {
+//            playerAction = ATK_1;
+//        }
     }
 
     private void updatePos() {
@@ -173,35 +163,15 @@ public class Player extends Entity{
         down = false;
     }
 
-    public boolean isUp() {
-        return up;
-    }
+    public boolean isUp() { return up; }
+    public void setUp(boolean up) { this.up = up; }
 
-    public void setUp(boolean up) {
-        this.up = up;
-    }
+    public boolean isDown() { return down; }
+    public void setDown(boolean down) { this.down = down; }
 
-    public boolean isDown() {
-        return down;
-    }
+    public boolean isLeft() { return left; }
+    public void setLeft(boolean left) { this.left = left; }
 
-    public void setDown(boolean down) {
-        this.down = down;
-    }
-
-    public boolean isLeft() {
-        return left;
-    }
-
-    public void setLeft(boolean left) {
-        this.left = left;
-    }
-
-    public boolean isRight() {
-        return right;
-    }
-
-    public void setRight(boolean right) {
-        this.right = right;
-    }
+    public boolean isRight() { return right; }
+    public void setRight(boolean right) { this.right = right; }
 }
