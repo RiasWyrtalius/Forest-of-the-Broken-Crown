@@ -31,7 +31,7 @@ public class Projectile {
     public void draw(Graphics g) {
         if (active) {
             g.setColor(Color.CYAN);
-            g.fillOval(x, y, 30, 30);
+            g.fillOval(x, y, 15, 15);
         }
     }
 }

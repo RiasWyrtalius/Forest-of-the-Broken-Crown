@@ -28,8 +28,8 @@ public class Player extends Entity{
     private float playerSpeed = 2.0f;
 
     //Sylvara
-    private int sylvara_HitboxWidth = 45;
-    private int sylvara_HitboxHeight = 57;
+    private int sylvara_HitboxWidth = 33;
+    private int sylvara_HitboxHeight = 45;
 
     //Hitbox
     private int[][] lvlData;
@@ -62,19 +62,32 @@ public class Player extends Entity{
         this.attacking = attacking;
     }
 
+    /**
+     * spawnX is used to determine the direction of the player.
+     * spawnY is the spawnpoint of the projectile.
+     * based on those two, it will update where the projectile will head.
+      */
     public void shoot() {
 
         int projectileDirection = (faceDirection == WALKL) ? -1 : 1;
 
         long currTime = System.currentTimeMillis();
         if (currTime - lastAttackTime >= atkCd) {
-            projectiles.add(new Projectile((int)x, (int)y, projectileDirection));
+
+            float spawnX = hitbox.x;
+            if (projectileDirection == 1) {
+                spawnX += hitbox.width;
+            }
+
+            float spawnY = hitbox.y + (hitbox.height) / 2;
+
+            projectiles.add(new Projectile((int)spawnX, (int)spawnY, projectileDirection));
             lastAttackTime = currTime;
         }
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 100, 100, null);
+        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 80, 80, null);
         drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
@@ -176,7 +189,6 @@ public class Player extends Entity{
             hitbox.y += ySpeed;
             moving = true;
         }
-
     }
 
 

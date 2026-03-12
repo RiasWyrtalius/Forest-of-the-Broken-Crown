@@ -24,6 +24,6 @@ public class HelpMethods {
         int value = lvlData[(int) yIndex][(int) xIndex];
 //        System.out.println("Tile ID at player: " + value);
 
-        return value != 3 && value != 11;// air indices
+        return value != 11;// air indices
     }
 }

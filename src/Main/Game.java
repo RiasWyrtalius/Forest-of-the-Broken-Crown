@@ -63,7 +63,7 @@ public class Game implements Runnable{
      * Its now handled like this because we don't want our GameLoop to handle both graphics and game logic, that's bad(ahh pc).
      * deltaU is used to catch up incase the user's pc lags and will continue to calculate the logic before draws the next frame(repaint()),
      * it's just to make it sync better.
-    * */
+     * */
     @Override
     public void run() {
         boolean isEnabled = true;
