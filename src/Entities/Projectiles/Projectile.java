@@ -27,6 +27,7 @@ public class Projectile {
         x += (speed * direction);
     }
 
+    //TODO: replace with animated projectile
     public void draw(Graphics g) {
         if (active) {
             g.setColor(Color.CYAN);

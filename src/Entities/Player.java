@@ -14,7 +14,7 @@ import static Utils.Constants.PlayerConstants.IDLE;
 
 //TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
 /**
- * NOTE : PROJECTILE SHOOTY THINGY IS TEMPORARY cuz i dont know crap about it.
+ * NOTE : PROJECTILE will be replaced with an animated one.
  * */
 
 public class Player extends Entity{
@@ -26,14 +26,19 @@ public class Player extends Entity{
     private boolean up, down, left, right;
     private int faceDirection = WALKR;
     private float playerSpeed = 2.0f;
+
+    //Sylvara
+    private int sylvara_HitboxWidth = 45;
+    private int sylvara_HitboxHeight = 57;
+
+    //Hitbox
     private int[][] lvlData;
     private float xDrawOffset = 15 * Game.SCALE;
     private float yDrawOffset = 4 * Game.SCALE;
 
-    //temp
+    //Attack
     private long lastAttackTime;
     private long atkCd = 200;
-    private int lastDirection = 1;
     private boolean attacking = false;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
@@ -41,7 +46,7 @@ public class Player extends Entity{
         super(x, y, width, height);
         this.lvlData = lvlData;
         loadAnimations();
-        initHitbox(x, y, 45 * Game.SCALE, 57 * Game.SCALE);
+        initHitbox(x, y, sylvara_HitboxWidth * Game.SCALE, sylvara_HitboxHeight * Game.SCALE);
     }
 
     public void update() {
@@ -94,12 +99,16 @@ public class Player extends Entity{
 
     public void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
-
         animations = new BufferedImage[3][9];
 
         for(int i = 0; i < animations.length; i++) {
             for(int j = 0; j < animations[i].length; j++) {
-                animations[i][j] = img.getSubimage(j * 32, i * 32, 32, 32 );
+                animations[i][j] = img.getSubimage(
+                        j * Game.SPRITE_DEFAULT_SIZE,
+                        i * Game.SPRITE_DEFAULT_SIZE,
+                        Game.SPRITE_DEFAULT_SIZE,
+                        Game.SPRITE_DEFAULT_SIZE
+                );
             }
         }
     }

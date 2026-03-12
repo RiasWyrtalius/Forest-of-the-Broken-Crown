@@ -17,6 +17,7 @@ public class Game implements Runnable{
     private LevelHandler levelHandler;
 
     public final static int TILES_DEFAULT_SIZE = 32;
+    public final static int SPRITE_DEFAULT_SIZE = 32;
     public final static float SCALE = 1.5f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
@@ -34,7 +35,8 @@ public class Game implements Runnable{
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
-        player = new Player(200, 200, 90, 90, levelHandler.getCurrentLevel().getLevelData());
+        //TODO: spawnpoint & fix resizing of character
+        player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
     }
 
     private void startGameLoop() {
