@@ -1,6 +1,7 @@
 package Entities;
 
 import Entities.Projectiles.Projectile;
+import Main.Game;
 import Utils.LoadSave;
 
 import javax.imageio.ImageIO;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import static Utils.Constants.PlayerConstants.*;
+import static Utils.HelpMethods.CanMoveHere;
 import static Utils.Constants.PlayerConstants.IDLE;
 
 //TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
@@ -27,6 +29,7 @@ public class Player extends Entity{
     private boolean up, down, left, right;
     private int faceDirection = WALKR;
     private float playerSpeed = 2.0f;
+    private int[][] lvlData;
 
     //temp
     private long lastAttackTime;
@@ -35,13 +38,15 @@ public class Player extends Entity{
     private boolean attacking = false;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
-    public Player(float x, float y) {
-        super(x, y);
+    public Player(float x, float y, int width, int height, int[][] lvlData) {
+        super(x, y, width, height);
+        this.lvlData = lvlData;
         loadAnimations();
     }
 
     public void update() {
         updatePos();
+        updateHitbox();
         updateAnimationTick();
         setAnimation();
 
@@ -66,6 +71,7 @@ public class Player extends Entity{
 
     public void render(Graphics g) {
         g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 100, 100, null);
+        drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
         }
@@ -82,6 +88,11 @@ public class Player extends Entity{
             }
         }
     }
+
+    public void loadLvlData(int[][] lvlData) {
+        this.lvlData = lvlData;
+    }
+
 
     public void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
@@ -134,8 +145,21 @@ public class Player extends Entity{
     }
 
     private void updatePos() {
-
         moving = false;
+        if(!left && !right && !up && !down)
+            return;
+
+        float xSpeed = 0, ySpeed = 0;
+
+        if(left && !right)
+            xSpeed = -playerSpeed;
+        else if (right && !left)
+            xSpeed = playerSpeed;
+
+        if(up && !down)
+            ySpeed = -playerSpeed;
+        else if (down && !up)
+            ySpeed = playerSpeed;
 
         if (left && !right) {
             x -= playerSpeed;
@@ -154,6 +178,16 @@ public class Player extends Entity{
             y += playerSpeed;
             moving = true;
         }
+
+
+// We subtract from width and height so the 'collision box' is smaller than the visual sprite
+// Try subtracting 30 from width and 10 from height as a start
+        if (CanMoveHere(x + xSpeed, y + ySpeed, (int)(width - 40), (int)(height - 10), lvlData)) {
+            this.x += xSpeed;
+            this.y += ySpeed;
+            moving = true;
+        }
+
     }
 
     public void resetDirectionBooleans() {

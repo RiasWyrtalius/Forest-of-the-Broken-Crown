@@ -33,8 +33,13 @@ public class Game implements Runnable{
     }
 
     public void initClasses() {
-        player = new Player(200, 200);
+<<<<<<< Updated upstream
+=======
+        player = new Player(200, 395);
+>>>>>>> Stashed changes
         levelHandler = new LevelHandler(this);
+
+        player = new Player(200, 200, 90, 90, levelHandler.getCurrentLevel().getLevelData());
     }
 
     private void startGameLoop() {
