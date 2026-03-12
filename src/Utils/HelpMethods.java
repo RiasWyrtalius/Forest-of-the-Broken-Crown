@@ -2,7 +2,7 @@ package Utils;
 
 import Main.Game;
 public class HelpMethods {
-    public static boolean CanMoveHere(float x, float y, int width, int height, int [][] lvlData){
+    public static boolean CanMoveHere(float x, float y, float width, float height, int [][] lvlData){
         if (!IsSolid(x, y, lvlData))
             if(!IsSolid(x + width, y + height, lvlData))
                 if(!IsSolid(x + width, y, lvlData))
@@ -21,12 +21,9 @@ public class HelpMethods {
         float xIndex = x / Game.TILES_SIZE;
         float yIndex = y / Game.TILES_SIZE;
 
-        int value = lvlData[(int) xIndex][(int) yIndex];
+        int value = lvlData[(int) yIndex][(int) xIndex];
+//        System.out.println("Tile ID at player: " + value);
 
-        if(value >= 48 || value < 0 || value != 11)
-            return true;
-        return false;
-
-
+        return value != 3 && value != 11;// air indices
     }
 }

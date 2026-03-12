@@ -4,11 +4,8 @@ import Entities.Projectiles.Projectile;
 import Main.Game;
 import Utils.LoadSave;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static Utils.Constants.PlayerConstants.*;
@@ -30,6 +27,8 @@ public class Player extends Entity{
     private int faceDirection = WALKR;
     private float playerSpeed = 2.0f;
     private int[][] lvlData;
+    private float xDrawOffset = 15 * Game.SCALE;
+    private float yDrawOffset = 4 * Game.SCALE;
 
     //temp
     private long lastAttackTime;
@@ -42,11 +41,11 @@ public class Player extends Entity{
         super(x, y, width, height);
         this.lvlData = lvlData;
         loadAnimations();
+        initHitbox(x, y, 45 * Game.SCALE, 57 * Game.SCALE);
     }
 
     public void update() {
         updatePos();
-        updateHitbox();
         updateAnimationTick();
         setAnimation();
 
@@ -70,7 +69,7 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][animationIndex], (int) x, (int) y, 100, 100, null);
+        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 100, 100, null);
         drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
@@ -92,7 +91,6 @@ public class Player extends Entity{
     public void loadLvlData(int[][] lvlData) {
         this.lvlData = lvlData;
     }
-
 
     public void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
@@ -151,44 +149,27 @@ public class Player extends Entity{
 
         float xSpeed = 0, ySpeed = 0;
 
-        if(left && !right)
+        if(left && !right) {
             xSpeed = -playerSpeed;
-        else if (right && !left)
+            faceDirection = WALKL;
+        } else if (right && !left) {
             xSpeed = playerSpeed;
+            faceDirection = WALKR;
+        }
 
         if(up && !down)
             ySpeed = -playerSpeed;
         else if (down && !up)
             ySpeed = playerSpeed;
 
-        if (left && !right) {
-            x -= playerSpeed;
-            moving = true;
-            faceDirection = WALKL;
-        } else if (right && !left) {
-            x += playerSpeed;
-            moving = true;
-            faceDirection = WALKR;
-        }
-
-        if (up && !down) {
-            y -= playerSpeed;
-            moving = true;
-        } else if (down && !up) {
-            y += playerSpeed;
-            moving = true;
-        }
-
-
-// We subtract from width and height so the 'collision box' is smaller than the visual sprite
-// Try subtracting 30 from width and 10 from height as a start
-        if (CanMoveHere(x + xSpeed, y + ySpeed, (int)(width - 40), (int)(height - 10), lvlData)) {
-            this.x += xSpeed;
-            this.y += ySpeed;
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)) {
+            hitbox.x += xSpeed;
+            hitbox.y += ySpeed;
             moving = true;
         }
 
     }
+
 
     public void resetDirectionBooleans() {
         left = false;

@@ -17,7 +17,7 @@ public class Game implements Runnable{
     private LevelHandler levelHandler;
 
     public final static int TILES_DEFAULT_SIZE = 32;
-    private final static float SCALE = 1.5f;
+    public final static float SCALE = 1.5f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
@@ -33,12 +33,7 @@ public class Game implements Runnable{
     }
 
     public void initClasses() {
-<<<<<<< Updated upstream
-=======
-        player = new Player(200, 395);
->>>>>>> Stashed changes
         levelHandler = new LevelHandler(this);
-
         player = new Player(200, 200, 90, 90, levelHandler.getCurrentLevel().getLevelData());
     }
 
@@ -66,8 +61,6 @@ public class Game implements Runnable{
      * Its now handled like this because we don't want our GameLoop to handle both graphics and game logic, that's bad(ahh pc).
      * deltaU is used to catch up incase the user's pc lags and will continue to calculate the logic before draws the next frame(repaint()),
      * it's just to make it sync better.
-     *
-     * if you wanna discuss the math, don't please, im braindead. t-t
     * */
     @Override
     public void run() {
