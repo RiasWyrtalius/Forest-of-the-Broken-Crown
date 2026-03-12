@@ -1,6 +1,7 @@
 package Entities;
 
 import Entities.Projectiles.Projectile;
+import Main.Game;
 import Utils.LoadSave;
 
 import javax.imageio.ImageIO;
