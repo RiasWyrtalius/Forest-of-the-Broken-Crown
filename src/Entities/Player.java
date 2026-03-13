@@ -79,7 +79,7 @@ public class Player extends Entity{
                 spawnX += hitbox.width;
             }
 
-            float spawnY = hitbox.y + (hitbox.height) / 2;
+            float spawnY = hitbox.y + (hitbox.height) / 4;
 
             projectiles.add(new Projectile((int)spawnX, (int)spawnY, projectileDirection));
             lastAttackTime = currTime;
