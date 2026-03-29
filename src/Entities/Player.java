@@ -5,12 +5,13 @@ import Main.Game;
 import Utils.LoadSave;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static Utils.Constants.PlayerConstants.*;
-import static Utils.HelpMethods.CanMoveHere;
 import static Utils.Constants.PlayerConstants.IDLE;
+import static Utils.HelpMethods.*;
 
 //TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
 /**
@@ -23,7 +24,7 @@ public class Player extends Entity{
     private int animationTick, animationIndex, animationSpeed = 30;
     private int playerAction = IDLE;
     private boolean moving = false;
-    private boolean up, down, left, right;
+    private boolean up, down, left, right, jump;
     private int faceDirection = WALKR;
     private float playerSpeed = 2.0f;
 
@@ -38,9 +39,16 @@ public class Player extends Entity{
 
     //Attack
     private long lastAttackTime;
-    private long atkCd = 200;
+    private long atkCd = 500;
     private boolean attacking = false;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
+
+    //Gravity / Jumping
+    private float airSpeed = 0f;
+    private float gravity = 0.04f * Game.SCALE;
+    private float jumpSpeed = -2.25f * Game.SCALE;
+    private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+    private boolean inAir = false;
 
     public Player(float x, float y, int width, int height, int[][] lvlData) {
         super(x, y, width, height);
@@ -166,28 +174,67 @@ public class Player extends Entity{
 
     private void updatePos() {
         moving = false;
-        if(!left && !right && !up && !down)
-            return;
 
-        float xSpeed = 0, ySpeed = 0;
+        if (jump) jump();
 
-        if(left && !right) {
-            xSpeed = -playerSpeed;
+        // 1. If no keys are pressed and we are on the ground, do nothing.
+        if (!left && !right && !inAir) return;
+
+        float xSpeed = 0;
+        if (left) {
+            xSpeed -= playerSpeed;
             faceDirection = WALKL;
-        } else if (right && !left) {
-            xSpeed = playerSpeed;
+        }
+        if (right) {
+            xSpeed += playerSpeed;
             faceDirection = WALKR;
         }
 
-        if(up && !down)
-            ySpeed = -playerSpeed;
-        else if (down && !up)
-            ySpeed = playerSpeed;
+        // 2. Check if we are in the air or just walked off a ledge
+        if (!inAir) {
+            if (!isEntityOnFloor(hitbox, lvlData)) {
+                inAir = true;
+            }
+        }
 
-        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)) {
+        // 3. Handle Vertical Movement (Gravity & Snapping)
+        if (inAir) {
+            if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
+                hitbox.y += airSpeed;
+                airSpeed += gravity;
+            } else {
+                // Hit floor or ceiling
+                hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
+                if (airSpeed > 0) {
+                    resetInAir();
+                } else {
+                    airSpeed = fallSpeedAfterCollision;
+                }
+            }
+        }
+
+        // 4. Handle Horizontal Movement (ONLY call this once per frame!)
+        updateXPos(xSpeed);
+        moving = true;
+    }
+
+    private void jump() {
+        if (!inAir) {
+            inAir = true;
+            airSpeed = jumpSpeed;
+        }
+    }
+
+    private void resetInAir() {
+        inAir = false;
+        airSpeed = 0;
+    }
+
+    private void updateXPos(float xSpeed) {
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
             hitbox.x += xSpeed;
-            hitbox.y += ySpeed;
-            moving = true;
+        } else {
+            hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
         }
     }
 
@@ -210,4 +257,7 @@ public class Player extends Entity{
 
     public boolean isRight() { return right; }
     public void setRight(boolean right) { this.right = right; }
+
+    public void setJump (boolean jump) { this.jump = jump; }
+
 }

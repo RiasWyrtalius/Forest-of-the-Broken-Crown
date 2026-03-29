@@ -30,7 +30,9 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
                 gamePanel.getGame().getPlayer().setRight(true);
                 break;
-
+            case KeyEvent.VK_SPACE:
+                gamePanel.getGame().getPlayer().setJump(true);
+                break;
                 //temp
             case KeyEvent.VK_K:
                 gamePanel.getGame().getPlayer().setAttacking(true);
@@ -52,7 +54,10 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
                 gamePanel.getGame().getPlayer().setRight(false);
-
+                break;
+            case KeyEvent.VK_SPACE:
+                gamePanel.getGame().getPlayer().setJump(false);
+                break;
             case KeyEvent.VK_K:
                 gamePanel.getGame().getPlayer().setAttacking(false);
                 break;
