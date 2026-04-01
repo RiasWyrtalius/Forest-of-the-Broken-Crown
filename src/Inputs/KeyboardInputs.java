@@ -37,6 +37,14 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_K:
                 gamePanel.getGame().getPlayer().setAttacking(true);
                 break;
+            case KeyEvent.VK_ESCAPE:
+                Main.GameState.state = Main.GameState.MENU;
+                break;
+            case KeyEvent.VK_F5:
+                if (Main.GameState.state == Main.GameState.PLAYING) {
+                    gamePanel.getGame().getMainMenu().saveGame();
+                }
+                break;
         }
     }
 

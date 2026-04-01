@@ -11,6 +11,7 @@ public class LevelHandler {
     private Game game;
     private BufferedImage[] levelSprite;
     private Level levelOne;
+    private int currentLevelNum = 1;
 
     public LevelHandler(Game game) {
         this.game = game;
@@ -36,7 +37,6 @@ public class LevelHandler {
     }
 
 
-
     public void draw(Graphics g) {
         for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
             for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
@@ -52,5 +52,13 @@ public class LevelHandler {
 
     public Level getCurrentLevel() {
         return levelOne;
+    }
+
+    public int getCurrentLevelNum() {
+        return currentLevelNum;
+    }
+
+    public void loadLevel(int levelNum) {
+        this.currentLevelNum = levelNum;
     }
 }

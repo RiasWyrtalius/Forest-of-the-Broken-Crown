@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class Game implements Runnable{
 
+    private MainMenu mainMenu;
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private Thread gameThread;
@@ -31,6 +32,7 @@ public class Game implements Runnable{
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
         startGameLoop();
+        mainMenu = new MainMenu(this);
     }
 
     public void initClasses() {
@@ -45,13 +47,19 @@ public class Game implements Runnable{
     }
 
     public void update() {
-        player.update();
-        levelHandler.update();
+        if (GameState.state == GameState.PLAYING) {
+            player.update();
+            levelHandler.update();
+        }
     }
 
     public void render(Graphics g) {
-        levelHandler.draw(g);
-        player.render(g);
+        if (GameState.state == GameState.MENU) {
+            mainMenu.draw(g);
+        } else {
+            levelHandler.draw(g);
+            player.render(g);
+        }
     }
 
     /**
@@ -111,5 +119,7 @@ public class Game implements Runnable{
     }
 
     public Player getPlayer() {return player;}
+    public MainMenu getMainMenu() {return mainMenu;}
+    public LevelHandler getLevelHandler() {return levelHandler;}
 
 }
