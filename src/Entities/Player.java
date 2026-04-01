@@ -26,7 +26,7 @@ public class Player extends Entity{
     private boolean moving = false;
     private boolean up, down, left, right, jump;
     private int faceDirection = WALKR;
-    private float playerSpeed = 2.0f;
+    private float playerSpeed = 1.5f * Game.SCALE;
 
     //Sylvara
     private int sylvara_HitboxWidth = 33;
@@ -174,10 +174,8 @@ public class Player extends Entity{
 
     private void updatePos() {
         moving = false;
-
         if (jump) jump();
 
-        // 1. If no keys are pressed and we are on the ground, do nothing.
         if (!left && !right && !inAir) return;
 
         float xSpeed = 0;
@@ -190,32 +188,31 @@ public class Player extends Entity{
             faceDirection = WALKR;
         }
 
-        // 2. Check if we are in the air or just walked off a ledge
         if (!inAir) {
-            if (!isEntityOnFloor(hitbox, lvlData)) {
-                inAir = true;
-            }
+            if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
         }
 
-        // 3. Handle Vertical Movement (Gravity & Snapping)
+        // 1. HANDLE VERTICAL
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += gravity;
             } else {
-                // Hit floor or ceiling
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-                if (airSpeed > 0) {
-                    resetInAir();
-                } else {
-                    airSpeed = fallSpeedAfterCollision;
-                }
+                if (airSpeed > 0) resetInAir();
+                else airSpeed = fallSpeedAfterCollision;
             }
         }
 
-        // 4. Handle Horizontal Movement (ONLY call this once per frame!)
-        updateXPos(xSpeed);
-        moving = true;
+        // 2. HANDLE HORIZONTAL
+        if (xSpeed != 0) {
+            if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+                hitbox.x += xSpeed;
+                moving = true;
+            } else {
+                hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
+            }
+        }
     }
 
     private void jump() {
