@@ -51,7 +51,7 @@ public class Game implements Runnable{
     public void initClasses() {
         levelHandler = new LevelHandler(this);
         enemyManager = new EnemyManager(this);
-        //TODO: spawnpoint & fix resizing of character
+        //spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
         mainMenu = new MainMenu(this);
         slotScreen = new SlotScreen(this);
@@ -65,7 +65,7 @@ public class Game implements Runnable{
 
     public void update() {
 
-        // FADE OUT â€” go from transparent to black
+        // FADE OUT — go from transparent to black
         if (fadingOut) {
             fadeAlpha += FADE_SPEED;
             if (fadeAlpha >= 255) {
@@ -76,7 +76,7 @@ public class Game implements Runnable{
             }
         }
 
-        // FADE IN â€” go from black back to transparent
+        // FADE IN — go from black back to transparent
         if (fadingIn) {
             fadeAlpha -= FADE_SPEED;
             if (fadeAlpha <= 0) {
@@ -131,16 +131,28 @@ public class Game implements Runnable{
         }
     }
 
-    /**
-     * NOTE by Charlz:
-     * Usages of UPS(Update Per Second) & FPS(Frames Per Second)
-     *
-     * UPS is used to handle Game Logic, while the FPS is for Graphics Rendering.
-     * UPS is set to 200, just for a higher frequency, simple terms it just ensures we have good movement and controls is responsive.
-     * Its now handled like this because we don't want our GameLoop to handle both graphics and game logic, that's bad(ahh pc).
-     * deltaU is used to catch up incase the user's pc lags and will continue to calculate the logic before draws the next frame(repaint()),
-     * it's just to make it sync better.
-     * */
+    public void startFadeTo(int targetState) {
+        fadingOut  = true;
+        fadingIn   = false;
+        fadeAlpha  = 0;
+        fadeTarget = targetState;
+    }
+
+    public void setSaveMessage(String msg) {
+        saveMessage = msg;
+        saveMessageTimer = System.currentTimeMillis();
+    }
+
+    public void windowFocusLost() {
+        player.resetDirectionBooleans();
+    }
+
+    public Player getPlayer() {return player;}
+    public MainMenu getMainMenu() {return mainMenu;}
+    public LevelHandler getLevelHandler() {return levelHandler;}
+    public SlotScreen getSlotScreen()     {return slotScreen;}
+    public PauseScreen getPauseScreen() {return pauseScreen;}
+
     @Override
     public void run() {
         boolean isEnabled = true;
@@ -182,27 +194,4 @@ public class Game implements Runnable{
             }
         }
     }
-
-    public void windowFocusLost() {
-        player.resetDirectionBooleans();
-    }
-
-    public void startFadeTo(int targetState) {
-        fadingOut  = true;
-        fadingIn   = false;
-        fadeAlpha  = 0;
-        fadeTarget = targetState;
-    }
-
-    public void setSaveMessage(String msg) {
-        saveMessage = msg;
-        saveMessageTimer = System.currentTimeMillis();
-    }
-
-    public Player getPlayer() {return player;}
-    public MainMenu getMainMenu() {return mainMenu;}
-    public LevelHandler getLevelHandler() {return levelHandler;}
-    public SlotScreen getSlotScreen()     {return slotScreen;}
-    public PauseScreen getPauseScreen() {return pauseScreen;}
-
 }

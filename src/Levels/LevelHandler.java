@@ -1,3 +1,6 @@
+// - Added null check in importOutSideSprites() to prevent NullPointerException when level atlas image is missing.
+// - Added error message when level atlas fails to load.
+
 package Levels;
 
 import Main.Game;
