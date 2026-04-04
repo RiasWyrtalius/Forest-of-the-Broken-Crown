@@ -2,7 +2,6 @@ package Main;
 
 import Entities.Player;
 import Levels.LevelHandler;
-
 import java.awt.*;
 
 public class Game implements Runnable{

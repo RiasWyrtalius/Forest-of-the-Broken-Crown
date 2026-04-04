@@ -2,7 +2,6 @@ package Levels;
 
 import Main.Game;
 import Utils.LoadSave;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -21,18 +20,22 @@ public class LevelHandler {
 
     public void importOutSideSprites() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Level_Atlas);
-        levelSprite = new BufferedImage[48];
+        if (img != null) {
+            levelSprite = new BufferedImage[48];
 
-        for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < 12; i++) {
-                int index = j * 12 + i;
-                levelSprite[index] = img.getSubimage(
-                        i * Game.SPRITE_DEFAULT_SIZE,
-                        j * Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE
-                );
+            for (int j = 0; j < 4; j++) {
+                for (int i = 0; i < 12; i++) {
+                    int index = j * 12 + i;
+                    levelSprite[index] = img.getSubimage(
+                            i * Game.SPRITE_DEFAULT_SIZE,
+                            j * Game.SPRITE_DEFAULT_SIZE,
+                            Game.SPRITE_DEFAULT_SIZE,
+                            Game.SPRITE_DEFAULT_SIZE
+                    );
+                }
             }
+        } else {
+            System.err.println("Failed to load level atlas: " + LoadSave.Level_Atlas);
         }
     }
 
