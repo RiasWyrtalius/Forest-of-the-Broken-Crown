@@ -1,4 +1,4 @@
-
+//
 // - Added IsFloor() method to check if there's solid ground in the direction of movement for enemy collision detection.
 
 package Utils;

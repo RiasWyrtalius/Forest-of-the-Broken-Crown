@@ -1,4 +1,3 @@
-// Changes made by AI Assistant:
 // - Fixed missing closing brace in loadAnimations() else block.
 // - Added null checks in loadAnimations() and render() to prevent crashes when player sprites are missing.
 // - Added error message in loadAnimations() when atlas fails to load.
@@ -7,18 +6,14 @@ package Entities;
 
 import Entities.Projectiles.Projectile;
 import Main.Game;
+import static Utils.Constants.PlayerConstants.*;
+import static Utils.HelpMethods.*;
 import Utils.LoadSave;
-
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static Utils.Constants.PlayerConstants.*;
-import static Utils.Constants.PlayerConstants.IDLE;
-import static Utils.HelpMethods.*;
-
-//TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
+// ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
 /**
  * NOTE : PROJECTILE will be replaced with an animated one.
  * */

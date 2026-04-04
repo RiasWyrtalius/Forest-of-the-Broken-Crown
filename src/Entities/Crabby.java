@@ -1,4 +1,4 @@
-// Changes made by AI Assistant:
+
 // - Created Crabby.java as a concrete enemy class extending Enemy.
 // - Implements walking AI, gravity, collision detection, and animation.
 // - Added null checks in loadAnimations() and render() to handle missing sprites gracefully.

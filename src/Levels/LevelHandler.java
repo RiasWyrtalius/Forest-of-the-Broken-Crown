@@ -1,4 +1,3 @@
-// Changes made by AI Assistant:
 // - Added null check in importOutSideSprites() to prevent NullPointerException when level atlas image is missing.
 // - Added error message when level atlas fails to load.
 
@@ -6,7 +5,6 @@ package Levels;
 
 import Main.Game;
 import Utils.LoadSave;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

@@ -1,5 +1,5 @@
 // - Added EnemyConstants class with CRABBY type, states (IDLE, RUNNING, ATTACK, HIT, DEAD), and GetSpriteAmount() method for enemy animations.
-
+// 
 package Utils;
 
 public class Constants {

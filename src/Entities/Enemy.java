@@ -1,4 +1,3 @@
-// Changes made by AI Assistant:
 // - Added import for Main.Game to access SCALE constant.
 // - Added abstract methods update(int[][] lvlData) and render(Graphics g) to define interface for enemy subclasses.
 // - Added fields: inAir, airSpeed, gravity, active for enemy physics and state management.

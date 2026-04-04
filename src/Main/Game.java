@@ -1,4 +1,3 @@
-// Changes made by AI Assistant:
 // - Added enemyManager field and initialization in initClasses().
 // - Integrated enemyManager.update() and render() into the game loop.
 // - Enemy rendering happens after level but before player for correct layering.
@@ -194,6 +193,13 @@ public class Game implements Runnable{
                 updates = 0;
             }
         }
+    }
+
+    public void startFadeTo(int targetState) {
+        fadingOut  = true;
+        fadingIn   = false;
+        fadeAlpha  = 0;
+        fadeTarget = targetState;
     }
 
     public void setSaveMessage(String msg) {
