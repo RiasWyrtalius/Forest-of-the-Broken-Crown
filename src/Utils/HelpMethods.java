@@ -1,3 +1,6 @@
+
+// - Added IsFloor() method to check if there's solid ground in the direction of movement for enemy collision detection.
+
 package Utils;
 
 import Main.Game;
@@ -56,5 +59,9 @@ public class HelpMethods {
             if (!IsSolid(hitbox.x + hitbox.width - 1, hitbox.y + hitbox.height + 1, lvlData))
                 return false;
         return true;
+    }
+
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
+        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
     }
 }

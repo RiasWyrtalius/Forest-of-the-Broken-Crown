@@ -1,3 +1,8 @@
+// Changes made by AI Assistant:
+// - Fixed missing closing brace in loadAnimations() else block.
+// - Added null checks in loadAnimations() and render() to prevent crashes when player sprites are missing.
+// - Added error message in loadAnimations() when atlas fails to load.
+
 package Entities;
 
 import Entities.Projectiles.Projectile;
@@ -95,7 +100,9 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 80, 80, null);
+        if (animations != null) {
+            g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 80, 80, null);
+        }
         drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
@@ -120,17 +127,21 @@ public class Player extends Entity{
 
     public void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
-        animations = new BufferedImage[3][9];
+        if (img != null) {
+            animations = new BufferedImage[3][9];
 
-        for(int i = 0; i < animations.length; i++) {
-            for(int j = 0; j < animations[i].length; j++) {
-                animations[i][j] = img.getSubimage(
-                        j * Game.SPRITE_DEFAULT_SIZE,
-                        i * Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE
-                );
+            for(int i = 0; i < animations.length; i++) {
+                for(int j = 0; j < animations[i].length; j++) {
+                    animations[i][j] = img.getSubimage(
+                            j * Game.SPRITE_DEFAULT_SIZE,
+                            i * Game.SPRITE_DEFAULT_SIZE,
+                            Game.SPRITE_DEFAULT_SIZE,
+                            Game.SPRITE_DEFAULT_SIZE
+                    );
+                }
             }
+        } else {
+            System.err.println("Failed to load Sylvara atlas: " + LoadSave.Sylvara_Atlas);
         }
     }
 

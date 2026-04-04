@@ -1,8 +1,12 @@
+// Changes made by AI Assistant:
+// - Added enemyManager field and initialization in initClasses().
+// - Integrated enemyManager.update() and render() into the game loop.
+// - Enemy rendering happens after level but before player for correct layering.
+
 package Main;
 
 import Entities.Player;
 import Levels.LevelHandler;
-
 import java.awt.*;
 
 public class Game implements Runnable{
@@ -16,6 +20,7 @@ public class Game implements Runnable{
 
     private Player player;
     private LevelHandler levelHandler;
+    private EnemyManager enemyManager;
 
     public final static int TILES_DEFAULT_SIZE = 32;
     public final static int SPRITE_DEFAULT_SIZE = 32;
@@ -37,7 +42,8 @@ public class Game implements Runnable{
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
-        //TODO: spawnpoint & fix resizing of character
+        enemyManager = new EnemyManager(this);
+        //spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
     }
 
@@ -50,6 +56,7 @@ public class Game implements Runnable{
         if (GameState.state == GameState.PLAYING) {
             player.update();
             levelHandler.update();
+            enemyManager.update(levelHandler.getCurrentLevel().getLevelData());
         }
     }
 
@@ -58,6 +65,7 @@ public class Game implements Runnable{
             mainMenu.draw(g);
         } else {
             levelHandler.draw(g);
+            enemyManager.render(g);
             player.render(g);
         }
     }

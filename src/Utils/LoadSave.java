@@ -1,33 +1,41 @@
+// - Added Crabby_Atlas constant for enemy sprite path.
+// - Modified getSpriteAtlas() to check if InputStream is null before reading, preventing IllegalArgumentException.
+// - Added error message when file is not found.
+// -
 package Utils;
 
 import Main.Game;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
 
 public class LoadSave {
 
-    public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
-    public static final String Level_Atlas = "Levels/tempTiles/Floor Tiles1.png";
-    public static final String LEVEL_ONE_DATA = "Levels/tempTiles/level_one_data.png";
+    public static final String Sylvara_Atlas = "Assets/Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
+    public static final String Level_Atlas = "Assets/Levels/tempTiles/Floor Tiles1.png";
+    public static final String LEVEL_ONE_DATA = "Assets/Levels/tempTiles/level_one_data.png";
+    public static final String Crabby_Atlas = "Assets/Enemies/Crabby.png";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
         InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);
 
-        try {
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        if (is != null) {
             try {
-                is.close();
-            } catch(IOException e) {
+                img = ImageIO.read(is);
+            } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
             }
+        } else {
+            System.err.println("Could not find file: /" + fileName);
         }
         return img;
     }
