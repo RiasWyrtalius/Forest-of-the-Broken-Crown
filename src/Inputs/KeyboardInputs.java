@@ -4,6 +4,7 @@ import Main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import Main.GameState;
 
 public class KeyboardInputs implements KeyListener {
 
@@ -38,11 +39,16 @@ public class KeyboardInputs implements KeyListener {
                 gamePanel.getGame().getPlayer().setAttacking(true);
                 break;
             case KeyEvent.VK_ESCAPE:
-                Main.GameState.state = Main.GameState.MENU;
+                if (GameState.state == GameState.PLAYING) {
+                    GameState.state = GameState.PAUSED;  // open pause screen
+                } else if (GameState.state == GameState.PAUSED) {
+                    GameState.state = GameState.PLAYING; // escape again = close pause
+                }
                 break;
             case KeyEvent.VK_F5:
-                if (Main.GameState.state == Main.GameState.PLAYING) {
-                    gamePanel.getGame().getMainMenu().saveGame();
+                if (GameState.state == GameState.PLAYING) {
+                    gamePanel.getGame().getSlotScreen().setMode("SAVE");
+                    GameState.state = GameState.SLOTS;
                 }
                 break;
         }
