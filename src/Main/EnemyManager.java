@@ -35,7 +35,6 @@ public class EnemyManager {
 
     private void addEnemies() {
         enemies.add(new Crabby(200, 300));
-        enemies.add(new Crabby(400, 300));
     }
 
     public ArrayList<Enemy> getEnemies() {
