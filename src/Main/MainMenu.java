@@ -8,71 +8,75 @@ public class MainMenu {
 
     private Game game;
 
-    // Button areas (x, y, width, height)
-    private Rectangle btnStart  = new Rectangle(300, 200, 200, 50);
-    private Rectangle btnLoad   = new Rectangle(300, 280, 200, 50);
-    private Rectangle btnQuit   = new Rectangle(300, 360, 200, 50);
+    private String message = "";
 
-    private String message = ""; // shows feedback like "Saved!" or "No save found"
+    // these are button text positions
+    private int btnX      = 80;
+    private int btnStartY = 498;
+    private int btnLoadY  = 543;
+    private int btnQuitY  = 588;
+
+    private int btnFontSize = 36;
 
     public MainMenu(Game game) {
         this.game = game;
     }
 
     public void draw(Graphics g) {
-        // Background
-        g.setColor(Color.BLACK);
+        // this IS the background
+        g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
-        // Title
+        // title
+        g.setColor(new Color(246, 246, 109));
+        g.setFont(new Font("Arial", Font.BOLD, 52));
+        g.drawString("FOREST OF THE", 80, 130);
+        g.drawString("BROKEN CROWN",  80, 200);
+
+        // buttons
+        g.setFont(new Font("Arial", Font.BOLD, btnFontSize));
+        g.setColor(new Color(246, 246, 30));
+        g.drawString("Play Game",      btnX, btnStartY);
+        g.drawString("Load Game", btnX, btnLoadY);
+        g.drawString("Quit",      btnX, btnQuitY);
+
+        // feedback message
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 36));
-        g.drawString("Forest of the Broken Crown", 170, 120);
-
-        // Buttons
-        drawButton(g, btnStart, "Start Game");
-        drawButton(g, btnLoad,  "Load Game");
-        drawButton(g, btnQuit,  "Quit");
-
-        // Feedback message
-        g.setColor(Color.YELLOW);
         g.setFont(new Font("Arial", Font.PLAIN, 16));
-        g.drawString(message, 320, 440);
-    }
-
-    private void drawButton(Graphics g, Rectangle btn, String label) {
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(btn.x, btn.y, btn.width, btn.height);
-
-        g.setColor(Color.WHITE);
-        g.drawRect(btn.x, btn.y, btn.width, btn.height);
-
-        g.setFont(new Font("Arial", Font.PLAIN, 20));
-        // Center the text inside the button (roughly)
-        g.drawString(label, btn.x + 20, btn.y + 32);
+        g.drawString(message, btnX, btnQuitY + 40);
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (btnStart.contains(e.getPoint())) {
-            // Fresh start — reset player position
+        int mx = e.getX();
+        int my = e.getY();
+
+        if (isNearButton(mx, my, btnX, btnStartY)) {
             game.getPlayer().getHitbox().x = 200;
             game.getPlayer().getHitbox().y = 200;
-            GameState.state = GameState.PLAYING;
+            game.getLevelHandler().loadLevel(1);
+            game.startFadeTo(GameState.PLAYING);
 
-        } else if (btnLoad.contains(e.getPoint())) {
-            loadGame();
+        } else if (isNearButton(mx, my, btnX, btnLoadY)) {
+            game.getSlotScreen().setMode("LOAD");
+            GameState.state = GameState.SLOTS;
 
-        } else if (btnQuit.contains(e.getPoint())) {
+        } else if (isNearButton(mx, my, btnX, btnQuitY)) {
             System.exit(0);
         }
     }
 
+    // invisible hit area for each text button
+    private boolean isNearButton(int mx, int my, int x, int y) {
+        return mx >= x && mx <= x + 200
+                && my >= y - btnFontSize && my <= y;
+    }
 
     public void saveGame() {
         try {
             FileWriter fw = new FileWriter("save.txt");
             fw.write(game.getPlayer().getHitbox().x + "\n");
             fw.write(game.getPlayer().getHitbox().y + "\n");
+            fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
             fw.close();
             message = "Game Saved!";
         } catch (IOException e) {
@@ -80,7 +84,6 @@ public class MainMenu {
             message = "Save failed.";
         }
     }
-
 
     private void loadGame() {
         File file = new File("save.txt");
@@ -91,15 +94,17 @@ public class MainMenu {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-            float x = Float.parseFloat(br.readLine());
-            float y = Float.parseFloat(br.readLine());
+            float x      = Float.parseFloat(br.readLine());
+            float y      = Float.parseFloat(br.readLine());
+            int levelNum = Integer.parseInt(br.readLine());
             br.close();
 
             game.getPlayer().getHitbox().x = x;
             game.getPlayer().getHitbox().y = y;
+            game.getLevelHandler().loadLevel(levelNum);
 
-            message = "Game Loaded!";
             GameState.state = GameState.PLAYING;
+            message = "Game Loaded!";
 
         } catch (IOException e) {
             e.printStackTrace();

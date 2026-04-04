@@ -9,6 +9,8 @@ import java.awt.event.MouseMotionListener;
 public class MouseInputs implements MouseListener, MouseMotionListener {
 
     private GamePanel gamePanel;
+    private long lastClickTime = 0;
+    private final long CLICK_COOLDOWN = 200; // this adds a 200 ms cooldown after clicking a button
 
     public MouseInputs(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -16,15 +18,20 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (Main.GameState.state == Main.GameState.MENU) {
-            gamePanel.getGame().getMainMenu().mouseClicked(e);
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            gamePanel.getGame().getPlayer().setAttacking(true);
+
+        long now = System.currentTimeMillis();
+        if (now - lastClickTime < CLICK_COOLDOWN) return; // this ignores too-fast clicks
+        lastClickTime = now;
+        if (Main.GameState.state == Main.GameState.MENU) {
+            gamePanel.getGame().getMainMenu().mouseClicked(e);
+        } else if (Main.GameState.state == Main.GameState.SLOTS) {
+            gamePanel.getGame().getSlotScreen().mouseClicked(e);
+        } else if (Main.GameState.state == Main.GameState.PAUSED) {
+            gamePanel.getGame().getPauseScreen().mouseClicked(e);
         }
     }
 
