@@ -16,6 +16,21 @@ public class Game implements Runnable{
 
     private Player player;
     private LevelHandler levelHandler;
+    private EnemyManager enemyManager;
+    private SlotScreen slotScreen;
+    private PauseScreen pauseScreen;
+
+    // this generates "Saved Game!" on screen
+    private String saveMessage = "";
+    private long saveMessageTimer = 0;
+    private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
+
+    // this makes the transition to black
+    private boolean fadingOut = false; // fading to black
+    private boolean fadingIn  = false; // fading back from black
+    private int fadeAlpha     = 0;
+    private int fadeTarget    = 0;
+    private final int FADE_SPEED = 5;
 
     public final static int TILES_DEFAULT_SIZE = 32;
     public final static int SPRITE_DEFAULT_SIZE = 32;
@@ -32,13 +47,16 @@ public class Game implements Runnable{
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
         startGameLoop();
-        mainMenu = new MainMenu(this);
     }
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
+        enemyManager = new EnemyManager(this);
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
+        mainMenu = new MainMenu(this);
+        slotScreen = new SlotScreen(this);
+        pauseScreen = new PauseScreen(this);
     }
 
     private void startGameLoop() {
@@ -47,18 +65,70 @@ public class Game implements Runnable{
     }
 
     public void update() {
+
+        // FADE OUT — go from transparent to black
+        if (fadingOut) {
+            fadeAlpha += FADE_SPEED;
+            if (fadeAlpha >= 255) {
+                fadeAlpha  = 255;
+                fadingOut  = false;
+                fadingIn   = true;             // start fading back in
+                GameState.state = fadeTarget;  // switch to the new state
+            }
+        }
+
+        // FADE IN — go from black back to transparent
+        if (fadingIn) {
+            fadeAlpha -= FADE_SPEED;
+            if (fadeAlpha <= 0) {
+                fadeAlpha = 0;
+                fadingIn  = false;             // fade fully done
+            }
+        }
+
         if (GameState.state == GameState.PLAYING) {
             player.update();
             levelHandler.update();
+            enemyManager.update(levelHandler.getCurrentLevel().getLevelData());
         }
     }
 
     public void render(Graphics g) {
         if (GameState.state == GameState.MENU) {
             mainMenu.draw(g);
-        } else {
+
+        } else if (GameState.state == GameState.SLOTS) {
+            // draw the game behind the slot screen so it doesn't look empty
             levelHandler.draw(g);
             player.render(g);
+            slotScreen.draw(g);
+        } else if (GameState.state == GameState.PAUSED) {
+            levelHandler.draw(g);
+            player.render(g);
+            pauseScreen.draw(g);
+        } else {
+            levelHandler.draw(g);
+            enemyManager.render(g);
+            player.render(g);
+
+            // this shows the "Saved Game!" message on screen
+            if (!saveMessage.isEmpty()) {
+                long elapsed = System.currentTimeMillis() - saveMessageTimer;
+                if (elapsed < MESSAGE_DURATION) {
+                    g.setFont(new Font("Arial", Font.BOLD, 18));
+                    FontMetrics fm = g.getFontMetrics();
+                    int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
+                    g.setColor(Color.BLACK);
+                    g.drawString(saveMessage, msgX, 40);
+                } else {
+                    saveMessage = ""; // this clears the message after 2 seconds
+                }
+            }
+        }
+        // it draws a fade overlay on top of everything
+        if (fadingOut || fadingIn || fadeAlpha > 0) {
+            g.setColor(new Color(0, 0, 0, Math.min(fadeAlpha, 255)));
+            g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         }
     }
 
@@ -118,8 +188,22 @@ public class Game implements Runnable{
         player.resetDirectionBooleans();
     }
 
+    public void startFadeTo(int targetState) {
+        fadingOut  = true;
+        fadingIn   = false;
+        fadeAlpha  = 0;
+        fadeTarget = targetState;
+    }
+
+    public void setSaveMessage(String msg) {
+        saveMessage = msg;
+        saveMessageTimer = System.currentTimeMillis();
+    }
+
     public Player getPlayer() {return player;}
     public MainMenu getMainMenu() {return mainMenu;}
     public LevelHandler getLevelHandler() {return levelHandler;}
+    public SlotScreen getSlotScreen()     {return slotScreen;}
+    public PauseScreen getPauseScreen() {return pauseScreen;}
 
 }
