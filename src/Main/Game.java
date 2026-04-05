@@ -6,6 +6,7 @@ import Levels.LevelHandler;
 import Utils.LoadSave;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Game implements Runnable {
 
@@ -51,6 +52,8 @@ public class Game implements Runnable {
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
+    private BufferedImage backgroundImg;
+
     private UI ui;
 
     public Game() {
@@ -59,6 +62,8 @@ public class Game implements Runnable {
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
         startGameLoop();
+
+        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
     }
 
     public void initClasses() {
@@ -124,6 +129,8 @@ public class Game implements Runnable {
     }
 
     public void render(Graphics g) {
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
         if (GameState.state == GameState.MENU) {
             mainMenu.draw(g);
 
