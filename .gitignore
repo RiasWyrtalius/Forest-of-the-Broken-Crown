@@ -1,0 +1,7 @@
+# Ignore generated Java class files and build outputs
+out/
+*.class
+
+# Ignore save files created during gameplay
+save.txt
+save_slot*.txt
