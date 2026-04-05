@@ -18,20 +18,16 @@ public class MainMenu {
 
     private int btnFontSize = 36;
 
+    private Image bgImage;
+
     public MainMenu(Game game) {
         this.game = game;
+        bgImage = Toolkit.getDefaultToolkit().getImage("Assets/MainMenu/MainMenu.jpg");
     }
 
     public void draw(Graphics g) {
         // this IS the background
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
-
-        // title
-        g.setColor(new Color(246, 246, 109));
-        g.setFont(new Font("Arial", Font.BOLD, 52));
-        g.drawString("FOREST OF THE", 80, 130);
-        g.drawString("BROKEN CROWN",  80, 200);
+        g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
         // buttons
         g.setFont(new Font("Arial", Font.BOLD, btnFontSize));

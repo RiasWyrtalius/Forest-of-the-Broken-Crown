@@ -15,9 +15,9 @@ public class GameWindow extends JFrame {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setTitle("Forest of the Broken Crown");
         jFrame.add(gamePanel);
-        jFrame.setLocationRelativeTo(null);
         jFrame.setResizable(false);
         jFrame.pack();
+        jFrame.setLocationRelativeTo(null);
         jFrame.setVisible(true);
 
         jFrame.addWindowFocusListener(new WindowFocusListener() {

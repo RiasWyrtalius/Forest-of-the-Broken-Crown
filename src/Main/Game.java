@@ -5,7 +5,7 @@ import Levels.LevelHandler;
 
 import java.awt.*;
 
-public class Game implements Runnable{
+public class Game implements Runnable {
 
     private MainMenu mainMenu;
     private GameWindow gameWindow;
@@ -26,8 +26,8 @@ public class Game implements Runnable{
     private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
     // this makes the transition to black
-    private boolean fadingOut = false; // fading to black
-    private boolean fadingIn  = false; // fading back from black
+    private boolean fadingOut = false; // this fades to black
+    private boolean fadingIn  = false; // this fades back from black
     private int fadeAlpha     = 0;
     private int fadeTarget    = 0;
     private final int FADE_SPEED = 5;

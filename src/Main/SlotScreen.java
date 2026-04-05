@@ -8,7 +8,7 @@ public class SlotScreen {
 
     private Game game;
 
-    private String mode = "Save"; // it shows
+    private String mode = "SAVE"; // it shows
 
     private Rectangle slot1 = new Rectangle(424, 150, 400, 70);
     private Rectangle slot2 = new Rectangle(424, 260, 400, 70);
