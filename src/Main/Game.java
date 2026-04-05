@@ -1,5 +1,6 @@
 package Main;
 
+import Audio.AudioPlayer;
 import Entities.Player;
 import Levels.LevelHandler;
 import Utils.LoadSave;
@@ -26,6 +27,7 @@ public class Game implements Runnable {
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
+    private AudioPlayer audioPlayer;
 
 
     // this generates "Saved Game!" on screen
@@ -64,6 +66,7 @@ public class Game implements Runnable {
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
         ui = new UI(this);
+        audioPlayer = new AudioPlayer();
         mainMenu = new MainMenu(this);
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
@@ -233,4 +236,5 @@ public class Game implements Runnable {
     public LevelHandler getLevelHandler() {return levelHandler;}
     public SlotScreen getSlotScreen()     {return slotScreen;}
     public PauseScreen getPauseScreen() {return pauseScreen;}
+    public AudioPlayer getAudioPlayer() {return audioPlayer;}
 }
