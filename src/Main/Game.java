@@ -65,7 +65,7 @@ public class Game implements Runnable{
 
     public void update() {
 
-        // FADE OUT — go from transparent to black
+        // FADE OUT â€” go from transparent to black
         if (fadingOut) {
             fadeAlpha += FADE_SPEED;
             if (fadeAlpha >= 255) {
@@ -76,7 +76,7 @@ public class Game implements Runnable{
             }
         }
 
-        // FADE IN — go from black back to transparent
+        // FADE IN â€” go from black back to transparent
         if (fadingIn) {
             fadeAlpha -= FADE_SPEED;
             if (fadeAlpha <= 0) {
