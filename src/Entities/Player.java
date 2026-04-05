@@ -134,7 +134,7 @@ public class Player extends Entity{
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, int lvlOffset) {
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -142,7 +142,7 @@ public class Player extends Entity{
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         }
 
-        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 80, 80, null);
+        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset) - lvlOffset, (int)(hitbox.y - yDrawOffset), 80, 80, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 

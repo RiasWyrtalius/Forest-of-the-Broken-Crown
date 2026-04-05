@@ -2,10 +2,18 @@ package Main;
 
 import Entities.Player;
 import Levels.LevelHandler;
+import Utils.LoadSave;
 
 import java.awt.*;
 
 public class Game implements Runnable {
+
+    private int xLvlOffset;
+    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int lvlTilesWide = LoadSave.getLevelData()[0].length;
+    private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
+    private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
 
     private MainMenu mainMenu;
     private GameWindow gameWindow;
@@ -91,6 +99,24 @@ public class Game implements Runnable {
         if (GameState.state == GameState.PLAYING) {
             player.update();
             levelHandler.update();
+            checkCloseToBorder();
+        }
+    }
+
+    private void checkCloseToBorder() {
+        int playerX = (int) player.getHitbox().x;
+        int diff = playerX - xLvlOffset;
+
+        if (diff > rightBorder) {
+            xLvlOffset += diff - rightBorder;
+        } else if (diff < leftBorder) {
+            xLvlOffset += diff - leftBorder;
+        }
+
+        if (xLvlOffset > maxLvlOffsetX){
+            xLvlOffset = maxLvlOffsetX;
+        } else if (xLvlOffset < 0){
+            xLvlOffset = 0;
         }
     }
 
@@ -100,16 +126,16 @@ public class Game implements Runnable {
 
         } else if (GameState.state == GameState.SLOTS) {
             // draw the game behind the slot screen so it doesn't look empty
-            levelHandler.draw(g);
-            player.render(g);
+            levelHandler.draw(g, xLvlOffset);
+            player.render(g, xLvlOffset);
             slotScreen.draw(g);
         } else if (GameState.state == GameState.PAUSED) {
-            levelHandler.draw(g);
-            player.render(g);
+            levelHandler.draw(g, xLvlOffset);
+            player.render(g, xLvlOffset);
             pauseScreen.draw(g);
         } else {
-            levelHandler.draw(g);
-            player.render(g);
+            levelHandler.draw(g, xLvlOffset);
+            player.render(g, xLvlOffset);
 
             ui.draw(g);
 
