@@ -1,5 +1,6 @@
 package Inputs;
 
+import Main.Game;
 import Main.GamePanel;
 
 import java.awt.event.KeyEvent;
@@ -37,6 +38,9 @@ public class KeyboardInputs implements KeyListener {
                 //temp
             case KeyEvent.VK_K:
                 gamePanel.getGame().getPlayer().setAttacking(true);
+                break;
+            case KeyEvent.VK_H: // TEST BUTTON FOR HEART LOSS (in-game..)
+                gamePanel.getGame().getPlayer().loseLife();
                 break;
             case KeyEvent.VK_ESCAPE:
                 if (GameState.state == GameState.PLAYING) {

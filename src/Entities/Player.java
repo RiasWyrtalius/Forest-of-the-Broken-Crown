@@ -50,6 +50,15 @@ public class Player extends Entity{
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = false;
 
+    //Lives
+    public int maxLife = 5;
+    public int life = maxLife;
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
+    private final int INVINCIBILITY_TIME = 200; // 200 UPS = 1 sec
+
+    //TODO: implement death screen when lives == 0
+
     public Player(float x, float y, int width, int height, int[][] lvlData) {
         super(x, y, width, height);
         this.lvlData = lvlData;
@@ -57,14 +66,45 @@ public class Player extends Entity{
         initHitbox(x, y, sylvara_HitboxWidth * Game.SCALE, sylvara_HitboxHeight * Game.SCALE);
     }
 
+    public void loseLife() {
+        if (!invincible) {
+            life--;
+            invincible = true;
+
+            if (life <= 0) {
+                System.out.println("GAME OVER");
+            }
+        }
+    }
+
     public void update() {
-        updatePos();
         updateAnimationTick();
         setAnimation();
+        updatePos();
+
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > 50) { // quarter of a second at 200 UPS
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
 
         if (attacking) shoot();
         updateProjectiles();
     }
+
+    private void updateHealthStatus() {
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > INVINCIBILITY_TIME) { //cause 60fps
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+    }
+
+
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
@@ -95,7 +135,17 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g) {
+
+        Graphics2D g2 = (Graphics2D) g;
+
+        if (invincible) { // if invincible, transparency is 50%
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        }
+
         g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset), (int)(hitbox.y - yDrawOffset), 80, 80, null);
+
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
         drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);

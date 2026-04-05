@@ -41,6 +41,8 @@ public class Game implements Runnable {
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
+    private UI ui;
+
     public Game() {
         initClasses();
         gamePanel = new GamePanel(this);
@@ -53,6 +55,7 @@ public class Game implements Runnable {
         levelHandler = new LevelHandler(this);
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
+        ui = new UI(this);
         mainMenu = new MainMenu(this);
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
@@ -107,6 +110,8 @@ public class Game implements Runnable {
         } else {
             levelHandler.draw(g);
             player.render(g);
+
+            ui.draw(g);
 
             // this shows the "Saved Game!" message on screen
             if (!saveMessage.isEmpty()) {
