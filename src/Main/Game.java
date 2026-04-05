@@ -18,7 +18,6 @@ public class Game implements Runnable{
     private EnemyManager enemyManager;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
-
     // this generates "Saved Game!" on screen
     private String saveMessage = "";
     private long saveMessageTimer = 0;
@@ -153,6 +152,15 @@ public class Game implements Runnable{
     public SlotScreen getSlotScreen()     {return slotScreen;}
     public PauseScreen getPauseScreen() {return pauseScreen;}
 
+    /**
+     * NOTE by Charlz:
+     * Usages of UPS(Update Per Second) & FPS(Frames Per Second)
+     * UPS is used to handle Game Logic, while the FPS is for Graphics Rendering.
+     * UPS is set to 200, just for a higher frequency, simple terms it just ensures we have good movement and controls is responsive.
+     * Its now handled like this because we don't want our GameLoop to handle both graphics and game logic, that's bad(ahh pc).
+     * deltaU is used to catch up in case the user's pc lags and will continue to calculate the logic before draws the next frame(repaint()),
+     * it's just to make it sync better.
+     * */
     @Override
     public void run() {
         boolean isEnabled = true;
@@ -194,4 +202,19 @@ public class Game implements Runnable{
             }
         }
     }
+
+    public void setSaveMessage(String msg) {
+        saveMessage = msg;
+        saveMessageTimer = System.currentTimeMillis();
+    }
+
+    public void windowFocusLost() {
+        player.resetDirectionBooleans();
+    }
+
+    public Player getPlayer() {return player;}
+    public MainMenu getMainMenu() {return mainMenu;}
+    public LevelHandler getLevelHandler() {return levelHandler;}
+    public SlotScreen getSlotScreen()     {return slotScreen;}
+    public PauseScreen getPauseScreen() {return pauseScreen;}
 }
