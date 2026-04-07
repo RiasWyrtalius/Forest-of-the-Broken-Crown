@@ -1,10 +1,11 @@
 package Main;
 
 import Audio.AudioPlayer;
+import Entities.Boss;
 import Entities.Player;
+import Entities.Projectiles.Projectile;
 import Levels.LevelHandler;
 import Utils.LoadSave;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -25,6 +26,7 @@ public class Game implements Runnable {
     private final int UPS_SET = 200;
 
     private Player player;
+    private Boss boss;
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
@@ -70,6 +72,13 @@ public class Game implements Runnable {
         levelHandler = new LevelHandler(this);
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
+        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
+        int bossWidth = 250;
+        int bossHeight = 250;
+        // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
+        float bossX = 200 + 53 * TILES_SIZE;
+        float bossY = 200 + 4* TILES_SIZE;
+        boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
         ui = new UI(this);
         audioPlayer = new AudioPlayer();
         mainMenu = new MainMenu(this);
@@ -106,8 +115,25 @@ public class Game implements Runnable {
 
         if (GameState.state == GameState.PLAYING) {
             player.update();
+            boss.update(player);
             levelHandler.update();
             checkCloseToBorder();
+
+            // Check player projectiles hitting boss
+            for (Projectile p : player.getProjectiles()) {
+                if (p.isActive() && new Rectangle(p.getX(), p.getY(), 48, 48).intersects(boss.getHitbox())) {
+                    boss.takeDamage(1);
+                    p.setActive(false);
+                }
+            }
+
+            // Check boss projectiles hitting player
+            for (Projectile p : boss.getProjectiles()) {
+                if (p.isActive() && new Rectangle(p.getX(), p.getY(), 48, 48).intersects(player.getHitbox())) {
+                    player.loseLife();
+                    p.setActive(false);
+                }
+            }
         }
     }
 
@@ -138,14 +164,17 @@ public class Game implements Runnable {
             // draw the game behind the slot screen so it doesn't look empty
             levelHandler.draw(g, xLvlOffset);
             player.render(g, xLvlOffset);
+            boss.render(g, xLvlOffset);
             slotScreen.draw(g);
         } else if (GameState.state == GameState.PAUSED) {
             levelHandler.draw(g, xLvlOffset);
             player.render(g, xLvlOffset);
+            boss.render(g, xLvlOffset);
             pauseScreen.draw(g);
         } else {
             levelHandler.draw(g, xLvlOffset);
             player.render(g, xLvlOffset);
+            boss.render(g, xLvlOffset);
 
             ui.draw(g);
 

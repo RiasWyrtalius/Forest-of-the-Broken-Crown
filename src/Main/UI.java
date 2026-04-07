@@ -1,9 +1,10 @@
 package Main;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class UI {
     private Game game;
@@ -19,13 +20,30 @@ public class UI {
         String path = "/Characters/Hero/Lives/Life.png";
 
         try {
+            BufferedImage spriteSheet;
             var is = getClass().getResourceAsStream(path);
-            if (is == null) {
-                System.err.println("FILE NOT FOUND: Make sure the file is at: " + path);
-                System.err.println("Current Path being checked: " + getClass().getResource(path));
-                return;
+            if (is != null) {
+                spriteSheet = ImageIO.read(is);
+            } else {
+                File[] fallbackFiles = new File[] {
+                    new File("Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png"),
+                    new File("Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png"),
+                    new File(System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png")
+                };
+                File foundFile = null;
+                for (File file : fallbackFiles) {
+                    if (file.exists()) {
+                        foundFile = file;
+                        break;
+                    }
+                }
+                if (foundFile == null) {
+                    System.err.println("FILE NOT FOUND: Make sure the file is at: " + path);
+                    System.err.println("Current Path being checked: " + getClass().getResource(path));
+                    return;
+                }
+                spriteSheet = ImageIO.read(foundFile);
             }
-            BufferedImage spriteSheet = ImageIO.read(is);
 
             int width = spriteSheet.getWidth() / 2;
             int height = spriteSheet.getHeight();

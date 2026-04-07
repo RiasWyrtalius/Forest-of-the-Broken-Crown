@@ -2,16 +2,12 @@ package Entities;
 
 import Entities.Projectiles.Projectile;
 import Main.Game;
+import static Utils.Constants.PlayerConstants.*;
+import static Utils.HelpMethods.*;
 import Utils.LoadSave;
-
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-import static Utils.Constants.PlayerConstants.*;
-import static Utils.Constants.PlayerConstants.IDLE;
-import static Utils.HelpMethods.*;
 
 //TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
 /**
@@ -306,5 +302,7 @@ public class Player extends Entity{
     public void setRight(boolean right) { this.right = right; }
 
     public void setJump (boolean jump) { this.jump = jump; }
+
+    public ArrayList<Projectile> getProjectiles() { return projectiles; }
 
 }

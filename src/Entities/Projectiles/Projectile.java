@@ -2,9 +2,9 @@ package Entities.Projectiles;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
 
 public class Projectile {
     private int x, y;
@@ -83,4 +83,6 @@ public class Projectile {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+    public int getX() { return x; }
+    public int getY() { return y; }
 }
