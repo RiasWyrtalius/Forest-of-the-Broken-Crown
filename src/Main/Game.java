@@ -5,6 +5,7 @@ import Entities.Boss;
 import Entities.Player;
 import Entities.Projectiles.Projectile;
 import Levels.LevelHandler;
+import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -58,6 +59,8 @@ public class Game implements Runnable {
 
     private UI ui;
 
+    private ObjectManager objectManager;
+
     public Game() {
         initClasses();
         gamePanel = new GamePanel(this);
@@ -70,6 +73,7 @@ public class Game implements Runnable {
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
+        objectManager = new ObjectManager();
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
@@ -117,6 +121,7 @@ public class Game implements Runnable {
             player.update();
             boss.update(player);
             levelHandler.update();
+            objectManager.update(levelHandler.getCurrentLevel().getLevelData(), player);
             checkCloseToBorder();
 
             // Check player projectiles hitting boss
@@ -173,6 +178,7 @@ public class Game implements Runnable {
             pauseScreen.draw(g);
         } else {
             levelHandler.draw(g, xLvlOffset);
+            objectManager.draw(g, xLvlOffset);
             player.render(g, xLvlOffset);
             boss.render(g, xLvlOffset);
 
@@ -197,6 +203,12 @@ public class Game implements Runnable {
             g.setColor(new Color(0, 0, 0, Math.min(fadeAlpha, 255)));
             g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         }
+    }
+
+    public void resetAll() {
+        player.resetAll();
+        objectManager.resetAllObjects();
+        //TODO: enemy reset can go here.
     }
 
     public void startFadeTo(int targetState) {

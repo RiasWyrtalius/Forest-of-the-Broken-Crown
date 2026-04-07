@@ -4,6 +4,8 @@ import Entities.Projectiles.Projectile;
 import Main.Game;
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.HelpMethods.*;
+
+import Objects.Vase;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -63,13 +65,20 @@ public class Player extends Entity{
     }
 
     public void loseLife() {
-        if (!invincible) {
-            life--;
-            invincible = true;
 
-            if (life <= 0) {
-                System.out.println("GAME OVER");
-            }
+        if (invincible) return;
+
+
+        life--;
+        invincible = true;
+        invincibleCounter = 0;
+
+        if (life <= 0) {
+            System.out.println("Game over");
+        } else {
+            hitbox.x = x;
+            hitbox.y = y;
+            inAir = true;
         }
     }
 
@@ -142,7 +151,7 @@ public class Player extends Entity{
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-        //drawHitbox(g);
+        drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
         }
@@ -288,6 +297,64 @@ public class Player extends Entity{
         up = false;
         down = false;
     }
+
+    public void checkObjectCollision(ArrayList<Vase> vases) {
+        for (Vase v : vases) {
+            if (v.isActive()) {
+                if (hitbox.intersects(v.getHitbox())) {
+                    float playerBottom = hitbox.y + hitbox.height;
+                    float vaseCenterY = v.getHitbox().y + (v.getHitbox().height / 2);
+
+                    if (airSpeed > 0 && playerBottom < vaseCenterY) {
+                        v.setActive(false);
+                    }
+
+                    this.airSpeed = jumpSpeed * 0.75f; // bounces if hit
+                } else {
+                    if (right || left) {
+                        this.hitbox.x = Utils.HelpMethods.getEntityXPosNextToWall(hitbox, (right ? 1 : -1));
+                    }
+                }
+            }
+        }
+    }
+
+    public void kill() {
+        if (invincible) return;
+
+        life--; //lose heart
+
+        if (life <= 0) {
+            resetAll();
+        }
+    }
+
+    public void resetAll() {
+        resetDirectionBooleans();
+        inAir = true;
+        attacking = false;
+        moving = false;
+        playerAction = IDLE;
+        life = maxLife;
+
+        // Reset to initial spawn coordinates
+        hitbox.x = x;
+        hitbox.y = y;
+
+        if (!isEntityOnFloor(hitbox, lvlData))
+            inAir = true;
+    }
+
+    private void resetToLastSave() {
+        hitbox.x = x;
+        hitbox.y = y;
+        inAir = true;
+        invincible = true;
+    }
+
+    public float getAirSpeed() { return airSpeed; }
+    public void setAirSpeed(float airSpeed) { this.airSpeed = airSpeed; }
+    public float getJumpSpeed() { return jumpSpeed; }
 
     public boolean isUp() { return up; }
     public void setUp(boolean up) { this.up = up; }

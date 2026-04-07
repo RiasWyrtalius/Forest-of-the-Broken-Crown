@@ -15,6 +15,8 @@ public class LoadSave {
     public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";
     public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
     public static final String EMBRYN_ATLAS = "Characters/Hero/Enemies/Embryn.png";
+    public static final String VASE_ATLAS = "Levels/Level1/vase_object.png";
+    public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
@@ -72,10 +74,21 @@ public class LoadSave {
         for (int j = 0; j < img.getHeight(); j++) {
             for (int i = 0; i < img.getWidth(); i++) {
                 Color color = new Color(img.getRGB(i, j));
-                int value = color.getRed();
+                int redValue = color.getRed();
+                int blueValue = color.getBlue();
 
-                if (value >= 48) value = 0;
-                lvlData[j][i] = value;
+                if (blueValue == 130) { // vase - 130
+                    lvlData[j][i] = 18; // empty
+                }
+
+                else if (blueValue == 131) { // spike - 131
+                    lvlData[j][i] = 18; // empty
+                }
+
+                else { // regular terrain
+                    if (redValue >= 48) redValue = 0;
+                    lvlData[j][i] = redValue;
+                }
             }
         }
         return lvlData;

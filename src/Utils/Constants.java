@@ -25,4 +25,12 @@ public class Constants {
             }
         }
     }
+
+    public static class ObjectConstants {
+        public static final int VASE = 0;
+        public static final int VASE_COLOR = 130;
+
+        public static final int SPIKE = 1;
+        public static final int SPIKE_COLOR = 131;
+    }
 }
