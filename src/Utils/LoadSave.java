@@ -11,9 +11,9 @@ import javax.imageio.ImageIO;
 public class LoadSave {
 
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
-    public static final String Level_Atlas = "Levels/tempTiles/TileSheetFloor1.png";
-    public static final String LEVEL_ONE_DATA = "Levels/tempTiles/level_one_data.png";
-    public static final String PLAYING_BACKGROUND_IMAGE = "Levels/tempTiles/Forest.jpeg";
+    public static final String Level_Atlas = "Levels/Level1/TileSheetFloor1.png";
+    public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";
+    public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
     public static final String EMBRYN_ATLAS = "Characters/Hero/Enemies/Embryn.png";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
