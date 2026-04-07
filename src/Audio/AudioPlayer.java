@@ -1,8 +1,9 @@
 package Audio;
 
-import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import javax.sound.sampled.*;
 
 public class AudioPlayer {
 
@@ -29,6 +30,24 @@ public class AudioPlayer {
         AudioInputStream audio;
 
         try {
+            if (url == null) {
+                File[] fallbackFiles = new File[] {
+                    new File("Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
+                    new File("Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
+                    new File(System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav")
+                };
+                for (File file : fallbackFiles) {
+                    if (file.exists()) {
+                        url = file.toURI().toURL();
+                        break;
+                    }
+                }
+            }
+
+            if (url == null) {
+                throw new RuntimeException("Audio file not found: /Audio/" + name + ".wav");
+            }
+
             audio = AudioSystem.getAudioInputStream(url);
             Clip c = AudioSystem.getClip();
             c.open(audio);
