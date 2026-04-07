@@ -142,7 +142,7 @@ public class Player extends Entity{
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-        drawHitbox(g);
+        //drawHitbox(g);
         for (Projectile p : projectiles) {
             p.draw(g);
         }
