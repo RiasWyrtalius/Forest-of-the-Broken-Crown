@@ -8,7 +8,8 @@ import Entities.Player;
 import Main.Game;
 import Utils.LoadSave;
 
-import static Utils.Constants.ObjectConstants.*;
+import static Utils.Constants.PlayerConstants.ObjectConstants.*;
+
 
 public class ObjectManager {
 

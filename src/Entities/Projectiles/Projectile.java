@@ -62,7 +62,7 @@ public class Projectile {
         }
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int lvlOffset) {
         if (!active) return;
 
         BufferedImage currentSheet = (direction > 0) ? sheetRight : sheetLeft;
@@ -71,8 +71,9 @@ public class Projectile {
             int sourceX = aniIndex * SPRITE_SIZE;
 
             g.drawImage(currentSheet,
-                    x, y,
-                    x + DISPLAY_WIDTH,
+                    x - lvlOffset,              // shift by camera offset
+                    y,
+                    x - lvlOffset + DISPLAY_WIDTH,  // shift by camera offset
                     y + DISPLAY_HEIGHT,
                     sourceX,
                     0,

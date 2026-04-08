@@ -77,10 +77,10 @@ public class Boss extends Entity {
     public void render(Graphics g, int xLvlOffset) {
         g.drawImage(sprite, (int) (x - xLvlOffset), (int) y, width, height, null);
         // Uncomment to draw hitbox for debugging
-        drawHitbox(g);
+        drawHitbox(g, xLvlOffset);
         // Render projectiles
         for (Projectile p : projectiles) {
-            p.draw(g);
+            p.draw(g, xLvlOffset);
         }
     }
 

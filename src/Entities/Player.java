@@ -76,14 +76,10 @@ public class Player extends Entity{
     }
 
     public void update() {
-        updateAnimationTick();
-        setAnimation();
+        setAnimation();        // set the action first
+        updateAnimationTick(); // then tick based on the correct action
         updatePos();
         updateHealthStatus();
-
-        /**
-        * This can remove if projectiles isn't an option as an attack.
-        * */
         if (attacking) shoot();
         updateProjectiles();
     }
@@ -127,20 +123,22 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g, int lvlOffset) {
-
         Graphics2D g2 = (Graphics2D) g;
 
-        if (invincible) { // if invincible, transparency is 50%
+        if (invincible) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         }
 
-        g.drawImage(animations[playerAction][animationIndex], (int)(hitbox.x - xDrawOffset) - lvlOffset, (int)(hitbox.y - yDrawOffset), 80, 80, null);
+        g.drawImage(animations[playerAction][animationIndex],
+                (int)(hitbox.x - xDrawOffset) - lvlOffset,
+                (int)(hitbox.y - yDrawOffset),
+                80, 80, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-        drawHitbox(g);
+        drawHitbox(g, lvlOffset);
         for (Projectile p : projectiles) {
-            p.draw(g);
+            p.draw(g, lvlOffset);
         }
     }
 
