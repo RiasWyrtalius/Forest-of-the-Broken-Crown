@@ -25,7 +25,7 @@ public class HelpMethods {
         float yIndex = y / Game.TILES_SIZE;
 
         int value = lvlData[(int) yIndex][(int) xIndex];
-        return value != 18; // 16 is air
+        return value != 18; // 18 is air
     }
 
     public static float getEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {

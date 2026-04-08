@@ -58,8 +58,8 @@ public class UI {
 
     public void draw(Graphics g) {
 
-        int maxLife = game.getPlayer().maxLife;
-        int currentLife = game.getPlayer().life;
+        int maxLife = game.getPlayer().getMaxLife();
+        int currentLife = game.getPlayer().getLife();
 
         for (int i = 0; i < maxLife; i++) {
             int x = 15 + (i * (Game.TILES_SIZE + 5)); //spacing

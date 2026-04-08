@@ -10,11 +10,18 @@ import javax.imageio.ImageIO;
 
 public class LoadSave {
 
+    //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
+
+    //Level 1
     public static final String Level_Atlas = "Levels/Level1/TileSheetFloor1.png";
     public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";
     public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
+
+    //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Hero/Enemies/Embryn.png";
+
+    //Objects
     public static final String VASE_ATLAS = "Levels/Level1/vase_object.png";
     public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";
 
@@ -62,8 +69,7 @@ public class LoadSave {
 
     public static int[][] getLevelData() {
         BufferedImage img = getSpriteAtlas(LEVEL_ONE_DATA);
-        
-        // Safety check: if image is null, stop here to avoid further NullPointerExceptions
+
         if (img == null) {
             System.err.println("Level data image is null. Returning empty array.");
             return new int[0][0]; 

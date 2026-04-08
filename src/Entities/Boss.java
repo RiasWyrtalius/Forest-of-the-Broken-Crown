@@ -22,7 +22,7 @@ public class Boss extends Entity {
         super(x, y, width, height);
         this.lvlData = lvlData;
         loadSprite();
-        initHitbox(x, y, width, height);
+        initHitbox(width, height);
     }
 
     private void loadSprite() {

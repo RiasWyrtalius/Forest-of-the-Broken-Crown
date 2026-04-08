@@ -2,10 +2,12 @@ package Entities;
 
 import Entities.Projectiles.Projectile;
 import Main.Game;
+
+import static Utils.Constants.ANIMATION_SPEED;
+import static Utils.Constants.GRAVITY;
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.HelpMethods.*;
 
-import Objects.Vase;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,12 +16,10 @@ import java.util.ArrayList;
 public class Player extends Entity{
 
     private BufferedImage[][] animations;
-    private int animationTick, animationIndex, animationSpeed = 30;
     private int playerAction = IDLE;
     private boolean moving = false;
-    private boolean up, down, left, right, jump;
+    private boolean left, right, jump;
     private int faceDirection = WALKR;
-    private float playerSpeed = 1.5f * Game.SCALE;
 
     //Sylvara
     private final int SYLVARA_HITBOX_WIDTH = 33;
@@ -38,15 +38,10 @@ public class Player extends Entity{
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     //Gravity / Jumping
-    private float airSpeed = 0f;
-    private float gravity = 0.04f * Game.SCALE;
     private float jumpSpeed = -2.23f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-    private boolean inAir = false;
 
     //Lives
-    public int maxLife = 5;
-    public int life = maxLife;
     public boolean invincible = false;
     public int invincibleCounter = 0;
     private final int INVINCIBILITY_TIME = 50; // 200 UPS = 1 sec / Quarter of a second
@@ -56,14 +51,16 @@ public class Player extends Entity{
     public Player(float x, float y, int width, int height, int[][] lvlData) {
         super(x, y, width, height);
         this.lvlData = lvlData;
+        this.maxLife = 5;
+        this.life = maxLife;
+        this.walkSpeed = 1.5f * Game.SCALE;
         loadAnimations();
-        initHitbox(x, y, SYLVARA_HITBOX_WIDTH * Game.SCALE, SYLVARA_HITBOX_HEIGHT * Game.SCALE);
+        initHitbox(SYLVARA_HITBOX_WIDTH, SYLVARA_HITBOX_HEIGHT);
     }
 
     public void loseLife() {
 
         if (invincible) return;
-
 
         life--;
         invincible = true;
@@ -177,7 +174,7 @@ public class Player extends Entity{
 
     public void updateAnimationTick() {
         animationTick++;
-        if(animationTick >= animationSpeed) {
+        if(animationTick >= ANIMATION_SPEED) {
             animationTick = 0;
             animationIndex++;
             if(animationIndex >= GetSpriteAmount(playerAction)) {
@@ -211,11 +208,11 @@ public class Player extends Entity{
 
         float xSpeed = 0;
         if (left) {
-            xSpeed -= playerSpeed;
+            xSpeed -= walkSpeed;
             faceDirection = WALKL;
         }
         if (right) {
-            xSpeed += playerSpeed;
+            xSpeed += walkSpeed;
             faceDirection = WALKR;
         }
 
@@ -227,7 +224,7 @@ public class Player extends Entity{
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
-                airSpeed += gravity;
+                airSpeed += GRAVITY;
             } else {
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
                 if (airSpeed > 0) resetInAir();
@@ -273,19 +270,13 @@ public class Player extends Entity{
         if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
     }
 
-    public void resetDirectionBooleans() { left = right = up = down = false; }
+    public void resetDirectionBooleans() { left = right = false; }
 
     public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
 
     public float getAirSpeed() { return airSpeed; }
     public void setAirSpeed(float airSpeed) { this.airSpeed = airSpeed; }
     public float getJumpSpeed() { return jumpSpeed; }
-
-    public boolean isUp() { return up; }
-    public void setUp(boolean up) { this.up = up; }
-
-    public boolean isDown() { return down; }
-    public void setDown(boolean down) { this.down = down; }
 
     public boolean isLeft() { return left; }
     public void setLeft(boolean left) { this.left = left; }

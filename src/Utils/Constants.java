@@ -1,6 +1,12 @@
 package Utils;
 
+import Main.Game;
+
 public class Constants {
+
+    public static final float GRAVITY = 0.04f * Game.SCALE;
+    public static final int ANIMATION_SPEED = 30;
+
     public static class Directions
     {
         public static final int LEFT = 0;
