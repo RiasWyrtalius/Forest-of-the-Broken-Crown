@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Entities.Player;
-import Levels.Level;
 import Main.Game;
 import Utils.LoadSave;
 
@@ -24,7 +23,7 @@ public class ObjectManager {
         loadObjects();
     }
 
-    public void update(int[][] lvlData, Player player) {
+    public void update(Player player) {
         for (Vase v : vases) {
             if (v.isActive() || v.isBreaking()) {
                 v.update();
@@ -71,7 +70,10 @@ public class ObjectManager {
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 2; i++) {
                 spikeImgs[j * 2 + i] = temp.getSubimage(
-                        i * 32, j * 32, 32, 32
+                        i * Game.TILES_DEFAULT_SIZE,
+                        j * Game.TILES_DEFAULT_SIZE,
+                        Game.TILES_DEFAULT_SIZE,
+                        Game.TILES_DEFAULT_SIZE
                 );
             }
         }

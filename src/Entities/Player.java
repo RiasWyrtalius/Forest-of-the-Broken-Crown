@@ -11,11 +11,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-//TODO: ATTACK ANIMATION / ACTION - hold off for now since no sprites yet.
-/**
- * NOTE : PROJECTILE will be replaced with an animated one.
- * */
-
 public class Player extends Entity{
 
     private BufferedImage[][] animations;
@@ -27,13 +22,14 @@ public class Player extends Entity{
     private float playerSpeed = 1.5f * Game.SCALE;
 
     //Sylvara
-    private int sylvara_HitboxWidth = 33;
-    private int sylvara_HitboxHeight = 45;
+    private final int SYLVARA_HITBOX_WIDTH = 33;
+    private final int SYLVARA_HITBOX_HEIGHT = 45;
 
     //Hitbox
+    private final float xDrawOffset = 15 * Game.SCALE;
+    private final float yDrawOffset = 4 * Game.SCALE;
+
     private int[][] lvlData;
-    private float xDrawOffset = 15 * Game.SCALE;
-    private float yDrawOffset = 4 * Game.SCALE;
 
     //Attack
     private long lastAttackTime;
@@ -53,7 +49,7 @@ public class Player extends Entity{
     public int life = maxLife;
     public boolean invincible = false;
     public int invincibleCounter = 0;
-    private final int INVINCIBILITY_TIME = 200; // 200 UPS = 1 sec
+    private final int INVINCIBILITY_TIME = 50; // 200 UPS = 1 sec / Quarter of a second
 
     //TODO: implement death screen when lives == 0
 
@@ -61,7 +57,7 @@ public class Player extends Entity{
         super(x, y, width, height);
         this.lvlData = lvlData;
         loadAnimations();
-        initHitbox(x, y, sylvara_HitboxWidth * Game.SCALE, sylvara_HitboxHeight * Game.SCALE);
+        initHitbox(x, y, SYLVARA_HITBOX_WIDTH * Game.SCALE, SYLVARA_HITBOX_HEIGHT * Game.SCALE);
     }
 
     public void loseLife() {
@@ -74,7 +70,7 @@ public class Player extends Entity{
         invincibleCounter = 0;
 
         if (life <= 0) {
-            System.out.println("Game over");
+            resetAll(); //TODO: show game-over screen
         } else {
             hitbox.x = x;
             hitbox.y = y;
@@ -86,15 +82,11 @@ public class Player extends Entity{
         updateAnimationTick();
         setAnimation();
         updatePos();
+        updateHealthStatus();
 
-        if (invincible) {
-            invincibleCounter++;
-            if (invincibleCounter > 50) { // quarter of a second at 200 UPS
-                invincible = false;
-                invincibleCounter = 0;
-            }
-        }
-
+        /**
+        * This can remove if projectiles isn't an option as an attack.
+        * */
         if (attacking) shoot();
         updateProjectiles();
     }
@@ -102,14 +94,12 @@ public class Player extends Entity{
     private void updateHealthStatus() {
         if (invincible) {
             invincibleCounter++;
-            if (invincibleCounter > INVINCIBILITY_TIME) { //cause 60fps
+            if (invincibleCounter > INVINCIBILITY_TIME) {
                 invincible = false;
                 invincibleCounter = 0;
             }
         }
     }
-
-
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
@@ -169,10 +159,6 @@ public class Player extends Entity{
         }
     }
 
-    public void loadLvlData(int[][] lvlData) {
-        this.lvlData = lvlData;
-    }
-
     public void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
         animations = new BufferedImage[3][9];
@@ -189,10 +175,6 @@ public class Player extends Entity{
         }
     }
 
-    public void setDirection(int direction) {
-        moving = true;
-    }
-
     public void updateAnimationTick() {
         animationTick++;
         if(animationTick >= animationSpeed) {
@@ -205,23 +187,17 @@ public class Player extends Entity{
     }
 
     private void setAnimation() {
-        int startAni = playerAction;
-        if(moving) {
-            if(isRight()) playerAction = WALKR;
-            if(isLeft()) playerAction = WALKL;
-        }else {
-            if (faceDirection == WALKL) {
-                playerAction = WALKL;
-            } else {
-                playerAction = WALKR;
-            }
-        }
+        int prev = playerAction;
 
-        if (startAni != playerAction) {
+        if (moving) playerAction = isRight() ? WALKR : WALKL;
+        else        playerAction = (faceDirection == WALKL) ? WALKL : WALKR;
+
+        if (prev != playerAction) {
             animationTick = 0;
             animationIndex = 0;
         }
 
+        //TODO: uncomment when ATK sprite (Jump Sprite) is ready.
 //        if (attacking) {
 //            playerAction = ATK_1;
 //        }
@@ -247,7 +223,7 @@ public class Player extends Entity{
             if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
         }
 
-        // 1. HANDLE VERTICAL
+        // VERTICAL
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
@@ -259,7 +235,7 @@ public class Player extends Entity{
             }
         }
 
-        // 2. HANDLE HORIZONTAL
+        // HORIZONTAL
         if (xSpeed != 0) {
             if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.x += xSpeed;
@@ -282,75 +258,24 @@ public class Player extends Entity{
         airSpeed = 0;
     }
 
-    private void updateXPos(float xSpeed) {
-        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
-            hitbox.x += xSpeed;
-        } else {
-            hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
-        }
-    }
-
-
-    public void resetDirectionBooleans() {
-        left = false;
-        right = false;
-        up = false;
-        down = false;
-    }
-
-    public void checkObjectCollision(ArrayList<Vase> vases) {
-        for (Vase v : vases) {
-            if (v.isActive()) {
-                if (hitbox.intersects(v.getHitbox())) {
-                    float playerBottom = hitbox.y + hitbox.height;
-                    float vaseCenterY = v.getHitbox().y + (v.getHitbox().height / 2);
-
-                    if (airSpeed > 0 && playerBottom < vaseCenterY) {
-                        v.setActive(false);
-                    }
-
-                    this.airSpeed = jumpSpeed * 0.75f; // bounces if hit
-                } else {
-                    if (right || left) {
-                        this.hitbox.x = Utils.HelpMethods.getEntityXPosNextToWall(hitbox, (right ? 1 : -1));
-                    }
-                }
-            }
-        }
-    }
-
-    public void kill() {
-        if (invincible) return;
-
-        life--; //lose heart
-
-        if (life <= 0) {
-            resetAll();
-        }
-    }
-
     public void resetAll() {
         resetDirectionBooleans();
-        inAir = true;
-        attacking = false;
-        moving = false;
+        inAir        = true;
+        attacking    = false;
+        moving       = false;
         playerAction = IDLE;
-        life = maxLife;
+        life         = maxLife;
 
-        // Reset to initial spawn coordinates
+        // TODO: make this the location of the Player's save
         hitbox.x = x;
         hitbox.y = y;
 
-        if (!isEntityOnFloor(hitbox, lvlData))
-            inAir = true;
+        if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
     }
 
-    private void resetToLastSave() {
-        hitbox.x = x;
-        hitbox.y = y;
-        inAir = true;
-        invincible = true;
-    }
+    public void resetDirectionBooleans() { left = right = up = down = false; }
+
+    public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
 
     public float getAirSpeed() { return airSpeed; }
     public void setAirSpeed(float airSpeed) { this.airSpeed = airSpeed; }

@@ -121,7 +121,7 @@ public class Game implements Runnable {
             player.update();
             boss.update(player);
             levelHandler.update();
-            objectManager.update(levelHandler.getCurrentLevel().getLevelData(), player);
+            objectManager.update(player);
             checkCloseToBorder();
 
             // Check player projectiles hitting boss

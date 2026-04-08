@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 public class Vase extends GameObject {
     private BufferedImage[] images;
     private int animationTick, animationIndex;
-    private int animationSpeed = 20;
+    private final int animationSpeed = 20;
     private boolean breaking = false;
 
     public Vase(float x, float y, int objectType) {
@@ -22,10 +22,10 @@ public class Vase extends GameObject {
         BufferedImage atlas = LoadSave.getSpriteAtlas(LoadSave.VASE_ATLAS);
         images = new BufferedImage[4];
         for (int i = 0; i < images.length; i++) {
-            images[i] = atlas.getSubimage(  i * 32,
+            images[i] = atlas.getSubimage(  i * Game.TILES_DEFAULT_SIZE,
                                             0,
-                                            32,
-                                            32);
+                                            Game.TILES_DEFAULT_SIZE,
+                                            Game.TILES_DEFAULT_SIZE);
         }
     }
 
@@ -48,7 +48,7 @@ public class Vase extends GameObject {
     }
 
     public void draw(Graphics g, int xLevelOffset) {
-        if (active || breaking && images != null && images[animationIndex] != null) {
+        if ((active || breaking) && images != null && images[animationIndex] != null) {
             g.drawImage(images[animationIndex],
                     (int) (hitbox.x - xLevelOffset),
                     (int) hitbox.y,

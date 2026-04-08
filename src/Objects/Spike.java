@@ -11,14 +11,13 @@ public class Spike extends GameObject {
     public Spike(float x, float y, int objectType, BufferedImage[] imgs, int spriteIndex) {
         super(x, y, objectType);
         this.imgs = imgs;
-        this.spriteIndex = spriteIndex; // 3. Save it
+        this.spriteIndex = spriteIndex;
 
         initHitbox(32, 16);
         hitbox.y += 16 * Game.SCALE;
     }
 
     public void draw(Graphics g, int xLvlOffset) {
-        // Now this will work!
         g.drawImage(imgs[spriteIndex], (int)(x - xLvlOffset), (int)(y),
                 Game.TILES_SIZE, Game.TILES_SIZE, null);
     }
