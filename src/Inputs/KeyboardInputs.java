@@ -10,9 +10,11 @@ import Main.GameState;
 public class KeyboardInputs implements KeyListener {
 
     private GamePanel gamePanel;
+    private final Game game;
 
     public KeyboardInputs(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        this.game = gamePanel.getGame();
     }
 
     @Override public void keyTyped(KeyEvent e) {}
@@ -44,9 +46,11 @@ public class KeyboardInputs implements KeyListener {
                 break;
             case KeyEvent.VK_ESCAPE:
                 if (GameState.state == GameState.PLAYING) {
-                    GameState.state = GameState.PAUSED;  // open pause screen
+                    GameState.state = GameState.PAUSED;        // open pause screen
                 } else if (GameState.state == GameState.PAUSED) {
-                    GameState.state = GameState.PLAYING; // escape again = close pause
+                    GameState.state = GameState.PLAYING;       // close pause
+                } else if (GameState.state == GameState.MENU) {
+                    game.getMainMenu().handleEscapeKey();      // go back in menu
                 }
                 break;
             case KeyEvent.VK_F5:
