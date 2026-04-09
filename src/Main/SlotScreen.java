@@ -32,7 +32,6 @@ public class SlotScreen {
     }
 
     public void draw(Graphics g) {
-        // Dim background
         g.setColor(new Color(0, 0, 0, 180));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
@@ -98,7 +97,7 @@ public class SlotScreen {
 
 
     private void drawDeleteButton(Graphics g, Rectangle btn, int slotNum) {
-        g.setColor(new Color(180, 0, 0));           // Reddish color
+        g.setColor(new Color(180, 0, 0));
         g.fillRect(btn.x, btn.y, btn.width, btn.height);
         g.setColor(Color.WHITE);
         g.drawRect(btn.x, btn.y, btn.width, btn.height);
@@ -110,7 +109,7 @@ public class SlotScreen {
         int mx = e.getX();
         int my = e.getY();
 
-        // Check Delete buttons first (only in LOAD mode)
+
         if (mode.equals("LOAD")) {
             if (deleteBtn1.contains(e.getPoint())) {
                 deleteSlot(1);
@@ -126,7 +125,7 @@ public class SlotScreen {
             }
         }
 
-        // Check slot clicks
+
         if (slot1.contains(e.getPoint())) {
             handleSlot(1);
         }
@@ -136,12 +135,12 @@ public class SlotScreen {
         else if (slot3.contains(e.getPoint())) {
             handleSlot(3);
         }
-        // Back button - now properly checked
+
         else if (btnBack.contains(e.getPoint())) {
             if (mode.equals("SAVE")) {
                 GameState.state = GameState.PLAYING;
             } else {
-                GameState.state = GameState.MENU;   // Go back to Main Menu
+                GameState.state = GameState.MENU;
             }
         }
     }
@@ -192,7 +191,7 @@ public class SlotScreen {
         }
     }
 
-    // NEW: Delete slot with confirmation
+
     private void deleteSlot(int slotNum) {
         int confirm = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to delete Slot " + slotNum + "?\nThis cannot be undone.",
