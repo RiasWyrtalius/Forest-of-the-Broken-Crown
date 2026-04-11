@@ -21,13 +21,11 @@ public class Player extends Entity{
     private boolean left, right, jump;
     private int faceDirection = WALKR;
 
-    //Sylvara
-    private final int SYLVARA_HITBOX_WIDTH = 33;
-    private final int SYLVARA_HITBOX_HEIGHT = 45;
+    private PlayerCharacter characterData;
 
     //Hitbox
-    private final float xDrawOffset = 15 * Game.SCALE;
-    private final float yDrawOffset = 4 * Game.SCALE;
+    private float xDrawOffset;
+    private float yDrawOffset;
 
     private int[][] lvlData;
 
@@ -48,14 +46,17 @@ public class Player extends Entity{
 
     //TODO: implement death screen when lives == 0
 
-    public Player(float x, float y, int width, int height, int[][] lvlData) {
+    public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
+        this.characterData = characterData;
         this.lvlData = lvlData;
+        this.xDrawOffset = characterData.xOffset * Game.SCALE;
+        this.yDrawOffset = characterData.yOffset * Game.SCALE;
         this.maxLife = 5;
         this.life = maxLife;
         this.walkSpeed = 1.5f * Game.SCALE;
         loadAnimations();
-        initHitbox(SYLVARA_HITBOX_WIDTH, SYLVARA_HITBOX_HEIGHT);
+        initHitbox(characterData.hitboxWidth, characterData.hitboxHeight);
     }
 
     public void loseLife() {
@@ -123,16 +124,30 @@ public class Player extends Entity{
     }
 
     public void render(Graphics g, int lvlOffset) {
+
+        if (animations == null || animations[playerAction][animationIndex] == null) {
+            return;
+        }
+
         Graphics2D g2 = (Graphics2D) g;
 
         if (invincible) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         }
 
+        //airborne flip because it only has right
+        int flipX = 0, flipW = 1;
+        if (faceDirection == WALKL) {
+            if (playerAction != WALKL) {
+                flipX = width;
+                flipW = -1;
+            }
+        }
+
         g.drawImage(animations[playerAction][animationIndex],
-                (int)(hitbox.x - xDrawOffset) - lvlOffset,
+                (int)(hitbox.x - xDrawOffset) - lvlOffset + flipX,
                 (int)(hitbox.y - yDrawOffset),
-                80, 80, null);
+                width * flipW, height, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
@@ -155,37 +170,95 @@ public class Player extends Entity{
     }
 
     public void loadAnimations() {
-        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
-        animations = new BufferedImage[3][9];
 
-        for(int i = 0; i < animations.length; i++) {
-            for(int j = 0; j < animations[i].length; j++) {
-                animations[i][j] = img.getSubimage(
-                        j * Game.SPRITE_DEFAULT_SIZE,
-                        i * Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE
-                );
-            }
+        String atlastPath = "";
+        switch (characterData) {
+            case KAELTHORN -> atlastPath = LoadSave.Kaelthron_Atlas;
+            case SYLVARA -> atlastPath = LoadSave.Sylvara_Atlas;
+            case EMBJORN -> atlastPath = LoadSave.Embjorn_Atlas;
+        }
+
+        BufferedImage img = LoadSave.getSpriteAtlas(atlastPath);
+        this.animations = new BufferedImage[7][10];
+
+        loadSingleAnimation(img, IDLE, characterData.rowIDLE, characterData.spriteA_IDLE);
+        loadSingleAnimation(img, WALKR, characterData.rowWALKR, characterData.spriteA_WALKR);
+        loadSingleAnimation(img, WALKL, characterData.rowWALKL, characterData.spriteA_WALKL);
+        loadSingleAnimation(img, JUMP, characterData.rowJUMP, characterData.spriteA_JUMP);
+
+        if (isValidRow(img, characterData.rowAIRBORNE))
+            loadSingleAnimation(img, AIRBORNE, characterData.rowAIRBORNE, characterData.spriteA_AIRBORNE);
+
+        if (isValidRow(img, characterData.rowDOUBLEJUMP))
+            loadSingleAnimation(img, DOUBLEJUMP, characterData.rowDOUBLEJUMP, characterData.spriteA_DOUBLEJUMP);
+
+        if (isValidRow(img, characterData.rowLANDING))
+            loadSingleAnimation(img, LANDING, characterData.rowLANDING, characterData.spriteA_LANDING);
+    }
+
+    private boolean isValidRow(BufferedImage img, int row) {
+        if (row == -1) return false;
+        // Check if (row * size) is still inside the image height
+        return (row * Game.SPRITE_DEFAULT_SIZE) + Game.SPRITE_DEFAULT_SIZE <= img.getHeight();
+    }
+
+    private void loadSingleAnimation(BufferedImage atlas, int actionType, int row, int amount) {
+        for (int i = 0; i < amount; i++) {
+            animations[actionType][i] = atlas.getSubimage(
+                    i * Game.SPRITE_DEFAULT_SIZE,
+                    row * Game.SPRITE_DEFAULT_SIZE,
+                    Game.SPRITE_DEFAULT_SIZE,
+                    Game.SPRITE_DEFAULT_SIZE
+            );
         }
     }
 
     public void updateAnimationTick() {
         animationTick++;
-        if(animationTick >= ANIMATION_SPEED) {
+
+        int speed = (playerAction == LANDING) ? 15 : ANIMATION_SPEED;
+
+        if(animationTick >= speed) {
             animationTick = 0;
             animationIndex++;
-            if(animationIndex >= GetSpriteAmount(playerAction)) {
+            if(animationIndex >= getAmountByAction(playerAction)) {
                 animationIndex = 0;
             }
         }
     }
 
+    private int getAmountByAction(int action) {
+        return switch (action) {
+            case IDLE -> characterData.spriteA_IDLE;
+            case WALKR -> characterData.spriteA_WALKR;
+            case WALKL -> characterData.spriteA_WALKL;
+            case JUMP -> characterData.spriteA_JUMP;
+            case AIRBORNE -> characterData.spriteA_AIRBORNE;
+            case DOUBLEJUMP -> characterData.spriteA_DOUBLEJUMP;
+            case LANDING -> characterData.spriteA_LANDING;
+            default -> 1;
+        };
+    }
+
     private void setAnimation() {
         int prev = playerAction;
 
+        if (playerAction == LANDING) {
+            if (animationIndex < characterData.spriteA_LANDING - 1) {
+                return;
+            }
+        }
+
         if (moving) playerAction = isRight() ? WALKR : WALKL;
         else        playerAction = (faceDirection == WALKL) ? WALKL : WALKR;
+
+        if (inAir) {
+            if (airSpeed < 0) {
+                playerAction = JUMP;
+            } else {
+                playerAction = AIRBORNE;
+            }
+        }
 
         if (prev != playerAction) {
             animationTick = 0;
@@ -205,6 +278,13 @@ public class Player extends Entity{
         if (!left && !right && !inAir) return;
 
         float xSpeed = 0;
+
+        if (airSpeed > 0) {
+            playerAction = LANDING;
+            animationTick = 0;
+            animationIndex = 0;
+        }
+
         if (left) {
             xSpeed -= walkSpeed;
             faceDirection = WALKL;

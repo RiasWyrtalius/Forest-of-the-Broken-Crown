@@ -14,7 +14,7 @@ public class Vase extends GameObject {
 
     public Vase(float x, float y, int objectType) {
         super(x, y, objectType);
-        initHitbox(Game.SPRITE_DEFAULT_SIZE, Game.SPRITE_DEFAULT_SIZE);
+        initHitbox(Game.TILES_DEFAULT_SIZE, Game.TILES_DEFAULT_SIZE);
         loadImages();
     }
 

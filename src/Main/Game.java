@@ -3,6 +3,7 @@ package Main;
 import Audio.AudioPlayer;
 import Entities.Boss;
 import Entities.Player;
+import Entities.PlayerCharacter;
 import Entities.Projectiles.Projectile;
 import Levels.LevelHandler;
 import Objects.ObjectManager;
@@ -47,7 +48,7 @@ public class Game implements Runnable {
     private final int FADE_SPEED = 5;
 
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static int SPRITE_DEFAULT_SIZE = 32;
+    public final static int SPRITE_DEFAULT_SIZE = 64;
     public final static float SCALE = 1.5f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
@@ -75,14 +76,17 @@ public class Game implements Runnable {
         levelHandler = new LevelHandler(this);
         objectManager = new ObjectManager();
         //TODO: spawnpoint & fix resizing of character
-        player = new Player(200, 200, 80, 80, levelHandler.getCurrentLevel().getLevelData());
+        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
         int bossWidth = 250;
         int bossHeight = 250;
+
+        //TODO: move this eventually - Charlz
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
         float bossX = 200 + 53 * TILES_SIZE;
-        float bossY = 200 + 4* TILES_SIZE;
+        float bossY = 200 + 4 * TILES_SIZE;
         boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
+
         ui = new UI(this);
         audioPlayer = new AudioPlayer();
         mainMenu = new MainMenu(this);

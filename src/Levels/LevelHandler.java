@@ -21,16 +21,18 @@ public class LevelHandler {
 
     public void importOutSideSprites() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.Level_Atlas);
-        levelSprite = new BufferedImage[20];
+        int columns = img.getWidth() / Game.TILES_DEFAULT_SIZE;
+        int rows = img.getHeight() / Game.TILES_DEFAULT_SIZE;
+        levelSprite = new BufferedImage[rows * columns];
 
-        for (int j = 0; j < 5; j++) {
-            for (int i = 0; i < 4; i++) {
-                int index = j * 4 + i;
+        for (int j = 0; j < rows; j++) {
+            for (int i = 0; i < columns; i++) {
+                int index = j * columns + i;
                 levelSprite[index] = img.getSubimage(
-                        i * Game.SPRITE_DEFAULT_SIZE,
-                        j * Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE,
-                        Game.SPRITE_DEFAULT_SIZE
+                        i * Game.TILES_DEFAULT_SIZE,
+                        j * Game.TILES_DEFAULT_SIZE,
+                        Game.TILES_DEFAULT_SIZE,
+                        Game.TILES_DEFAULT_SIZE
                 );
             }
         }

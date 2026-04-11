@@ -12,6 +12,8 @@ public class LoadSave {
 
     //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
+    public static final String Kaelthron_Atlas = "Characters/Hero/Kaelthorn/KaelthornSpriteSheet.png";
+    public static final String Embjorn_Atlas = "Characters/Hero/Embjorn/EmbjornSpriteSheet.png";
 
     //Level 1
     public static final String Level_Atlas = "Levels/Level1/TileSheetFloor1.png";
@@ -19,7 +21,7 @@ public class LoadSave {
     public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
 
     //Bosses
-    public static final String EMBRYN_ATLAS = "Characters/Hero/Enemies/Embryn.png";
+    public static final String EMBRYN_ATLAS = "Characters/Enemy/Enemies/Embryn.png";
 
     //Objects
     public static final String VASE_ATLAS = "Levels/Level1/vase_object.png";
