@@ -95,4 +95,18 @@ public class Boss extends Entity {
     public void takeDamage(int dmg) {
         health -= dmg;
     }
+
+    public void reset() {
+        health = 10;
+        projectiles.clear();
+        // Reset position to initial spawn point
+        int[][] lvlData = this.lvlData; // Assuming we have access to level data
+        // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
+        float bossX = 200 + 53 * 32 * 1.5f; // TILES_SIZE * SCALE
+        float bossY = 200 + 4 * 32 * 1.5f;
+        hitbox.x = bossX;
+        hitbox.y = bossY;
+        this.x = bossX;
+        this.y = bossY;
+    }
 }

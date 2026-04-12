@@ -2,6 +2,7 @@ package Entities;
 
 import Entities.Projectiles.Projectile;
 import Main.Game;
+import Main.GameState;
 
 import static Utils.Constants.ANIMATION_SPEED;
 import static Utils.Constants.GRAVITY;
@@ -68,7 +69,8 @@ public class Player extends Entity{
         invincibleCounter = 0;
 
         if (life <= 0) {
-            resetAll(); //TODO: show game-over screen
+            // Trigger death screen instead of resetting
+            GameState.state = GameState.DEATH;
         } else {
             hitbox.x = x;
             hitbox.y = y;

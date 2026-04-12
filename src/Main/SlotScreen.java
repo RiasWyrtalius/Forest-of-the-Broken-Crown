@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.*;
 
-import javax.swing.JOptionPane;   // ← Added for confirmation dialog
+import javax.swing.JOptionPane;   // Added for confirmation dialog
 
 public class SlotScreen {
 
