@@ -67,7 +67,8 @@ public class Player extends Entity{
         invincibleCounter = 0;
 
         if (life <= 0) {
-            // resetAll(); //TODO: show game-over screen
+            // Trigger death screen instead of resetting
+            GameState.state = GameState.DEATH;
         } else {
             hitbox.x = x;
             hitbox.y = y;
