@@ -31,8 +31,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             gamePanel.getGame().getSlotScreen().mouseClicked(e);
         } else if (Main.GameState.state == Main.GameState.PAUSED) {
             gamePanel.getGame().getPauseScreen().mouseClicked(e);
-        } else if (Main.GameState.state == Main.GameState.DEATH) {
-            gamePanel.getGame().getDeathScreen().mouseClicked(e);
+        // } else if (Main.GameState.state == Main.GameState.DEATH) {
+        //     gamePanel.getGame().getDeathScreen().mouseClicked(e);
         }
     }
 

@@ -32,7 +32,7 @@ public class Game implements Runnable {
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
-    private DeathScreen deathScreen;
+    // private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
 
 
@@ -93,7 +93,7 @@ public class Game implements Runnable {
         mainMenu = new MainMenu(this);
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
-        deathScreen = new DeathScreen(this);
+        // deathScreen = new DeathScreen(this);
     }
 
     private void startGameLoop() {
@@ -182,11 +182,11 @@ public class Game implements Runnable {
             player.render(g, xLvlOffset);
             boss.render(g, xLvlOffset);
             pauseScreen.draw(g);
-        } else if (GameState.state == GameState.DEATH) {
-            levelHandler.draw(g, xLvlOffset);
-            player.render(g, xLvlOffset);
-            boss.render(g, xLvlOffset);
-            deathScreen.draw(g);
+        // } else if (GameState.state == GameState.DEATH) {
+        //     levelHandler.draw(g, xLvlOffset);
+        //     player.render(g, xLvlOffset);
+        //     boss.render(g, xLvlOffset);
+        //     deathScreen.draw(g);
         } else {
             levelHandler.draw(g, xLvlOffset);
             objectManager.draw(g, xLvlOffset);
@@ -222,13 +222,13 @@ public class Game implements Runnable {
         //TODO: enemy reset can go here.
     }
 
-    public void resetGame() {
-        player.resetAll();
-        objectManager.resetAllObjects();
-        boss.reset();
-        // Reset level offset
-        xLvlOffset = 0;
-    }
+    // public void resetGame() {
+    //     player.resetAll();
+    //     objectManager.resetAllObjects();
+    //     boss.reset();
+    //     // Reset level offset
+    //     xLvlOffset = 0;
+    // }
 
     public void startFadeTo(int targetState) {
         fadingOut  = true;
@@ -303,6 +303,6 @@ public class Game implements Runnable {
     public LevelHandler getLevelHandler() {return levelHandler;}
     public SlotScreen getSlotScreen()     {return slotScreen;}
     public PauseScreen getPauseScreen() {return pauseScreen;}
-    public DeathScreen getDeathScreen() {return deathScreen;}
+    // public DeathScreen getDeathScreen() {return deathScreen;}
     public AudioPlayer getAudioPlayer() {return audioPlayer;}
 }
