@@ -156,7 +156,7 @@ public class Game implements Runnable {
 
     private void handleStateTransitions() {
         if (GameState.state != previousState && GameState.state == GameState.DEATH) {
-            deathScreen.startVideo();
+            deathScreen.startAnimation();
         }
         previousState = GameState.state;
     }
