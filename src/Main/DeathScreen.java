@@ -3,6 +3,9 @@ package Main;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
+import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
+import javax.swing.*;
 
 public class DeathScreen {
 
@@ -19,52 +22,96 @@ public class DeathScreen {
     private Rectangle btnMainMenu  = new Rectangle(btnX, 350, btnWidth, btnHeight);
     private Rectangle btnRestart   = new Rectangle(btnX, 265, btnWidth, btnHeight);
 
+    // VLCJ video player components
+    private EmbeddedMediaPlayerComponent mediaPlayerComponent;
+    private JFrame videoFrame;
+    private boolean videoFinished = false;
+    private static final String VIDEO_PATH =
+        "C:\\Users\\Ayban\\Desktop\\3rd year\\Nino Michael Gwapo\\Forest-of-the-Broken-Crown\\src\\Video\\YOU DIED (HD).mp4";
+
     public DeathScreen(Game game) {
         this.game = game;
+        // Initialize VLCJ native discovery
+        new NativeDiscovery().discover();
     }
 
     public void draw(Graphics g) {
-        // dim the game behind
-        g.setColor(new Color(0, 0, 0, 200));
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        // Only draw the menu if video is not playing
+        if (!videoPlaying) {
+            // dim the game behind
+            g.setColor(new Color(0, 0, 0, 200));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
-        if (videoPlaying) {
-            // Show video placeholder - in a real implementation, this would render the video
-            drawVideoPlaceholder(g);
-        } else {
             // Show death screen menu
             drawDeathMenu(g);
         }
+        // If video is playing, the video frame handles the display
     }
 
-    private void drawVideoPlaceholder(Graphics g) {
-        // Placeholder for video - in production, this would be actual video rendering
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+    private void playVideo() {
+        if (videoFrame != null && videoFrame.isVisible()) {
+            return; // Video is already playing
+        }
 
-        // Video frame border
-        g.setColor(Color.RED);
-        g.drawRect(50, 50, Game.GAME_WIDTH - 100, Game.GAME_HEIGHT - 100);
+        videoFrame = new JFrame();
+        videoFrame.setUndecorated(true);
+        videoFrame.setSize(Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        videoFrame.setLocationRelativeTo(null);
+        videoFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-        // Video title
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 36));
-        FontMetrics fm = g.getFontMetrics();
-        String videoText = "PLAYING: YOU DIED (HD).mp4";
-        int textX = (Game.GAME_WIDTH / 2) - (fm.stringWidth(videoText) / 2);
-        g.drawString(videoText, textX, Game.GAME_HEIGHT / 2 - 50);
+        mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+        videoFrame.add(mediaPlayerComponent, BorderLayout.CENTER);
 
-        // Progress indicator
-        long elapsed = System.currentTimeMillis() - videoStartTime;
-        int progressWidth = (int)((elapsed / (double)VIDEO_DURATION) * (Game.GAME_WIDTH - 200));
-        g.setColor(Color.RED);
-        g.fillRect(100, Game.GAME_HEIGHT / 2 + 50, progressWidth, 10);
+        // Add event listener for when video finishes
+        mediaPlayerComponent.mediaPlayer().events().addMediaPlayerEventListener(
+            new uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter() {
+                @Override
+                public void finished(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer) {
+                    SwingUtilities.invokeLater(() -> {
+                        stopVideo();
+                        videoFinished = true;
+                        videoPlaying = false;
+                    });
+                }
 
-        // Progress text
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 16));
-        String progressText = elapsed/1000 + "s / " + VIDEO_DURATION/1000 + "s";
-        g.drawString(progressText, Game.GAME_WIDTH / 2 - 50, Game.GAME_HEIGHT / 2 + 80);
+                @Override
+                public void error(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer) {
+                    SwingUtilities.invokeLater(() -> {
+                        stopVideo();
+                        videoFinished = true;
+                        videoPlaying = false;
+                        System.err.println("Error playing video: " + VIDEO_PATH);
+                    });
+                }
+            }
+        );
+
+        videoFrame.setVisible(true);
+
+        // Check if video file exists
+        File videoFile = new File(VIDEO_PATH);
+        if (videoFile.exists()) {
+            mediaPlayerComponent.mediaPlayer().media().play(VIDEO_PATH);
+        } else {
+            // Fallback to placeholder if video doesn't exist
+            System.err.println("Video file not found: " + VIDEO_PATH);
+            SwingUtilities.invokeLater(() -> {
+                stopVideo();
+                videoFinished = true;
+                videoPlaying = false;
+            });
+        }
+    }
+
+    private void stopVideo() {
+        if (mediaPlayerComponent != null) {
+            mediaPlayerComponent.mediaPlayer().controls().stop();
+            mediaPlayerComponent.release();
+        }
+        if (videoFrame != null) {
+            videoFrame.dispose();
+            videoFrame = null;
+        }
     }
 
     private void drawDeathMenu(Graphics g) {
@@ -105,11 +152,10 @@ public class DeathScreen {
     }
 
     public void update() {
-        if (videoPlaying) {
-            // Check if video should end
-            long elapsed = System.currentTimeMillis() - videoStartTime;
-            if (elapsed >= VIDEO_DURATION) {
-                videoPlaying = false;
+        if (videoPlaying && !videoFinished) {
+            // Video is playing, check if we need to start it
+            if (mediaPlayerComponent == null || videoFrame == null || !videoFrame.isVisible()) {
+                playVideo();
             }
         }
     }
@@ -118,12 +164,14 @@ public class DeathScreen {
         if (!videoPlaying) {
             if (btnRestart.contains(e.getPoint())) {
                 // restart the game - reset player and go back to playing
+                cleanup();
                 game.resetGame();
                 GameState.state = GameState.PLAYING;
                 resetVideoState();
 
             } else if (btnMainMenu.contains(e.getPoint())) {
                 // go back to main menu
+                cleanup();
                 GameState.state = GameState.MENU;
                 resetVideoState();
             }
@@ -132,15 +180,21 @@ public class DeathScreen {
 
     private void resetVideoState() {
         videoPlaying = true;
+        videoFinished = false;
         videoStartTime = System.currentTimeMillis();
+        // Clean up any existing video components
+        stopVideo();
     }
 
     public void startVideo() {
-        videoPlaying = true;
-        videoStartTime = System.currentTimeMillis();
+        resetVideoState();
     }
 
     public boolean isVideoPlaying() {
-        return videoPlaying;
+        return videoPlaying && !videoFinished;
+    }
+
+    public void cleanup() {
+        stopVideo();
     }
 }
