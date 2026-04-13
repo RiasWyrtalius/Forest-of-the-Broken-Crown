@@ -190,7 +190,6 @@ public class SlotScreen {
         }
     }
 
-
     private void deleteSlot(int slotNum) {
         int confirm = JOptionPane.showConfirmDialog(null,
                 "Are you sure you want to delete Slot " + slotNum + "?\nThis cannot be undone.",

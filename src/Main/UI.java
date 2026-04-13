@@ -1,5 +1,7 @@
 package Main;
 
+import Utils.LoadSave;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,44 +18,13 @@ public class UI {
     }
 
     private void loadHeartImages() {
+        BufferedImage spriteSheet = LoadSave.getSpriteAtlas(LoadSave.Hearts_Atlas);
 
-        String path = "/Characters/Hero/Lives/Life.png";
+        int width = spriteSheet.getWidth() / 2;
+        int height = spriteSheet.getHeight();
 
-        try {
-            BufferedImage spriteSheet;
-            var is = getClass().getResourceAsStream(path);
-            if (is != null) {
-                spriteSheet = ImageIO.read(is);
-            } else {
-                File[] fallbackFiles = new File[] {
-                    new File("Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png"),
-                    new File("Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png"),
-                    new File(System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Characters" + File.separator + "Hero" + File.separator + "Lives" + File.separator + "Life.png")
-                };
-                File foundFile = null;
-                for (File file : fallbackFiles) {
-                    if (file.exists()) {
-                        foundFile = file;
-                        break;
-                    }
-                }
-                if (foundFile == null) {
-                    System.err.println("FILE NOT FOUND: Make sure the file is at: " + path);
-                    System.err.println("Current Path being checked: " + getClass().getResource(path));
-                    return;
-                }
-                spriteSheet = ImageIO.read(foundFile);
-            }
-
-            int width = spriteSheet.getWidth() / 2;
-            int height = spriteSheet.getHeight();
-
-            heartSprite[0] = spriteSheet.getSubimage(0, 0, width, height);
-            heartSprite[1] = spriteSheet.getSubimage(width, 0, width, height);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        heartSprite[0] = spriteSheet.getSubimage(0, 0, width, height);
+        heartSprite[1] = spriteSheet.getSubimage(width, 0, width, height);
     }
 
     public void draw(Graphics g) {

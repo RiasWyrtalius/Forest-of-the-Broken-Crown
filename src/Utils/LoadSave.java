@@ -10,6 +10,9 @@ import javax.imageio.ImageIO;
 
 public class LoadSave {
 
+    //Hearts
+    public static final String Hearts_Atlas = "Characters/Hero/Lives/Life.png";
+
     //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
     public static final String Kaelthron_Atlas = "Characters/Hero/Kaelthorn/KaelthornSpriteSheet.png";
@@ -29,42 +32,11 @@ public class LoadSave {
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
-        InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);
-
-        if (is == null) {
-            String[] fallbackPaths = new String[] {
-                "Assets" + File.separator + fileName,
-                "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + fileName,
-                System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + fileName
-            };
-            for (String path : fallbackPaths) {
-                try {
-                    File file = new File(path);
-                    if (file.exists()) {
-                        is = new FileInputStream(file);
-                        break;
-                    }
-                } catch (IOException ignored) {
-                }
-            }
-        }
-
-        if (is == null) {
-            System.err.println("ERROR: Could not find file at path: /" + fileName);
-            System.err.println("Check if the file is in your 'src' or 'Assets' folder and spelled correctly.");
-            return null;
-        }
-
-        try {
+        try (InputStream is = LoadSave.class.getResourceAsStream("/" + fileName)) {
+            if (is == null) throw new Exception("File not found");
             img = ImageIO.read(is);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return img;
     }

@@ -77,7 +77,7 @@ public class Game implements Runnable {
         levelHandler = new LevelHandler(this);
         objectManager = new ObjectManager();
         //TODO: spawnpoint & fix resizing of character
-        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.KAELTHORN);
+        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
         int bossWidth = 250;
         int bossHeight = 250;
