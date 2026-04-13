@@ -2,9 +2,12 @@ package Main.GameStates;
 
 import Entities.PlayerCharacter;
 import Main.Core.Game;
+import Utils.LoadSave;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+
+import static Utils.LoadSave.CSelection_Atlas;
 
 public class CharacterSelect {
 
@@ -12,25 +15,68 @@ public class CharacterSelect {
     private PlayerCharacter[] characters = PlayerCharacter.values();
     private int currentIndex = 0;
 
-    // Animation variables
+    // Character Animation
     private int aniTick, aniIndex, aniSpeed = 25;
 
-    // Interactive UI Elements
+    // Background Transition Animation
+    private BufferedImage[] bgSprites;
+    private int bgAniTick, bgAniIndex;
+    private int bgAniSpeed = 10;
+    private boolean transitioning = false;
+    private int mouthDirection = 1;
+    private int targetDir = 0;
+
+    // UI Elements
     private Rectangle leftArrow = new Rectangle(150, 300, 60, 60);
     private Rectangle rightArrow = new Rectangle(Game.GAME_WIDTH - 210, 300, 60, 60);
     private Rectangle selectBtn = new Rectangle((Game.GAME_WIDTH / 2) - 100, 550, 200, 55);
 
-    private boolean mouseOverSelect = false;
-
     public CharacterSelect(Game game) {
         this.game = game;
+        loadBackground();
+    }
+
+    private void loadBackground() {
+        BufferedImage img = LoadSave.getSpriteAtlas(CSelection_Atlas);
+
+        int frameWidth = 240;
+        int frameHeight = 135;
+
+        int totalFramesInFile = img.getWidth() / frameWidth;
+        int framesToLoad = Math.min(9, totalFramesInFile);
+        bgSprites = new BufferedImage[framesToLoad];
+
+        for (int i = 0; i < framesToLoad; i++) {
+            bgSprites[i] = img.getSubimage(i * frameWidth, 0, frameWidth, frameHeight);
+        }
+
+        bgAniIndex = bgSprites.length - 1;
     }
 
     public void update() {
-        updateAnimationTick();
+        if (!transitioning) {
+            updateCharacterAnimation();
+        } else {
+            updateMouthAnimation();
+        }
     }
 
-    private void updateAnimationTick() {
+    private void updateMouthAnimation() {
+        bgAniTick++;
+        if (bgAniTick >= bgAniSpeed) {
+            bgAniTick = 0;
+            bgAniIndex += mouthDirection;
+
+            if (bgAniIndex == 0 && mouthDirection == -1) {
+                applySelectionChange();
+                mouthDirection = 1;
+            } else if (bgAniIndex == bgSprites.length - 1 && mouthDirection == 1) {
+                transitioning = false;
+            }
+        }
+    }
+
+    private void updateCharacterAnimation() {
         aniTick++;
         if (aniTick >= aniSpeed) {
             aniTick = 0;
@@ -42,61 +88,77 @@ public class CharacterSelect {
     }
 
     public void draw(Graphics g) {
-        g.setColor(new Color(20, 20, 25));
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
+        g.drawImage(bgSprites[bgAniIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        if (bgAniIndex >= bgSprites.length - 1) {
+            drawCharacter(g);
+        }
+
+        drawUI(g);
+    }
+
+    private void drawCharacter(Graphics g) {
         PlayerCharacter selected = characters[currentIndex];
+        BufferedImage img = game.getCharacterAtlas(selected);
 
-        g.setFont(new Font("Arial", Font.BOLD, 42));
+        int spriteSize = Game.SPRITE_DEFAULT_SIZE;
+        float charScale = Game.SCALE * 4f;
+        int drawSize = (int) (spriteSize * charScale);
+
+        int x = (Game.GAME_WIDTH / 2) - (drawSize / 2);
+        int y = (Game.GAME_HEIGHT / 2) - (drawSize / 2);
+
+        int cropX = aniIndex * spriteSize;
+        int cropY = selected.getRowIDLE() * spriteSize;
+
+        g.drawImage(
+                img.getSubimage(cropX, cropY, spriteSize, spriteSize),
+                x, y, drawSize, drawSize, null
+        );
+
         g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 32));
         String name = selected.name();
         int nameWidth = g.getFontMetrics().stringWidth(name);
-        g.drawString(name, (Game.GAME_WIDTH / 2) - (nameWidth / 2), 120);
+        g.drawString(name, (Game.GAME_WIDTH / 2) - (nameWidth / 2), y - 20);
+    }
 
+    private void drawUI(Graphics g) {
+        g.setColor(Color.WHITE);
         g.setFont(new Font("Monospaced", Font.BOLD, 50));
         g.drawString("<", leftArrow.x + 15, leftArrow.y + 45);
         g.drawString(">", rightArrow.x + 15, rightArrow.y + 45);
 
-        BufferedImage img = game.getCharacterAtlas(selected);
-        int spriteSize = Game.SPRITE_DEFAULT_SIZE;
-        int drawScale = (int) (Game.SCALE * 3);
-
-        g.drawImage(img.getSubimage(aniIndex * spriteSize, selected.getRowIDLE() * spriteSize, spriteSize, spriteSize),
-                (Game.GAME_WIDTH / 2) - (spriteSize * drawScale / 2),
-                220,
-                spriteSize * drawScale,
-                spriteSize * drawScale,
-                null);
-
         g.drawRect(selectBtn.x, selectBtn.y, selectBtn.width, selectBtn.height);
-
         g.setFont(new Font("Arial", Font.BOLD, 28));
-        String btnText = "SELECT";
-        int txtWidth = g.getFontMetrics().stringWidth(btnText);
-        g.drawString(btnText, selectBtn.x + (selectBtn.width / 2) - (txtWidth / 2), selectBtn.y + 38);
+        g.drawString("SELECT", selectBtn.x + 45, selectBtn.y + 38);
     }
 
     public void mouseClicked(MouseEvent e) {
+        if (transitioning) return;
+
         if (leftArrow.contains(e.getPoint())) {
-            changeSelection(-1);
+            startTransition(-1);
         } else if (rightArrow.contains(e.getPoint())) {
-            changeSelection(1);
+            startTransition(1);
         } else if (selectBtn.contains(e.getPoint())) {
             game.initPlayerCharacter(characters[currentIndex]);
         }
     }
 
-    public void mouseMoved(MouseEvent e) {
-        mouseOverSelect = selectBtn.contains(e.getPoint());
+    private void startTransition(int direction) {
+        transitioning = true;
+        mouthDirection = -1;
+        targetDir = direction;
     }
 
-    private void changeSelection(int amount) {
-        currentIndex += amount;
+    private void applySelectionChange() {
+        currentIndex += targetDir;
         if (currentIndex < 0) currentIndex = characters.length - 1;
         else if (currentIndex >= characters.length) currentIndex = 0;
-
-        // Reset animation frames when switching characters
         aniIndex = 0;
-        aniTick = 0;
     }
 }
