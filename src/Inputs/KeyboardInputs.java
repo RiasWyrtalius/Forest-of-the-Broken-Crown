@@ -22,19 +22,13 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_UP:
-                //gamePanel.getGame().getPlayer().setUp(true);
-                break;
             case KeyEvent.VK_A, KeyEvent.VK_LEFT:
                 gamePanel.getGame().getPlayer().setLeft(true);
-                break;
-            case KeyEvent.VK_S, KeyEvent.VK_DOWN:
-                //gamePanel.getGame().getPlayer().setDown(true);
                 break;
             case KeyEvent.VK_D, KeyEvent.VK_RIGHT:
                 gamePanel.getGame().getPlayer().setRight(true);
                 break;
-            case KeyEvent.VK_SPACE:
+            case KeyEvent.VK_SPACE, KeyEvent.VK_UP:
                 gamePanel.getGame().getPlayer().setJump(true);
                 break;
                 //temp

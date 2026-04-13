@@ -4,7 +4,6 @@ import Audio.AudioPlayer;
 import Entities.Boss;
 import Entities.Player;
 import Entities.PlayerCharacter;
-import Entities.Projectiles.Projectile;
 import Levels.LevelHandler;
 import Objects.ObjectManager;
 import Utils.LoadSave;
@@ -78,12 +77,12 @@ public class Game implements Runnable {
         levelHandler = new LevelHandler(this);
         objectManager = new ObjectManager();
         //TODO: spawnpoint & fix resizing of character
-        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
+        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.KAELTHORN);
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
         int bossWidth = 250;
         int bossHeight = 250;
 
-        //TODO: move this eventually - Charlz
+        //TODO: use similar logic to drawing tiles via getColor() @ ;
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
         float bossX = 200 + 53 * TILES_SIZE;
         float bossY = 200 + 4 * TILES_SIZE;
@@ -130,22 +129,6 @@ public class Game implements Runnable {
             levelHandler.update();
             objectManager.update(player);
             checkCloseToBorder();
-
-            // Check player projectiles hitting boss
-            for (Projectile p : player.getProjectiles()) {
-                if (p.isActive() && new Rectangle(p.getX(), p.getY(), 48, 48).intersects(boss.getHitbox())) {
-                    boss.takeDamage(1);
-                    p.setActive(false);
-                }
-            }
-
-            // Check boss projectiles hitting player
-            for (Projectile p : boss.getProjectiles()) {
-                if (p.isActive() && new Rectangle(p.getX(), p.getY(), 48, 48).intersects(player.getHitbox())) {
-                    player.loseLife();
-                    p.setActive(false);
-                }
-            }
         } else if (GameState.state == GameState.DEATH) {
             deathScreen.update();
         }

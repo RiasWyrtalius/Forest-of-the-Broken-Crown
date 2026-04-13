@@ -1,6 +1,5 @@
 package Entities;
 
-import Entities.Projectiles.Projectile;
 import Main.Game;
 import Main.GameState;
 import static Utils.Constants.ANIMATION_SPEED;
@@ -10,7 +9,6 @@ import static Utils.HelpMethods.*;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class Player extends Entity{
 
@@ -32,28 +30,35 @@ public class Player extends Entity{
     private long lastAttackTime;
     private long atkCd = 500;
     private boolean attacking = false;
-    private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     //Gravity / Jumping
     private float jumpSpeed = -2.23f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+
+    private int jumpCount = 0;
+    private int maxJumps = 1;
+    private boolean jumpPressed;
 
     //Lives
     public boolean invincible = false;
     public int invincibleCounter = 0;
     private final int INVINCIBILITY_TIME = 50; // 200 UPS = 1 sec / Quarter of a second
 
-    //TODO: implement death screen when lives == 0
+    //TODO: Implement Mana
 
     public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
         this.characterData = characterData;
         this.lvlData = lvlData;
+
         this.xDrawOffset = characterData.xOffset * Game.SCALE;
         this.yDrawOffset = characterData.yOffset * Game.SCALE;
-        this.maxLife = 5;
+
+        this.maxLife = characterData.defaultLives;
         this.life = maxLife;
-        this.walkSpeed = 1.5f * Game.SCALE;
+
+        this.walkSpeed = 1.0f * Game.SCALE * characterData.speedMultiplier;
+
         loadAnimations();
         initHitbox(characterData.hitboxWidth, characterData.hitboxHeight);
     }
@@ -81,8 +86,6 @@ public class Player extends Entity{
         updateAnimationTick(); // then tick based on the correct action
         updatePos();
         updateHealthStatus();
-        if (attacking) shoot();
-        updateProjectiles();
     }
 
     private void updateHealthStatus() {
@@ -97,30 +100,6 @@ public class Player extends Entity{
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
-    }
-
-    /**
-     * spawnX is used to determine the direction of the player.
-     * spawnY is the spawnpoint of the projectile.
-     * based on those two, it will update where the projectile will head.
-      */
-    public void shoot() {
-
-        int projectileDirection = (faceDirection == WALKL) ? -1 : 1;
-
-        long currTime = System.currentTimeMillis();
-        if (currTime - lastAttackTime >= atkCd) {
-
-            float spawnX = hitbox.x;
-            if (projectileDirection == 1) {
-                spawnX += hitbox.width;
-            }
-
-            float spawnY = hitbox.y + (hitbox.height) / 4;
-
-            projectiles.add(new Projectile((int)spawnX, (int)spawnY, projectileDirection));
-            lastAttackTime = currTime;
-        }
     }
 
     public void render(Graphics g, int lvlOffset) {
@@ -152,21 +131,6 @@ public class Player extends Entity{
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
         drawHitbox(g, lvlOffset);
-        for (Projectile p : projectiles) {
-            p.draw(g, lvlOffset);
-        }
-    }
-
-    private void updateProjectiles() {
-        for (int i = 0; i < projectiles.size(); i++) {
-            Projectile p = projectiles.get(i);
-            if (p.isActive()) {
-                p.update();
-            } else {
-                projectiles.remove(i);
-                i--;
-            }
-        }
     }
 
     public void loadAnimations() {
@@ -253,22 +217,21 @@ public class Player extends Entity{
         else        playerAction = (faceDirection == WALKL) ? WALKL : WALKR;
 
         if (inAir) {
-            if (airSpeed < 0) {
-                playerAction = JUMP;
-            } else {
-                playerAction = AIRBORNE;
+            if (playerAction == DOUBLEJUMP) {
+                // Stay in DOUBLEJUMP until the animation finishes or we start falling
+                if (animationIndex < characterData.spriteA_DOUBLEJUMP - 1 && airSpeed < 0) {
+                    return;
+                }
             }
+
+            if (airSpeed < 0) playerAction = JUMP;
+            else playerAction = AIRBORNE;
         }
 
         if (prev != playerAction) {
             animationTick = 0;
             animationIndex = 0;
         }
-
-        //TODO: uncomment when ATK sprite (Jump Sprite) is ready.
-//        if (attacking) {
-//            playerAction = ATK_1;
-//        }
     }
 
     private void updatePos() {
@@ -278,12 +241,6 @@ public class Player extends Entity{
         if (!left && !right && !inAir) return;
 
         float xSpeed = 0;
-
-        if (airSpeed > 0) {
-            playerAction = LANDING;
-            animationTick = 0;
-            animationIndex = 0;
-        }
 
         if (left) {
             xSpeed -= walkSpeed;
@@ -305,8 +262,16 @@ public class Player extends Entity{
                 airSpeed += GRAVITY;
             } else {
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-                if (airSpeed > 0) resetInAir();
-                else airSpeed = fallSpeedAfterCollision;
+                if (airSpeed > 0) {
+                    if (inAir) {
+                        playerAction = LANDING;
+                        animationTick = 0;
+                        animationIndex = 0;
+                    }
+                    resetInAir();
+                } else {
+                    airSpeed = fallSpeedAfterCollision;
+                }
             }
         }
 
@@ -322,15 +287,31 @@ public class Player extends Entity{
     }
 
     private void jump() {
-        if (!inAir) {
-            inAir = true;
+        if (jumpPressed) return; // If we haven't released the key, don't jump again!
+
+        maxJumps = (characterData == PlayerCharacter.SYLVARA) ? 2 : 1;
+
+        if (inAir && jumpCount >= maxJumps)
+            return;
+
+        if (jumpCount < maxJumps) {
             airSpeed = jumpSpeed;
+            inAir = true;
+            jumpCount++;
+            jumpPressed = true; // Lock the jump until the key is released
+
+            if (jumpCount == 2) {
+                playerAction = DOUBLEJUMP;
+                animationIndex = 0;
+                animationTick = 0;
+            }
         }
     }
 
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
+        jumpCount = 0;
     }
 
     public void resetAll() {
@@ -339,13 +320,17 @@ public class Player extends Entity{
         attacking    = false;
         moving       = false;
         playerAction = IDLE;
-        life         = maxLife;
+        this.life    = maxLife;
 
-        // TODO: make this the location of the Player's save
+        this.jumpCount = 0;
+
         hitbox.x = x;
         hitbox.y = y;
 
-        if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
+        // Check if respawn point is in the air
+        if (!isEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
     }
 
     public void resetDirectionBooleans() { left = right = false; }
@@ -362,8 +347,9 @@ public class Player extends Entity{
     public boolean isRight() { return right; }
     public void setRight(boolean right) { this.right = right; }
 
-    public void setJump (boolean jump) { this.jump = jump; }
-
-    public ArrayList<Projectile> getProjectiles() { return projectiles; }
-
+    public void setJump (boolean jump) { this.jump = jump;
+        if (!jump) {
+            jumpPressed = false; // Key was released, allow the next jump
+        }
+    }
 }

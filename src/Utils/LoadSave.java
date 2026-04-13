@@ -21,7 +21,7 @@ public class LoadSave {
     public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
 
     //Bosses
-    public static final String EMBRYN_ATLAS = "Characters/Enemy/Enemies/Embryn.png";
+    public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
 
     //Objects
     public static final String VASE_ATLAS = "Levels/Level1/vase_object.png";

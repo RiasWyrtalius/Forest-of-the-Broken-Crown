@@ -4,17 +4,23 @@ public enum PlayerCharacter {
     KAELTHORN(4, 6, 6, 5, 1, 6,
             0,1,2,3,4,5,
             33, 50,
-            35f, 30f),
+            35f, 30f,
+            5,
+            1.0f),
 
-    SYLVARA(4, 9, 9, 6, 1, 7,
-            0, 1, 2, 3, 5, 6,
+    SYLVARA(4, 9, 9, 6, 1, 7, 5,
+            0, 1, 2, 3, 4, 5, 6,
             44, 45,
-            30f, 30f),
+            30f, 30f,
+            3,
+            1.4f),
 
     EMBJORN(4, 6, 6, 5, 1, 6,
             0, 1, 2, 3, 4, 5,
             55, 55,
-            22f, 20f);
+            22f, 20f,
+            5,
+            1.2f);
 
     //Amount of Sprites
     int spriteA_IDLE;
@@ -38,6 +44,9 @@ public enum PlayerCharacter {
 
     public float xOffset, yOffset;
 
+    public int defaultLives;
+    public float speedMultiplier;
+
     //For Sylvara specifically
     PlayerCharacter (int spriteA_IDLE,
                      int spriteA_WALKR,
@@ -56,7 +65,9 @@ public enum PlayerCharacter {
                      int hitboxWidth,
                      int hitboxHeight,
                      float xOff,
-                     float yOff) {
+                     float yOff,
+                     int lives,
+                     float speedMult) {
 
         // Animation Sprite IDs
         this.spriteA_IDLE = spriteA_IDLE;
@@ -81,6 +92,10 @@ public enum PlayerCharacter {
         //Sprite Placement
         this.xOffset = xOff;
         this.yOffset = yOff;
+
+        //HP & Speed
+        this.defaultLives = lives;
+        this.speedMultiplier = speedMult;
     }
 
     //For KaelThorn & Embjorn specifically
@@ -99,11 +114,14 @@ public enum PlayerCharacter {
                      int hitboxWidth,
                      int hitboxHeight,
                      float xOff,
-                     float yOff) {
+                     float yOff,
+                     int lives,
+                     float speedMult) {
         this(spriteA_IDLE, spriteA_WALKR, spriteA_WALKL, spriteA_JUMP, spriteA_AIRBORNE, 0, spriteA_LANDING,
                 rowIDLE, rowWALKR, rowWALKL, rowJUMP, rowAIRBORNE, -1, rowLANDING,
                 hitboxWidth, hitboxHeight,
-                xOff, yOff);
+                xOff, yOff,
+                lives, speedMult);
     }
 
 }
