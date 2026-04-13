@@ -1,4 +1,7 @@
-package Main;
+package Main.GameStates;
+
+import Main.Core.Game;
+import Main.GameState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

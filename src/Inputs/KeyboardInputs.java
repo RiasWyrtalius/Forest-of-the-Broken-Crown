@@ -1,7 +1,7 @@
 package Inputs;
 
-import Main.Game;
-import Main.GamePanel;
+import Main.Core.Game;
+import Main.Core.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

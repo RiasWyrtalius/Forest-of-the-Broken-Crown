@@ -124,4 +124,6 @@ public enum PlayerCharacter {
                 lives, speedMult);
     }
 
+    public int getSpriteAmountIDLE() { return spriteA_IDLE; }
+    public int getRowIDLE() { return rowIDLE; }
 }

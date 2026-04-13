@@ -1,5 +1,7 @@
 package Main;
 
+import Main.Core.Game;
+
 public class Main {
     public static void main(String[] args) {
         new Game();

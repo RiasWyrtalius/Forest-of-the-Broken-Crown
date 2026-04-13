@@ -1,6 +1,6 @@
 package Entities;
 
-import Main.Game;
+import Main.Core.Game;
 
 import java.awt.Graphics;
 import java.awt.Color;

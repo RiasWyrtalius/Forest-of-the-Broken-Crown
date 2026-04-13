@@ -1,12 +1,9 @@
-package Main;
+package Main.Core;
 
 import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class UI {
     private Game game;

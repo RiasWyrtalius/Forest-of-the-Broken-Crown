@@ -1,6 +1,6 @@
 package Levels;
 
-import Main.Game;
+import Main.Core.Game;
 import Utils.LoadSave;
 
 import java.awt.*;

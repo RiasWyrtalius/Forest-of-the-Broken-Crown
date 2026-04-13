@@ -1,6 +1,6 @@
 package Objects;
 
-import Main.Game;
+import Main.Core.Game;
 import Utils.LoadSave;
 
 import java.awt.*;

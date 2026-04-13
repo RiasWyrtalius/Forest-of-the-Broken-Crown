@@ -2,11 +2,10 @@ package Entities;
 
 import static Utils.HelpMethods.*;
 
-import Main.Game;
+import Main.Core.Game;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class Boss extends Entity {
 

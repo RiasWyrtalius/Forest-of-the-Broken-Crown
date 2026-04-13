@@ -1,6 +1,6 @@
 package Entities;
 
-import Main.Game;
+import Main.Core.Game;
 import Main.GameState;
 import static Utils.Constants.ANIMATION_SPEED;
 import static Utils.Constants.GRAVITY;

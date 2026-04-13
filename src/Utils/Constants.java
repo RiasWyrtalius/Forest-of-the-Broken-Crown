@@ -1,6 +1,6 @@
 package Utils;
 
-import Main.Game;
+import Main.Core.Game;
 
 public class Constants {
 

@@ -1,8 +1,10 @@
-package Main;
+package Main.GameStates;
+
+import Main.Core.Game;
+import Main.GameState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.io.*;
 
 public class MainMenu {
 
@@ -94,11 +96,11 @@ public class MainMenu {
 
         if (currentScreen.equals("MAIN_MENU")) {
             if (isNearButton(mx, my, btnX, btnStartY)) {
-                game.getPlayer().getHitbox().x = 200;
-                game.getPlayer().getHitbox().y = 200;
-                game.getLevelHandler().loadLevel(1);
-                game.startFadeTo(GameState.PLAYING);
-
+//                game.getPlayer().getHitbox().x = 200;
+//                game.getPlayer().getHitbox().y = 200;
+//                game.getLevelHandler().loadLevel(1);
+//                game.startFadeTo(GameState.PLAYING);
+                GameState.state = GameState.CHARACTER_SELECT;
             } else if (isNearButton(mx, my, btnX, btnLoadY)) {
                 game.getSlotScreen().setMode("LOAD");
                 GameState.state = GameState.SLOTS;

@@ -1,10 +1,12 @@
-package Main;
+package Main.Core;
 
 import Audio.AudioPlayer;
 import Entities.Boss;
 import Entities.Player;
 import Entities.PlayerCharacter;
 import Levels.LevelHandler;
+import Main.GameState;
+import Main.GameStates.*;
 import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
@@ -58,10 +60,9 @@ public class Game implements Runnable {
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
     private BufferedImage backgroundImg;
-
     private UI ui;
-
     private ObjectManager objectManager;
+    private CharacterSelect characterSelect;
 
     public Game() {
         initClasses();
@@ -91,6 +92,7 @@ public class Game implements Runnable {
         ui = new UI(this);
         audioPlayer = new AudioPlayer();
         mainMenu = new MainMenu(this);
+        characterSelect = new CharacterSelect(this);
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
         deathScreen = new DeathScreen(this);
@@ -129,11 +131,12 @@ public class Game implements Runnable {
             levelHandler.update();
             objectManager.update(player);
             checkCloseToBorder();
+        }else if (GameState.state == GameState.CHARACTER_SELECT) {
+            characterSelect.update();
         } else if (GameState.state == GameState.DEATH) {
             deathScreen.update();
         }
 
-        // Handle state transitions
         handleStateTransitions();
     }
 
@@ -166,50 +169,51 @@ public class Game implements Runnable {
 
         if (GameState.state == GameState.MENU) {
             mainMenu.draw(g);
-
+        } else if (GameState.state == GameState.CHARACTER_SELECT) {
+            // DRAW THE CHARACTER SELECTOR HERE
+            characterSelect.draw(g);
         } else if (GameState.state == GameState.SLOTS) {
-            // draw the game behind the slot screen so it doesn't look empty
-            levelHandler.draw(g, xLvlOffset);
-            player.render(g, xLvlOffset);
-            boss.render(g, xLvlOffset);
+            drawGameBackground(g);
             slotScreen.draw(g);
         } else if (GameState.state == GameState.PAUSED) {
-            levelHandler.draw(g, xLvlOffset);
-            player.render(g, xLvlOffset);
-            boss.render(g, xLvlOffset);
+            drawGameBackground(g);
             pauseScreen.draw(g);
         } else if (GameState.state == GameState.DEATH) {
-            levelHandler.draw(g, xLvlOffset);
-            player.render(g, xLvlOffset);
-            boss.render(g, xLvlOffset);
+            drawGameBackground(g);
             deathScreen.draw(g);
-        } else {
-            levelHandler.draw(g, xLvlOffset);
+        } else if (GameState.state == GameState.PLAYING) {
+            drawGameBackground(g);
             objectManager.draw(g, xLvlOffset);
-            player.render(g, xLvlOffset);
-            boss.render(g, xLvlOffset);
-
             ui.draw(g);
-
-            // this shows the "Saved Game!" message on screen
-            if (!saveMessage.isEmpty()) {
-                long elapsed = System.currentTimeMillis() - saveMessageTimer;
-                if (elapsed < MESSAGE_DURATION) {
-                    g.setFont(new Font("Arial", Font.BOLD, 18));
-                    FontMetrics fm = g.getFontMetrics();
-                    int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
-                    g.setColor(Color.BLACK);
-                    g.drawString(saveMessage, msgX, 40);
-                } else {
-                    saveMessage = ""; // this clears the message after 2 seconds
-                }
-            }
+            drawSaveMessage(g);
         }
+
         // it draws a fade overlay on top of everything
         if (fadingOut || fadingIn || fadeAlpha > 0) {
             g.setColor(new Color(0, 0, 0, Math.min(fadeAlpha, 255)));
             g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         }
+    }
+
+    private void drawSaveMessage(Graphics g) {
+        if (!saveMessage.isEmpty()) {
+            long elapsed = System.currentTimeMillis() - saveMessageTimer;
+            if (elapsed < MESSAGE_DURATION) {
+                g.setFont(new Font("Arial", Font.BOLD, 18));
+                FontMetrics fm = g.getFontMetrics();
+                int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
+                g.setColor(Color.WHITE);
+                g.drawString(saveMessage, msgX, 70);
+            } else {
+                saveMessage = "";
+            }
+        }
+    }
+
+    private void drawGameBackground(Graphics g) {
+        levelHandler.draw(g, xLvlOffset);
+        player.render(g, xLvlOffset);
+        boss.render(g, xLvlOffset);
     }
 
     public void resetAll() {
@@ -290,6 +294,21 @@ public class Game implements Runnable {
         saveMessageTimer = System.currentTimeMillis();
     }
 
+    public void initPlayerCharacter(PlayerCharacter selectedChar) {
+        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
+        player = new Player(200, 200, 160, 160, lvlData, selectedChar);
+        levelHandler.loadLevel(1);
+        startFadeTo(GameState.PLAYING);
+    }
+
+    public BufferedImage getCharacterAtlas(PlayerCharacter character) {
+        return switch (character) {
+            case KAELTHORN -> LoadSave.getSpriteAtlas(LoadSave.Kaelthron_Atlas);
+            case SYLVARA -> LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
+            case EMBJORN -> LoadSave.getSpriteAtlas(LoadSave.Embjorn_Atlas);
+        };
+    }
+
     public void windowFocusLost() {
         player.resetDirectionBooleans();
     }
@@ -301,4 +320,5 @@ public class Game implements Runnable {
     public PauseScreen getPauseScreen() {return pauseScreen;}
     public DeathScreen getDeathScreen() {return deathScreen;}
     public AudioPlayer getAudioPlayer() {return audioPlayer;}
+    public CharacterSelect getCharacterSelect() { return characterSelect; }
 }

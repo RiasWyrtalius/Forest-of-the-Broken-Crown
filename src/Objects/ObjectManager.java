@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Entities.Player;
-import Main.Game;
+import Main.Core.Game;
 import Utils.LoadSave;
 
 import static Utils.Constants.PlayerConstants.ObjectConstants.*;

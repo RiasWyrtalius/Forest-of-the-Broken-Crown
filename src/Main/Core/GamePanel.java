@@ -1,9 +1,9 @@
-package Main;
+package Main.Core;
 
 import Inputs.KeyboardInputs;
 import Inputs.MouseInputs;
-import static Main.Game.GAME_HEIGHT;
-import static Main.Game.GAME_WIDTH;
+import static Main.Core.Game.GAME_HEIGHT;
+import static Main.Core.Game.GAME_WIDTH;
 
 import javax.swing.*;
 import java.awt.*;
