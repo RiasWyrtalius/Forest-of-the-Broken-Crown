@@ -1,7 +1,6 @@
 package Inputs;
 
 import Main.GamePanel;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -32,6 +31,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             gamePanel.getGame().getSlotScreen().mouseClicked(e);
         } else if (Main.GameState.state == Main.GameState.PAUSED) {
             gamePanel.getGame().getPauseScreen().mouseClicked(e);
+        } else if (Main.GameState.state == Main.GameState.DEATH) {
+            gamePanel.getGame().getDeathScreen().mouseClicked(e);
         }
     }
 

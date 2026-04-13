@@ -19,6 +19,7 @@ public class Game implements Runnable {
     private int lvlTilesWide = LoadSave.getLevelData()[0].length;
     private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
     private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
+    private int previousState = GameState.MENU;
 
     private MainMenu mainMenu;
     private GameWindow gameWindow;
@@ -32,6 +33,7 @@ public class Game implements Runnable {
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
+    private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
 
 
@@ -92,6 +94,7 @@ public class Game implements Runnable {
         mainMenu = new MainMenu(this);
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
+        deathScreen = new DeathScreen(this);
     }
 
     private void startGameLoop() {
@@ -143,7 +146,19 @@ public class Game implements Runnable {
                     p.setActive(false);
                 }
             }
+        } else if (GameState.state == GameState.DEATH) {
+            deathScreen.update();
         }
+
+        // Handle state transitions
+        handleStateTransitions();
+    }
+
+    private void handleStateTransitions() {
+        if (GameState.state != previousState && GameState.state == GameState.DEATH) {
+            deathScreen.startAnimation();
+        }
+        previousState = GameState.state;
     }
 
     private void checkCloseToBorder() {
@@ -180,6 +195,11 @@ public class Game implements Runnable {
             player.render(g, xLvlOffset);
             boss.render(g, xLvlOffset);
             pauseScreen.draw(g);
+        } else if (GameState.state == GameState.DEATH) {
+            levelHandler.draw(g, xLvlOffset);
+            player.render(g, xLvlOffset);
+            boss.render(g, xLvlOffset);
+            deathScreen.draw(g);
         } else {
             levelHandler.draw(g, xLvlOffset);
             objectManager.draw(g, xLvlOffset);
@@ -213,6 +233,14 @@ public class Game implements Runnable {
         player.resetAll();
         objectManager.resetAllObjects();
         //TODO: enemy reset can go here.
+    }
+
+    public void resetGame() {
+        player.resetAll();
+        objectManager.resetAllObjects();
+        boss.reset();
+        // Reset level offset
+        xLvlOffset = 0;
     }
 
     public void startFadeTo(int targetState) {
@@ -288,5 +316,6 @@ public class Game implements Runnable {
     public LevelHandler getLevelHandler() {return levelHandler;}
     public SlotScreen getSlotScreen()     {return slotScreen;}
     public PauseScreen getPauseScreen() {return pauseScreen;}
+    public DeathScreen getDeathScreen() {return deathScreen;}
     public AudioPlayer getAudioPlayer() {return audioPlayer;}
 }
