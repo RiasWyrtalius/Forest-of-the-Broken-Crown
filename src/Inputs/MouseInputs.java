@@ -3,9 +3,13 @@ package Inputs;
 import Main.Core.GamePanel;
 import Main.GameState;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
+import static Main.Core.Game.GAME_HEIGHT;
+import static Main.Core.Game.GAME_WIDTH;
 
 public class MouseInputs implements MouseListener, MouseMotionListener {
 
@@ -19,6 +23,42 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        //current scale
+        double scaleX = (double) gamePanel.getWidth() / GAME_WIDTH;
+        double scaleY = (double) gamePanel.getHeight() / GAME_HEIGHT;
+
+        //adjust mouse coordinates to actual game res.
+        int adjustedX = (int) (e.getX() / scaleX);
+        int adjustedY = (int) (e.getY() / scaleY);
+
+        MouseEvent adjustedEvent = new MouseEvent(
+                (Component) e.getSource(), e.getID(), e.getWhen(), e.getModifiersEx(),
+                adjustedX, adjustedY, e.getClickCount(), e.isPopupTrigger()
+        );
+
+
+        switch (GameState.state) {
+            case MENU:
+                gamePanel.getGame().getMainMenu().mouseClicked(adjustedEvent);
+                break;
+            case CHARACTER_SELECT:
+                gamePanel.getGame().getCharacterSelect().mouseClicked(adjustedEvent);
+                break;
+            case PLAYING:
+                //insert logic if needed
+                break;
+            case PAUSED:
+                gamePanel.getGame().getPauseScreen().mouseClicked(adjustedEvent);
+                break;
+            case SLOTS:
+                gamePanel.getGame().getSlotScreen().mouseClicked(adjustedEvent);
+                break;
+            case DEATH:
+                gamePanel.getGame().getDeathScreen().mouseClicked(adjustedEvent);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

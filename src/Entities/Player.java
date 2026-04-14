@@ -347,7 +347,8 @@ public class Player extends Entity{
     public boolean isRight() { return right; }
     public void setRight(boolean right) { this.right = right; }
 
-    public void setJump (boolean jump) { this.jump = jump;
+    public void setJump (boolean jump) {
+        this.jump = jump;
         if (!jump) {
             jumpPressed = false; // Key was released, allow the next jump
         }

@@ -20,7 +20,7 @@ public class Game implements Runnable {
     private int lvlTilesWide = LoadSave.getLevelData()[0].length;
     private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
     private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
-    private int previousState = GameState.MENU;
+    private GameState previousState = GameState.MENU;
 
     private MainMenu mainMenu;
     private GameWindow gameWindow;
@@ -37,7 +37,6 @@ public class Game implements Runnable {
     private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
 
-
     // this generates "Saved Game!" on screen
     private String saveMessage = "";
     private long saveMessageTimer = 0;
@@ -47,7 +46,7 @@ public class Game implements Runnable {
     private boolean fadingOut = false; // this fades to black
     private boolean fadingIn  = false; // this fades back from black
     private int fadeAlpha     = 0;
-    private int fadeTarget    = 0;
+    private GameState fadeTarget = GameState.MENU;
     private final int FADE_SPEED = 5;
 
     public final static int TILES_DEFAULT_SIZE = 32;
@@ -80,11 +79,11 @@ public class Game implements Runnable {
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
-        int bossWidth = 250;
-        int bossHeight = 250;
 
         //TODO: use similar logic to drawing tiles via getColor() @ ;
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
+        int bossWidth = 250;
+        int bossHeight = 250;
         float bossX = 200 + 53 * TILES_SIZE;
         float bossY = 200 + 4 * TILES_SIZE;
         boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
@@ -170,7 +169,6 @@ public class Game implements Runnable {
         if (GameState.state == GameState.MENU) {
             mainMenu.draw(g);
         } else if (GameState.state == GameState.CHARACTER_SELECT) {
-            // DRAW THE CHARACTER SELECTOR HERE
             characterSelect.draw(g);
         } else if (GameState.state == GameState.SLOTS) {
             drawGameBackground(g);
@@ -230,7 +228,7 @@ public class Game implements Runnable {
         xLvlOffset = 0;
     }
 
-    public void startFadeTo(int targetState) {
+    public void startFadeTo(GameState targetState) {
         fadingOut  = true;
         fadingIn   = false;
         fadeAlpha  = 0;

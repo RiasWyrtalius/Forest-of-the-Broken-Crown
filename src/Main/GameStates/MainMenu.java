@@ -6,8 +6,6 @@ import Main.GameState;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-//TODO: implement main menu buttons
-
 public class MainMenu {
 
     private Game game;
@@ -15,11 +13,11 @@ public class MainMenu {
     private String message = "";
 
     private int btnX = 80;
-    private int btnStartY   = 498;
-    private int btnLoadY    = 543;
-    private int btnOptionsY = 588;
-    private int btnCreditsY = 633;
-    private int btnQuitY    = 678;
+    private int btnStartY   = 480;
+    private int btnLoadY    = 520;
+    private int btnOptionsY = 560;
+    private int btnCreditsY = 600;
+    private int btnQuitY    = 640;
 
     private int btnFontSize = 36;
 

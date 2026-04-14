@@ -35,7 +35,16 @@ public class GamePanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        game.render(g);
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        double scaleX = (double) getWidth() / GAME_WIDTH;
+        double scaleY = (double) getHeight() / GAME_HEIGHT;
+
+        g2d.scale(scaleX, scaleY);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
+        game.render(g2d);
     }
 
     public Game getGame() {

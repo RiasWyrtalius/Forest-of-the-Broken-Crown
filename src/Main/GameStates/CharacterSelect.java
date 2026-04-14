@@ -4,6 +4,7 @@ import Entities.PlayerCharacter;
 import Main.Core.Game;
 import Utils.LoadSave;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
@@ -137,6 +138,20 @@ public class CharacterSelect {
         g.drawString("SELECT", selectBtn.x + 45, selectBtn.y + 38);
     }
 
+    private void startTransition(int direction) {
+        transitioning = true;
+        mouthDirection = -1;
+        targetDir = direction;
+    }
+
+    private void applySelectionChange() {
+        currentIndex += targetDir;
+        if (currentIndex < 0) currentIndex = characters.length - 1;
+        else if (currentIndex >= characters.length) currentIndex = 0;
+        aniIndex = 0;
+    }
+
+    //INPUTS MOUSE & KEYBOARD
     public void mouseClicked(MouseEvent e) {
         if (transitioning) return;
 
@@ -149,16 +164,19 @@ public class CharacterSelect {
         }
     }
 
-    private void startTransition(int direction) {
-        transitioning = true;
-        mouthDirection = -1;
-        targetDir = direction;
-    }
+    public void keyPressed(KeyEvent e) {
+        if (transitioning) return;
 
-    private void applySelectionChange() {
-        currentIndex += targetDir;
-        if (currentIndex < 0) currentIndex = characters.length - 1;
-        else if (currentIndex >= characters.length) currentIndex = 0;
-        aniIndex = 0;
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A:
+                startTransition(-1);
+                break;
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D:
+                startTransition(1);
+                break;
+            case KeyEvent.VK_ENTER, KeyEvent.VK_SPACE:
+                game.initPlayerCharacter(characters[currentIndex]);
+                break;
+        }
     }
 }

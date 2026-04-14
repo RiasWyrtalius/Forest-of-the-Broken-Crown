@@ -2,9 +2,6 @@ package Utils;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
@@ -30,7 +27,7 @@ public class LoadSave {
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
 
     //Objects
-    public static final String VASE_ATLAS = "Levels/Level1/vase_object.png";
+    public static final String VASE_ATLAS = "Levels/Objects/Vase/vase_object.png";
     public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
