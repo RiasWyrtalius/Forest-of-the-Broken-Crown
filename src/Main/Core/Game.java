@@ -4,6 +4,7 @@ import Audio.AudioPlayer;
 import Entities.Boss;
 import Entities.Player;
 import Entities.PlayerCharacter;
+import Levels.Level;
 import Levels.LevelHandler;
 import Main.GameState;
 import Main.GameStates.*;
@@ -17,9 +18,7 @@ public class Game implements Runnable {
     private int xLvlOffset;
     private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
     private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-    private int lvlTilesWide = LoadSave.getLevelData()[0].length;
-    private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-    private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
+    private int maxLvlOffsetX;
     private GameState previousState = GameState.MENU;
 
     private MainMenu mainMenu;
@@ -64,13 +63,15 @@ public class Game implements Runnable {
     private CharacterSelect characterSelect;
 
     public Game() {
+        LoadSave.getAllLevels();
         initClasses();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
+        gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         startGameLoop();
 
-        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
+        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.LEVELONE_BACKGROUND_IMAGE);
     }
 
     public void initClasses() {
@@ -95,6 +96,13 @@ public class Game implements Runnable {
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
         deathScreen = new DeathScreen(this);
+    }
+
+    public void updateLevelOffsets() {
+        Level current = levelHandler.getCurrentLevel();
+        int lvlTilesWide = current.getLevelData()[0].length;
+        int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
+        maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
     }
 
     private void startGameLoop() {
@@ -130,6 +138,7 @@ public class Game implements Runnable {
             levelHandler.update();
             objectManager.update(player);
             checkCloseToBorder();
+            checkLevelCompleted();
         }else if (GameState.state == GameState.CHARACTER_SELECT) {
             characterSelect.update();
         } else if (GameState.state == GameState.DEATH) {
@@ -293,9 +302,10 @@ public class Game implements Runnable {
     }
 
     public void initPlayerCharacter(PlayerCharacter selectedChar) {
+        levelHandler.loadLevel(1);
+        updateLevelOffsets();
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
         player = new Player(200, 200, 160, 160, lvlData, selectedChar);
-        levelHandler.loadLevel(1);
         startFadeTo(GameState.PLAYING);
     }
 
@@ -305,6 +315,30 @@ public class Game implements Runnable {
             case SYLVARA -> LoadSave.getSpriteAtlas(LoadSave.Sylvara_Atlas);
             case EMBJORN -> LoadSave.getSpriteAtlas(LoadSave.Embjorn_Atlas);
         };
+    }
+
+    //TEMPORARY
+    private void checkLevelCompleted() {
+        // Get the width of the CURRENT level
+        int lvlWidth = levelHandler.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE;
+
+        // If player hits the right edge
+        if (player.getHitbox().x >= lvlWidth - (Game.TILES_SIZE * 2)) {
+            System.out.println("Level Complete Triggered!");
+            int nextLevel = levelHandler.getCurrentLevelNum() + 1;
+
+            if (nextLevel <= levelHandler.getAmountOfLevels()) {
+                // GO TO NEXT LEVEL
+                startFadeTo(GameState.PLAYING);
+                levelHandler.loadLevel(nextLevel);
+                updateLevelOffsets(); // Refresh camera
+                player.resetAll();    // Move player back to start
+            } else {
+                // YOU WIN! (Go back to menu)
+                startFadeTo(GameState.MENU);
+                resetGame();
+            }
+        }
     }
 
     public void windowFocusLost() {

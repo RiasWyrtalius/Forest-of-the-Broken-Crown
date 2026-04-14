@@ -160,7 +160,7 @@ public class SlotScreen {
             FileWriter fw = new FileWriter("save_slot" + slotNum + ".txt");
             fw.write(game.getPlayer().getHitbox().x + "\n");
             fw.write(game.getPlayer().getHitbox().y + "\n");
-            fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
+            fw.write(game.getLevelHandler().getCurrentLevel() + "\n");
             fw.close();
 
             game.setSaveMessage("Saved Game!");

@@ -2,6 +2,7 @@ package Main.GameStates;
 
 import Main.Core.Game;
 import Main.GameState;
+import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -22,16 +23,18 @@ public class MainMenu {
     private int btnFontSize = 36;
 
     private int backBtnX = 80;
-    private int backBtnY = 680;
+    private int backBtnY = 660;
 
     private int volume = 50;
 
     private String currentScreen = "MAIN_MENU";
 
     private Image bgImage;
+    private Font customFont;
 
     public MainMenu(Game game) {
         this.game = game;
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
         bgImage = Toolkit.getDefaultToolkit().getImage("Assets/MainMenu/MainMenu_Variant.jpg");
     }
 
@@ -39,7 +42,7 @@ public class MainMenu {
     public void draw(Graphics g) {
         g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
-        g.setFont(new Font("Arial", Font.BOLD, btnFontSize));
+        g.setFont(customFont);
         g.setColor(new Color(246, 246, 30));
 
         if (currentScreen.equals("MAIN_MENU")) {
@@ -50,10 +53,8 @@ public class MainMenu {
             g.drawString("Quit",        btnX, btnQuitY);
 
         } else if (currentScreen.equals("OPTIONS")) {
-            g.setFont(new Font("Arial", Font.BOLD, 40));
             g.drawString("OPTIONS", btnX + 100, 400);
 
-            g.setFont(new Font("Arial", Font.BOLD, btnFontSize));
             g.drawString("Volume: " + volume + "%", btnX, 480);
             g.drawString("+", btnX + 320, 480);
             g.drawString("-", btnX + 220, 480);
@@ -62,32 +63,22 @@ public class MainMenu {
             g.drawString("Back", backBtnX, backBtnY);
 
         } else if (currentScreen.equals("HOW_TO_PLAY")) {
-            g.setFont(new Font("Arial", Font.BOLD, 40));
             g.drawString("How to Play", btnX + 80, 400);
-
-            g.setFont(new Font("Arial", Font.BOLD, 28));
             g.drawString("ASD for movement", btnX, 480);
             g.drawString("and spacebar for jump, that's it", btnX, 520);
-
             g.drawString("Back", backBtnX, backBtnY);
 
         } else if (currentScreen.equals("CREDITS")) {
-            g.setFont(new Font("Arial", Font.BOLD, 40));
-            g.drawString("Credits", btnX + 120, 380);
+            g.drawString("Credits", btnX + 120, 390);
 
-            g.setFont(new Font("Arial", Font.BOLD, 28));
             g.drawString("Chad Ellie Sanchez", btnX, 460);
             g.drawString("Sean Riley Dela Cruz", btnX, 500);
             g.drawString("Alonzo Raganas", btnX, 540);
-            g.drawString("Charlz Despues", btnX, 580);
+            g.drawString("Charlz David Despues", btnX, 580);
             g.drawString("Niño Michael Mahusay", btnX, 620);
 
             g.drawString("Back", backBtnX, backBtnY);
         }
-
-        // Message at bottom
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 16));
         g.drawString(message, btnX, btnQuitY + 60);
     }
 

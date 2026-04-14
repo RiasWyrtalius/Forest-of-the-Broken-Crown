@@ -1,7 +1,10 @@
 package Utils;
 
 import Main.Core.Game;
+
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 public class HelpMethods {
 
@@ -57,5 +60,36 @@ public class HelpMethods {
             if (!IsSolid(hitbox.x + hitbox.width - 1, hitbox.y + hitbox.height + 1, lvlData))
                 return false;
         return true;
+    }
+
+    public static int[][] GetLevelData(BufferedImage img) {
+        if (img == null) {
+            System.err.println("Level data image is null. Returning empty array.");
+            return new int[0][0];
+        }
+
+        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
+
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int redValue = color.getRed();
+                int blueValue = color.getBlue();
+
+                if (blueValue == 130) { // vase - 130
+                    lvlData[j][i] = 18; // empty
+                }
+
+                else if (blueValue == 131) { // spike - 131
+                    lvlData[j][i] = 18; // empty
+                }
+
+                else { // regular terrain
+                    if (redValue >= 48) redValue = 0;
+                    lvlData[j][i] = redValue;
+                }
+            }
+        }
+        return lvlData;
     }
 }

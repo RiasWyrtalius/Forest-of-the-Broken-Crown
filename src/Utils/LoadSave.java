@@ -1,8 +1,14 @@
 package Utils;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 public class LoadSave {
@@ -19,9 +25,14 @@ public class LoadSave {
     public static final String Embjorn_Atlas = "Characters/Hero/Embjorn/EmbjornSpriteSheet.png";
 
     //Level 1
-    public static final String Level_Atlas = "Levels/Level1/TileSheetFloor1.png";
+    public static final String Level_Atlas = "Levels/Level1/TSFloor1.png";
     public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";
-    public static final String PLAYING_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
+    public static final String LEVELONE_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
+
+    //Level 2
+    public static final String LevelTwo_Atlas = "Levels/Level2/TSFloor2.png";
+    public static final String LEVEL_TWO_DATA = "Levels/Level2/level_two_data.png";
+    public static final String LEVELTWO_BACKGROUND_IMAGE = "Levels/Level2/Cave.jpeg";
 
     //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
@@ -41,36 +52,50 @@ public class LoadSave {
         return img;
     }
 
-    public static int[][] getLevelData() {
-        BufferedImage img = getSpriteAtlas(LEVEL_ONE_DATA);
+    public static Font getFont(String filename) {
+        Font customFont = null;
 
-        if (img == null) {
-            System.err.println("Level data image is null. Returning empty array.");
-            return new int[0][0]; 
+        InputStream is = LoadSave.class.getResourceAsStream("/" + filename);
+        try {
+            customFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
         }
 
-        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
+        return customFont != null ? customFont : new Font("Arial", Font.PLAIN, 12);
+    }
 
-        for (int j = 0; j < img.getHeight(); j++) {
-            for (int i = 0; i < img.getWidth(); i++) {
-                Color color = new Color(img.getRGB(i, j));
-                int redValue = color.getRed();
-                int blueValue = color.getBlue();
+    public static BufferedImage[] getAllLevels() {
+        List<BufferedImage> levelImages = new ArrayList<>();
+        URL url = LoadSave.class.getResource("/Levels");
 
-                if (blueValue == 130) { // vase - 130
-                    lvlData[j][i] = 18; // empty
-                }
+        try {
+            File root = new File(url.toURI());
+            addImagesFromFolder(root, levelImages);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                else if (blueValue == 131) { // spike - 131
-                    lvlData[j][i] = 18; // empty
-                }
+        return levelImages.toArray(new BufferedImage[0]);
+    }
 
-                else { // regular terrain
-                    if (redValue >= 48) redValue = 0;
-                    lvlData[j][i] = redValue;
-                }
+    private static void addImagesFromFolder(File folder, List<BufferedImage> images) {
+        File[] files = folder.listFiles();
+        if (files == null) return;
+
+        for (File f : files) {
+            if (f.isDirectory()) {
+                addImagesFromFolder(f, images);
+            } else if (f.getName().toLowerCase().endsWith(".png")) {
+                String absolutePath = f.getAbsolutePath();
+
+                //looks for where "Levels" starts and take everything after it
+                String resourcePath = absolutePath.substring(absolutePath.indexOf("Levels")).replace("\\", "/");
+
+                //Load using the clean path
+                images.add(getSpriteAtlas(resourcePath));
+                System.out.println("Successfully Loaded: " + resourcePath);
             }
         }
-        return lvlData;
     }
 }
