@@ -6,6 +6,8 @@ import Main.GameState;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+//TODO: implement main menu buttons
+
 public class MainMenu {
 
     private Game game;
@@ -35,6 +37,7 @@ public class MainMenu {
         bgImage = Toolkit.getDefaultToolkit().getImage("Assets/MainMenu/MainMenu_Variant.jpg");
     }
 
+    //REPLACE HERE
     public void draw(Graphics g) {
         g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
@@ -149,6 +152,7 @@ public class MainMenu {
                 && my >= y - btnFontSize - 5 && my <= y + 15;
     }
 
+    //TODO: MOVE INPUT TO KeyboardInputs.class
     // added ESC support, if you press ESC it goes back to Main Menu screen
     public void handleEscapeKey() {
         if (!currentScreen.equals("MAIN_MENU")) {
