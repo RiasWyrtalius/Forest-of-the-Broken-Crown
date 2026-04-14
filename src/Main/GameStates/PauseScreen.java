@@ -5,7 +5,8 @@ import Main.GameState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-
+//TODO: Implement sprites for pause menu
+// lacking non hover state
 public class PauseScreen {
 
     private Game game;
