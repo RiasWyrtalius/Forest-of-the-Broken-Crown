@@ -21,7 +21,6 @@ public class ObjectManager {
         vases = new ArrayList<>();
         spikes = new ArrayList<>();
         loadSpikeImgs();
-        loadObjects();
     }
 
     public void update(Player player) {
@@ -45,8 +44,11 @@ public class ObjectManager {
         }
     }
 
-    private void loadObjects() {
-        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_DATA);
+    public void loadObjects(Levels.Level level) {
+        vases.clear();
+        spikes.clear();
+
+        BufferedImage img = level.getLevelDataImg();
 
         for (int j = 0; j < img.getHeight(); j++) {
             for (int i = 0; i < img.getWidth(); i++) {
@@ -57,7 +59,6 @@ public class ObjectManager {
                 if (value == VASE_COLOR) {
                     vases.add(new Vase(i * Game.TILES_SIZE, j * Game.TILES_SIZE, VASE));
                 } else if (value == SPIKE_COLOR) {
-                    // Pass spikeIndex as the last argument
                     spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, SPIKE, spikeImgs, spikeIndex));
                 }
             }

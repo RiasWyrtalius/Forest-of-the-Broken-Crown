@@ -13,7 +13,7 @@ public enum PlayerCharacter {
             44, 45,
             30f, 30f,
             3,
-            1.4f),
+            1.5f),
 
     EMBJORN(4, 6, 6, 5, 1, 6,
             0, 1, 2, 3, 4, 5,

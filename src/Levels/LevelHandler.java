@@ -24,20 +24,19 @@ public class LevelHandler {
     }
 
     private void importAllLevelsAtlases() {
-        // Manually create the size based on your known levels
-        levelSprite = new BufferedImage[2][];
-
-        // Load specifically from your constants
+        levelSprite = new BufferedImage[levels.size()][];
         levelSprite[0] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.Level_Atlas));
         levelSprite[1] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelTwo_Atlas));
+        levelSprite[2] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelThree_Atlas));
     }
 
     private void buildAllLevels() {
         // Level 1: Forest
-        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_DATA), LoadSave.Level_Atlas));
-
+        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_DATA), LoadSave.Level_Atlas, LoadSave.LEVELONE_BACKGROUND_IMAGE));
         // Level 2: Cave
-        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_TWO_DATA), LoadSave.LevelTwo_Atlas));
+        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_TWO_DATA), LoadSave.LevelTwo_Atlas, LoadSave.LEVELTWO_BACKGROUND_IMAGE));
+        // Level 3: Castle
+        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_THREE_DATA), LoadSave.LevelThree_Atlas, LoadSave.LEVELTHREE_BACKGROUND_IMAGE));
     }
 
     private BufferedImage[] splitAtlas(BufferedImage atlas) {
@@ -73,12 +72,14 @@ public class LevelHandler {
         for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
-                g.drawImage(levelSprite[lvlIndex][index],
-                        Game.TILES_SIZE * i - lvlOffset,
-                        Game.TILES_SIZE * j,
-                        Game.TILES_SIZE,
-                        Game.TILES_SIZE,
-                        null);
+                if (index < levelSprite[lvlIndex].length && index >= 0) {
+                    g.drawImage(levelSprite[lvlIndex][index],
+                            Game.TILES_SIZE * i - lvlOffset,
+                            Game.TILES_SIZE * j,
+                            Game.TILES_SIZE,
+                            Game.TILES_SIZE,
+                            null);
+                }
             }
         }
     }

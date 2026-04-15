@@ -9,8 +9,10 @@ import java.awt.event.MouseEvent;
 
 public class MainMenu {
 
-    private Game game;
+    private enum Screen { MAIN_MENU, OPTIONS, HOW_TO_PLAY, CREDITS }
 
+    private Game game;
+    private Screen currentScreen = Screen.MAIN_MENU;
     private String message = "";
 
     private int btnX = 80;
@@ -27,8 +29,6 @@ public class MainMenu {
 
     private int volume = 50;
 
-    private String currentScreen = "MAIN_MENU";
-
     private Image bgImage;
     private Font customFont;
 
@@ -38,102 +38,102 @@ public class MainMenu {
         bgImage = Toolkit.getDefaultToolkit().getImage("Assets/MainMenu/MainMenu_Variant.jpg");
     }
 
-    //REPLACE HERE
     public void draw(Graphics g) {
         g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
         g.setFont(customFont);
         g.setColor(new Color(246, 246, 30));
 
-        if (currentScreen.equals("MAIN_MENU")) {
-            g.drawString("Play Game",   btnX, btnStartY);
-            g.drawString("Load Game",   btnX, btnLoadY);
-            g.drawString("Options",     btnX, btnOptionsY);
-            g.drawString("Credits",     btnX, btnCreditsY);
-            g.drawString("Quit",        btnX, btnQuitY);
-
-        } else if (currentScreen.equals("OPTIONS")) {
-            g.drawString("OPTIONS", btnX + 100, 400);
-
-            g.drawString("Volume: " + volume + "%", btnX, 480);
-            g.drawString("+", btnX + 320, 480);
-            g.drawString("-", btnX + 220, 480);
-
-            g.drawString("How to Play", btnX, 550);
-            g.drawString("Back", backBtnX, backBtnY);
-
-        } else if (currentScreen.equals("HOW_TO_PLAY")) {
-            g.drawString("How to Play", btnX + 80, 400);
-            g.drawString("ASD for movement", btnX, 480);
-            g.drawString("and spacebar for jump, that's it", btnX, 520);
-            g.drawString("Back", backBtnX, backBtnY);
-
-        } else if (currentScreen.equals("CREDITS")) {
-            g.drawString("Credits", btnX + 120, 390);
-
-            g.drawString("Chad Ellie Sanchez", btnX, 460);
-            g.drawString("Sean Riley Dela Cruz", btnX, 500);
-            g.drawString("Alonzo Raganas", btnX, 540);
-            g.drawString("Charlz David Despues", btnX, 580);
-            g.drawString("Niño Michael Mahusay", btnX, 620);
-
-            g.drawString("Back", backBtnX, backBtnY);
+        switch (currentScreen) {
+            case MAIN_MENU  -> drawMainMenu(g);
+            case OPTIONS    -> drawOptions(g);
+            case HOW_TO_PLAY-> drawHowToPlay(g);
+            case CREDITS    -> drawCredits(g);
         }
+
         g.drawString(message, btnX, btnQuitY + 60);
+    }
+
+    private void drawMainMenu(Graphics g) {
+        g.drawString("Play Game", btnX, btnStartY);
+        g.drawString("Load Game", btnX, btnLoadY);
+        g.drawString("Options",   btnX, btnOptionsY);
+        g.drawString("Credits",   btnX, btnCreditsY);
+        g.drawString("Quit",      btnX, btnQuitY);
+    }
+
+    private void drawOptions(Graphics g) {
+        g.drawString("OPTIONS",           btnX + 100, 400);
+        g.drawString("Volume: " + volume + "%", btnX, 480);
+        g.drawString("+",                 btnX + 320, 480);
+        g.drawString("-",                 btnX + 220, 480);
+        g.drawString("How to Play",       btnX, 550);
+        g.drawString("Back",              backBtnX, backBtnY);
+    }
+
+    private void drawHowToPlay(Graphics g) {
+        g.drawString("How to Play",                 btnX + 80, 400);
+        g.drawString("A/D or Arrow Keys to move",   btnX, 480);
+        g.drawString("Space / W / Up to jump",      btnX, 520);
+        g.drawString("K to attack",                 btnX, 560);
+        g.drawString("Back",                        backBtnX, backBtnY);
+    }
+
+    private void drawCredits(Graphics g) {
+        g.drawString("Credits",              btnX + 120, 390);
+        g.drawString("Chad Ellie Sanchez",   btnX, 460);
+        g.drawString("Sean Riley Dela Cruz", btnX, 500);
+        g.drawString("Alonzo Raganas",        btnX, 540);
+        g.drawString("Charlz David Despues", btnX, 580);
+        g.drawString("Niño Michael Mahusay", btnX, 620);
+        g.drawString("Back",                 backBtnX, backBtnY);
     }
 
     public void mouseClicked(MouseEvent e) {
         int mx = e.getX();
         int my = e.getY();
 
-        if (currentScreen.equals("MAIN_MENU")) {
-            if (isNearButton(mx, my, btnX, btnStartY)) {
-//                game.getPlayer().getHitbox().x = 200;
-//                game.getPlayer().getHitbox().y = 200;
-//                game.getLevelHandler().loadLevel(1);
-//                game.startFadeTo(GameState.PLAYING);
-                GameState.state = GameState.CHARACTER_SELECT;
-            } else if (isNearButton(mx, my, btnX, btnLoadY)) {
-                game.getSlotScreen().setMode("LOAD");
-                GameState.state = GameState.SLOTS;
-
-            } else if (isNearButton(mx, my, btnX, btnOptionsY)) {
-                currentScreen = "OPTIONS";
-
-            } else if (isNearButton(mx, my, btnX, btnCreditsY)) {
-                currentScreen = "CREDITS";
-
-            } else if (isNearButton(mx, my, btnX, btnQuitY)) {
-                System.exit(0);
-            }
-
-        } else if (currentScreen.equals("OPTIONS")) {
-
-            if (mx >= btnX + 300 && mx <= btnX + 350 && my >= 450 && my <= 500) {
-                volume = Math.min(100, volume + 10);
-                message = "Volume increased";
-            }
-
-            else if (mx >= btnX + 200 && mx <= btnX + 250 && my >= 450 && my <= 500) {
-                volume = Math.max(0, volume - 10);
-                message = "Volume decreased";
-            }
-
-            else if (isNearButton(mx, my, btnX, 550)) {
-                currentScreen = "HOW_TO_PLAY";
-            }
-
-            else if (isNearButton(mx, my, backBtnX, backBtnY)) {
-                currentScreen = "MAIN_MENU";
-                message = "";
-            }
-
-        } else if (currentScreen.equals("HOW_TO_PLAY") || currentScreen.equals("CREDITS")) {
-            if (isNearButton(mx, my, backBtnX, backBtnY)) {
-                currentScreen = "MAIN_MENU";
-                message = "";
+        switch (currentScreen) {
+            case MAIN_MENU   -> handleMainMenuClick(mx, my);
+            case OPTIONS     -> handleOptionsClick(mx, my);
+            case HOW_TO_PLAY, CREDITS -> {
+                if (isNearButton(mx, my, backBtnX, backBtnY)) goBack();
             }
         }
+    }
+
+    private void handleMainMenuClick(int mx, int my) {
+        if (isNearButton(mx, my, btnX, btnStartY)) {
+            GameState.state = GameState.CHARACTER_SELECT;
+        } else if (isNearButton(mx, my, btnX, btnLoadY)) {
+            game.getSlotScreen().setMode("LOAD");
+            GameState.state = GameState.SLOTS;
+        } else if (isNearButton(mx, my, btnX, btnOptionsY)) {
+            currentScreen = Screen.OPTIONS;
+        } else if (isNearButton(mx, my, btnX, btnCreditsY)) {
+            currentScreen = Screen.CREDITS;
+        } else if (isNearButton(mx, my, btnX, btnQuitY)) {
+            System.exit(0);
+        }
+    }
+
+    private void handleOptionsClick(int mx, int my) {
+        if (mx >= btnX + 300 && mx <= btnX + 350 && my >= 450 && my <= 500) {
+            volume = Math.min(100, volume + 10);
+            message = "Volume increased";
+        } else if (mx >= btnX + 200 && mx <= btnX + 250 && my >= 450 && my <= 500) {
+            volume = Math.max(0, volume - 10);
+            message = "Volume decreased";
+        } else if (isNearButton(mx, my, btnX, 550)) {
+            currentScreen = Screen.HOW_TO_PLAY;
+        } else if (isNearButton(mx, my, backBtnX, backBtnY)) {
+            goBack();
+        }
+    }
+
+    private void goBack() {
+        currentScreen = Screen.MAIN_MENU;
+        message = "";
     }
 
     private boolean isNearButton(int mx, int my, int x, int y) {
@@ -141,13 +141,8 @@ public class MainMenu {
                 && my >= y - btnFontSize - 5 && my <= y + 15;
     }
 
-    //TODO: MOVE INPUT TO KeyboardInputs.class
-    // added ESC support, if you press ESC it goes back to Main Menu screen
     public void handleEscapeKey() {
-        if (!currentScreen.equals("MAIN_MENU")) {
-            currentScreen = "MAIN_MENU";
-            message = "";
-        }
+        if (currentScreen != Screen.MAIN_MENU) goBack();
     }
 
 

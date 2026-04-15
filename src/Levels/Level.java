@@ -12,10 +12,12 @@ public class Level {
     private int lvlTilesWide;
     private int maxTilesOffset;
     private int maxLvlOffsetX;
+    private String bgPath;
 
-    public Level(BufferedImage img, String atlasPath) {
+    public Level(BufferedImage img, String atlasPath, String bgPath) {
         this.img = img;
         this.atlasPath = atlasPath;
+        this.bgPath = bgPath;
         createLevelData();
         //createBoss(); //TODO: IMPLEMENT
         calculateLevelOffsets();
@@ -24,7 +26,7 @@ public class Level {
     private void calculateLevelOffsets() {
         lvlTilesWide = img.getWidth();
         maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-        maxLvlOffsetX = Game.TILES_SIZE;
+        maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
     }
 
     private void createLevelData() {
@@ -35,6 +37,7 @@ public class Level {
         return lvlData[y][x];
     }
     public int getLvlOffset() { return maxLvlOffsetX; }
-
     public int[][] getLevelData(){ return lvlData; }
+    public BufferedImage getLevelDataImg() { return img; }
+    public String getBackgroundPath() { return bgPath; }
 }

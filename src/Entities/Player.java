@@ -180,7 +180,11 @@ public class Player extends Entity{
     public void updateAnimationTick() {
         animationTick++;
 
-        int speed = (playerAction == LANDING) ? 15 : ANIMATION_SPEED;
+        int speed = ANIMATION_SPEED;
+
+        // Adjust speed based on action
+        if (playerAction == LANDING)            speed = 15;
+        else if (playerAction == DOUBLEJUMP)    speed = 10;
 
         if(animationTick >= speed) {
             animationTick = 0;
@@ -213,17 +217,17 @@ public class Player extends Entity{
             }
         }
 
+        //SYLVARA ONLY
+        if (playerAction == DOUBLEJUMP) {
+            if (animationIndex < characterData.spriteA_DOUBLEJUMP - 1) {
+                return;
+            }
+        }
+
         if (moving) playerAction = isRight() ? WALKR : WALKL;
         else        playerAction = (faceDirection == WALKL) ? WALKL : WALKR;
 
         if (inAir) {
-            if (playerAction == DOUBLEJUMP) {
-                // Stay in DOUBLEJUMP until the animation finishes or we start falling
-                if (animationIndex < characterData.spriteA_DOUBLEJUMP - 1 && airSpeed < 0) {
-                    return;
-                }
-            }
-
             if (airSpeed < 0) playerAction = JUMP;
             else playerAction = AIRBORNE;
         }

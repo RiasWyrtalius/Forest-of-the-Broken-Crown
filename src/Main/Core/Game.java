@@ -65,29 +65,30 @@ public class Game implements Runnable {
     public Game() {
         LoadSave.getAllLevels();
         initClasses();
+        updateBackground();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         startGameLoop();
-
-        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.LEVELONE_BACKGROUND_IMAGE);
     }
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
         objectManager = new ObjectManager();
+        objectManager.loadObjects(levelHandler.getCurrentLevel());
+
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
 
         //TODO: use similar logic to drawing tiles via getColor() @ ;
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
-        int bossWidth = 250;
-        int bossHeight = 250;
-        float bossX = 200 + 53 * TILES_SIZE;
-        float bossY = 200 + 4 * TILES_SIZE;
-        boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
+//        int bossWidth = 250;
+//        int bossHeight = 250;
+//        float bossX = 200 + 53 * TILES_SIZE;
+//        float bossY = 200 + 4 * TILES_SIZE;
+//        boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
 
         ui = new UI(this);
         audioPlayer = new AudioPlayer();
@@ -134,7 +135,7 @@ public class Game implements Runnable {
 
         if (GameState.state == GameState.PLAYING) {
             player.update();
-            boss.update(player);
+            //boss.update(player);
             levelHandler.update();
             objectManager.update(player);
             checkCloseToBorder();
@@ -220,7 +221,7 @@ public class Game implements Runnable {
     private void drawGameBackground(Graphics g) {
         levelHandler.draw(g, xLvlOffset);
         player.render(g, xLvlOffset);
-        boss.render(g, xLvlOffset);
+        //boss.render(g, xLvlOffset);
     }
 
     public void resetAll() {
@@ -232,9 +233,13 @@ public class Game implements Runnable {
     public void resetGame() {
         player.resetAll();
         objectManager.resetAllObjects();
-        boss.reset();
+        //boss.reset();
         // Reset level offset
         xLvlOffset = 0;
+        levelHandler.loadLevel(1);
+        updateBackground();
+        player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
+        objectManager.loadObjects(levelHandler.getCurrentLevel());
     }
 
     public void startFadeTo(GameState targetState) {
@@ -306,6 +311,7 @@ public class Game implements Runnable {
         updateLevelOffsets();
         int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
         player = new Player(200, 200, 160, 160, lvlData, selectedChar);
+        objectManager.loadObjects(levelHandler.getCurrentLevel());
         startFadeTo(GameState.PLAYING);
     }
 
@@ -331,7 +337,10 @@ public class Game implements Runnable {
                 // GO TO NEXT LEVEL
                 startFadeTo(GameState.PLAYING);
                 levelHandler.loadLevel(nextLevel);
+                updateBackground();
                 updateLevelOffsets(); // Refresh camera
+                objectManager.loadObjects(levelHandler.getCurrentLevel());
+                player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
                 player.resetAll();    // Move player back to start
             } else {
                 // YOU WIN! (Go back to menu)
@@ -339,6 +348,11 @@ public class Game implements Runnable {
                 resetGame();
             }
         }
+    }
+
+    public void updateBackground() {
+        String bgPath = levelHandler.getCurrentLevel().getBackgroundPath();
+        this.backgroundImg = LoadSave.getSpriteAtlas(bgPath);
     }
 
     public void windowFocusLost() {
