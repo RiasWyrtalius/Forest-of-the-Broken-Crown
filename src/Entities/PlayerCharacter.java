@@ -3,23 +3,23 @@ package Entities;
 public enum PlayerCharacter {
     KAELTHORN(4, 6, 6, 5, 1, 6,
             0,1,2,3,4,5,
-            33, 50,
-            35f, 30f,
+            30, 50,
+            34f, 30f,
             5,
             1.0f),
 
     SYLVARA(4, 9, 9, 6, 1, 7, 5,
             0, 1, 2, 3, 4, 5, 6,
-            44, 45,
-            30f, 30f,
+            32, 45,
+            38f, 30f,
             3,
-            1.5f),
+            1.3f),
 
     EMBJORN(4, 6, 6, 5, 1, 6,
             0, 1, 2, 3, 4, 5,
-            55, 55,
-            22f, 20f,
-            5,
+            40, 55,
+            37f, 20f,
+            6,
             1.2f);
 
     //Amount of Sprites

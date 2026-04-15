@@ -143,9 +143,18 @@ public class Game implements Runnable {
             case MENU -> mainMenu.draw(g);
             case PLAYING -> playing.draw(g);
             case CHARACTER_SELECT -> characterSelect.draw(g);
-            case SLOTS -> slotScreen.draw(g);
-            case PAUSED -> pauseScreen.draw(g);
-            case DEATH -> deathScreen.draw(g);
+            case SLOTS -> {
+                playing.draw(g);
+                slotScreen.draw(g);
+            }
+            case PAUSED -> {
+                playing.draw(g);
+                pauseScreen.draw(g);
+            }
+            case DEATH -> {
+                playing.draw(g);
+                deathScreen.draw(g);
+            }
         }
 
         // it draws a fade overlay on top of everything

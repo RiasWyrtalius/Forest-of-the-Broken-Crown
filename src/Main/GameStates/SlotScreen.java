@@ -2,6 +2,7 @@ package Main.GameStates;
 
 import Main.Core.Game;
 import Main.GameState;
+import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -9,11 +10,9 @@ import java.io.*;
 import javax.swing.JOptionPane;   // Added for confirmation dialog
 
 public class SlotScreen {
-
+    private Font customFont;
     private Game game;
-
     private String mode = "SAVE";
-
 
     private Rectangle slot1 = new Rectangle(424, 150, 400, 70);
     private Rectangle slot2 = new Rectangle(424, 260, 400, 70);
@@ -27,6 +26,7 @@ public class SlotScreen {
 
     public SlotScreen(Game game) {
         this.game = game;
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
     }
 
     public void setMode(String mode) {
@@ -38,12 +38,10 @@ public class SlotScreen {
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.setFont(customFont);
         String title = mode.equals("SAVE") ? "Select a Save Slot" : "Select a Load Slot";
         FontMetrics fm = g.getFontMetrics();
         g.drawString(title, (Game.GAME_WIDTH / 2) - (fm.stringWidth(title) / 2), 100);
-
-
         drawSlot(g, slot1, 1);
         drawSlot(g, slot2, 2);
         drawSlot(g, slot3, 3);
@@ -55,13 +53,12 @@ public class SlotScreen {
             drawDeleteButton(g, deleteBtn3, 3);
         }
 
-
         g.setColor(Color.DARK_GRAY);
         g.fillRect(btnBack.x, btnBack.y, btnBack.width, btnBack.height);
         g.setColor(Color.WHITE);
         g.drawRect(btnBack.x, btnBack.y, btnBack.width, btnBack.height);
-        g.setFont(new Font("Arial", Font.PLAIN, 20));
-        g.drawString("Back", btnBack.x + (btnBack.width / 2) - 20, btnBack.y + 30);
+        g.setFont(customFont);
+        g.drawString("Back", btnBack.x + (btnBack.width / 2) - 40, btnBack.y + 35);
     }
 
     private void drawSlot(Graphics g, Rectangle slot, int slotNum) {
@@ -72,8 +69,8 @@ public class SlotScreen {
         g.setColor(Color.WHITE);
         g.drawRect(slot.x, slot.y, slot.width, slot.height);
 
-        g.setFont(new Font("Arial", Font.PLAIN, 18));
-
+        Font sFont = customFont.deriveFont(25f);
+        g.setFont(sFont);
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -103,15 +100,13 @@ public class SlotScreen {
         g.fillRect(btn.x, btn.y, btn.width, btn.height);
         g.setColor(Color.WHITE);
         g.drawRect(btn.x, btn.y, btn.width, btn.height);
-        g.setFont(new Font("Arial", Font.BOLD, 16));
+
+        Font sFont = customFont.deriveFont(20f);
+        g.setFont(sFont);
         g.drawString("Delete", btn.x + 12, btn.y + 26);
     }
 
     public void mouseClicked(MouseEvent e) {
-        int mx = e.getX();
-        int my = e.getY();
-
-
         if (mode.equals("LOAD")) {
             if (deleteBtn1.contains(e.getPoint())) {
                 deleteSlot(1);
@@ -133,11 +128,7 @@ public class SlotScreen {
         else if (slot3.contains(e.getPoint()))  handleSlot(3);
 
         else if (btnBack.contains(e.getPoint())) {
-            if (mode.equals("SAVE")) {
-                GameState.state = GameState.PLAYING;
-            } else {
-                GameState.state = GameState.MENU;
-            }
+            GameState.state = GameState.PLAYING;
         }
     }
 

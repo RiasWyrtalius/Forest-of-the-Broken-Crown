@@ -12,6 +12,7 @@ import static Utils.LoadSave.CSelection_Atlas;
 
 public class CharacterSelect {
 
+    private Font customFont;
     private Game game;
     private PlayerCharacter[] characters = PlayerCharacter.values();
     private int currentIndex = 0;
@@ -35,6 +36,7 @@ public class CharacterSelect {
     public CharacterSelect(Game game) {
         this.game = game;
         loadBackground();
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
     }
 
     private void loadBackground() {
@@ -120,8 +122,8 @@ public class CharacterSelect {
                 x, y, drawSize, drawSize, null
         );
 
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 32));
+        g.setColor(Color.YELLOW);
+        g.setFont(customFont);
         String name = selected.name();
         int nameWidth = g.getFontMetrics().stringWidth(name);
         g.drawString(name, (Game.GAME_WIDTH / 2) - (nameWidth / 2), y - 20);
@@ -129,12 +131,11 @@ public class CharacterSelect {
 
     private void drawUI(Graphics g) {
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.BOLD, 50));
+        g.setFont(customFont);
         g.drawString("<", leftArrow.x + 15, leftArrow.y + 45);
         g.drawString(">", rightArrow.x + 15, rightArrow.y + 45);
 
-        g.drawRect(selectBtn.x, selectBtn.y, selectBtn.width, selectBtn.height);
-        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.setFont(customFont);
         g.drawString("SELECT", selectBtn.x + 45, selectBtn.y + 38);
     }
 
