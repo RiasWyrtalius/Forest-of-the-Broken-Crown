@@ -1,6 +1,9 @@
 package Main.Core;
 
+import Utils.LoadSave;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -12,6 +15,14 @@ public class GameWindow extends JFrame {
 
     public GameWindow(GamePanel gamePanel) {
         jFrame = new JFrame();
+
+        try {
+            Image icon = LoadSave.getSpriteAtlas(LoadSave.GAME_ICON);
+            jFrame.setIconImage(icon);
+        } catch (Exception e) {
+            System.out.println("Could not load game icon!");
+        }
+
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setTitle("Forest of the Broken Crown");
         jFrame.add(gamePanel);

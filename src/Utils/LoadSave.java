@@ -13,6 +13,9 @@ import javax.imageio.ImageIO;
 
 public class LoadSave {
 
+    //ICON
+    public static final String GAME_ICON = "Icon.jpg";
+
     //Hearts
     public static final String Hearts_Atlas = "Characters/Hero/Lives/Life.png";
 
