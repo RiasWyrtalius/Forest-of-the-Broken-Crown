@@ -2,6 +2,7 @@ package Main.GameStates;
 
 import Main.Core.Game;
 import Main.GameState;
+import Utils.HelpMethods;
 import Utils.LoadSave;
 
 import java.awt.*;
@@ -16,7 +17,13 @@ public class MainMenu {
     private Screen currentScreen = Screen.MAIN_MENU;
     private String message = "";
 
-    private int btnX = 80;
+    private int btnX        = 80;
+    private int btnStartX   = 80;
+    private int btnLoadX    = 80;
+    private int btnOptionsX = 50;
+    private int btnCreditsX = 50;
+    private int btnQuitX    = 20;
+
     private int btnStartY   = 480;
     private int btnLoadY    = 520;
     private int btnOptionsY = 560;
@@ -32,6 +39,14 @@ public class MainMenu {
 
     private Image bgImage;
     private Font customFont;
+
+    private Rectangle hoveredBtn = null;
+
+    private Rectangle playBtn = new Rectangle(btnStartX, btnStartY - 40, 220, 50);
+    private Rectangle loadBtn = new Rectangle(btnLoadX, btnLoadY - 40, 220, 50);
+    private Rectangle optBtn  = new Rectangle(btnOptionsX, btnOptionsY - 40, 220, 50);
+    private Rectangle credBtn = new Rectangle(btnCreditsX, btnCreditsY - 40, 220, 50);
+    private Rectangle quitBtn = new Rectangle(btnQuitX, btnQuitY - 40, 220, 50);
 
     public MainMenu(Game game) {
         this.game = game;
@@ -68,15 +83,15 @@ public class MainMenu {
             case CREDITS    -> drawCredits(g);
         }
 
-        g.drawString(message, btnX, btnQuitY + 60);
+        g.drawString(message, btnQuitX, btnQuitY + 60);
     }
 
     private void drawMainMenu(Graphics g) {
-        g.drawString("Play Game", btnX, btnStartY);
-        g.drawString("Load Game", btnX, btnLoadY);
-        g.drawString("Options",   btnX, btnOptionsY);
-        g.drawString("Credits",   btnX, btnCreditsY);
-        g.drawString("Quit",      btnX, btnQuitY);
+        HelpMethods.DrawHoverableButton(g, playBtn, "Play Game", hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, loadBtn, "Load Game", hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, optBtn,  "Options",   hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, credBtn, "Credits",   hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, quitBtn, "Quit",      hoveredBtn, customFont);
     }
 
     private void drawOptions(Graphics g) {
@@ -123,6 +138,19 @@ public class MainMenu {
             case HOW_TO_PLAY, CREDITS -> {
                 if (isNearButton(mx, my, backBtnX, backBtnY)) goBack();
             }
+        }
+    }
+
+    public void mouseMoved(int x, int y) {
+        Point mousePos = new Point(x, y);
+        hoveredBtn = null;
+
+        if (currentScreen == Screen.MAIN_MENU) {
+            if (playBtn.contains(mousePos)) hoveredBtn = playBtn;
+            else if (loadBtn.contains(mousePos)) hoveredBtn = loadBtn;
+            else if (optBtn.contains(mousePos)) hoveredBtn = optBtn;
+            else if (credBtn.contains(mousePos)) hoveredBtn = credBtn;
+            else if (quitBtn.contains(mousePos)) hoveredBtn = quitBtn;
         }
     }
 

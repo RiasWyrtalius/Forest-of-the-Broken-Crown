@@ -2,6 +2,8 @@ package Main.Core;
 
 import Inputs.KeyboardInputs;
 import Inputs.MouseInputs;
+import Main.GameStates.PauseScreen;
+
 import static Main.Core.Game.GAME_HEIGHT;
 import static Main.Core.Game.GAME_WIDTH;
 
@@ -10,6 +12,7 @@ import java.awt.*;
 
 public class GamePanel extends JPanel {
 
+    private PauseScreen pauseScreen;
     private MouseInputs mouseInputs;
     private Game game;
 

@@ -1,5 +1,6 @@
 package Inputs;
 
+import Main.Core.Game;
 import Main.Core.GamePanel;
 import Main.GameState;
 
@@ -87,9 +88,26 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         );
         return adjustedEvent;
     }
-    
+
+    @Override public void mouseMoved(MouseEvent e) {
+        double scaleX = (double) gamePanel.getWidth() / GAME_WIDTH;
+        double scaleY = (double) gamePanel.getHeight() / GAME_HEIGHT;
+
+        int adjustedX = (int) (e.getX() / scaleX);
+        int adjustedY = (int) (e.getY() / scaleY);
+
+        switch (GameState.state) {
+            case CHARACTER_SELECT -> gamePanel.getGame().getCharacterSelect().mouseMoved(adjustedX, adjustedY);
+            case MENU -> gamePanel.getGame().getMainMenu().mouseMoved(adjustedX, adjustedY);
+            case PAUSED -> gamePanel.getGame().getPauseScreen().mouseMoved(adjustedX, adjustedY);
+            default -> {
+            }
+
+        }
+    }
+
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
     @Override public void mouseDragged(MouseEvent e) {}
-    @Override public void mouseMoved(MouseEvent e) {}
+
 }

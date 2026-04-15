@@ -19,6 +19,9 @@ public class LoadSave {
     //Character Selection
     public static final String CSelection_Atlas = "Characters/CharacterSelectBG.png";
 
+    //Pause
+    public static final String PauseBg = "Pause/PauseBg.png";
+
     //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
     public static final String Kaelthron_Atlas = "Characters/Hero/Kaelthorn/KaelthornSpriteSheet.png";

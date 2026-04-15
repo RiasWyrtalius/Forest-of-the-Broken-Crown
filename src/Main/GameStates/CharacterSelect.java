@@ -2,6 +2,7 @@ package Main.GameStates;
 
 import Entities.PlayerCharacter;
 import Main.Core.Game;
+import Utils.HelpMethods;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -27,6 +28,8 @@ public class CharacterSelect {
     private boolean transitioning = false;
     private int mouthDirection = 1;
     private int targetDir = 0;
+
+    private Rectangle hoveredBtn = null;
 
     // UI Elements
     private Rectangle leftArrow = new Rectangle(150, 300, 60, 60);
@@ -130,13 +133,9 @@ public class CharacterSelect {
     }
 
     private void drawUI(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.setFont(customFont);
-        g.drawString("<", leftArrow.x + 15, leftArrow.y + 45);
-        g.drawString(">", rightArrow.x + 15, rightArrow.y + 45);
-
-        g.setFont(customFont);
-        g.drawString("SELECT", selectBtn.x + 45, selectBtn.y + 38);
+        HelpMethods.DrawHoverableButton(g, leftArrow, "<", hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, rightArrow, ">", hoveredBtn, customFont);
+        HelpMethods.DrawHoverableButton(g, selectBtn, "SELECT", hoveredBtn, customFont);
     }
 
     private void startTransition(int direction) {
@@ -163,6 +162,15 @@ public class CharacterSelect {
         } else if (selectBtn.contains(e.getPoint())) {
             game.initPlayerCharacter(characters[currentIndex]);
         }
+    }
+
+    public void mouseMoved(int x, int y) {
+        Point mousePos = new Point(x, y);
+
+        if (leftArrow.contains(mousePos)) hoveredBtn = leftArrow;
+        else if (rightArrow.contains(mousePos)) hoveredBtn = rightArrow;
+        else if (selectBtn.contains(mousePos)) hoveredBtn = selectBtn;
+        else hoveredBtn = null;
     }
 
     public void keyPressed(KeyEvent e) {

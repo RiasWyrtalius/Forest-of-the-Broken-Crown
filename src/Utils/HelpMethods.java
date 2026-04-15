@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 
 public class HelpMethods {
 
+    private final Font customFont = LoadSave.getFont("Font/GrapeSoda.ttf");
+
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
         //-1 to ensure we check the exact edge of the body.
         if (!IsSolid(x, y, lvlData)) // Top Left
@@ -91,5 +93,26 @@ public class HelpMethods {
             }
         }
         return lvlData;
+    }
+
+    //UI Helper Method
+    public static void DrawHoverableButton(Graphics g, Rectangle btn, String label, Rectangle hoveredBtn, Font font) {
+        boolean isHovered = (hoveredBtn != null && hoveredBtn.equals(btn));
+
+        g.setFont(font);
+        FontMetrics fm = g.getFontMetrics();
+
+        int textX = btn.x + (btn.width / 2) - (fm.stringWidth(label) / 2);
+        int textY = btn.y + (btn.height / 2) + (fm.getAscent() / 2) - 2;
+
+        if (isHovered) {
+            g.setColor(new Color(255, 255, 255, 50)); // faint white shadow
+            g.drawString(label, textX + 2, textY + 2);
+            g.setColor(Color.YELLOW); // hover
+        } else {
+            g.setColor(Color.WHITE);
+        }
+
+        g.drawString(label, textX, textY);
     }
 }
