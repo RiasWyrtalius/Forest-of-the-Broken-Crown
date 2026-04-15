@@ -1,12 +1,13 @@
 package Main.GameStates;
 
 import Entities.Player;
+import Levels.Level;
 import Levels.LevelHandler;
 import Main.Core.Game;
 import Main.GameState;
 import Objects.ObjectManager;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -30,8 +31,8 @@ public class Playing {
 
     public void update() {
         levelHandler.update();
-        objectManager.update(player);
-        player.update();
+        objectManager.update(game.getPlayer());
+        game.getPlayer().update();
         checkCloseToBorder();
         checkLevelCompleted();
     }
@@ -72,17 +73,13 @@ public class Playing {
 
         if (player.getHitbox().x >= lvlWidth - (Game.TILES_SIZE * 2)) {
             System.out.println("Level Complete Triggered!");
-            int nextLevel = levelHandler.getCurrentLevelNum() + 1;
+            int nextLevelNum = levelHandler.getCurrentLevelNum() + 1;
 
-            if (nextLevel <= levelHandler.getAmountOfLevels()) {
+            if (nextLevelNum <= levelHandler.getAmountOfLevels()) {
+                game.setupLevel(nextLevelNum);
                 game.startFadeTo(GameState.PLAYING);
-                levelHandler.loadLevel(nextLevel);
-                levelHandler.updateBackground();
-                updateLevelOffsets();
-                objectManager.loadObjects(levelHandler.getCurrentLevel());
-                player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
-                player.resetAll();
                 xLvlOffset = 0;
+                resetCamera();
             } else {
                 game.startFadeTo(GameState.MENU);
                 game.resetGame();

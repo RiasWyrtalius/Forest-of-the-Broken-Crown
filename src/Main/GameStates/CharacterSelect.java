@@ -160,7 +160,7 @@ public class CharacterSelect {
         } else if (rightArrow.contains(e.getPoint())) {
             startTransition(1);
         } else if (selectBtn.contains(e.getPoint())) {
-            game.initPlayerCharacter(characters[currentIndex]);
+            game.initPlayerCharacter(characters[currentIndex], 1);
         }
     }
 
@@ -184,7 +184,7 @@ public class CharacterSelect {
                 startTransition(1);
                 break;
             case KeyEvent.VK_ENTER, KeyEvent.VK_SPACE:
-                game.initPlayerCharacter(characters[currentIndex]);
+                game.initPlayerCharacter(characters[currentIndex], 1);
                 break;
         }
     }

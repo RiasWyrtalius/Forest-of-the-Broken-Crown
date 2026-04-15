@@ -7,9 +7,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class HelpMethods {
-
-    private final Font customFont = LoadSave.getFont("Font/GrapeSoda.ttf");
-
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
         //-1 to ensure we check the exact edge of the body.
         if (!IsSolid(x, y, lvlData)) // Top Left
@@ -64,7 +61,7 @@ public class HelpMethods {
         return true;
     }
 
-    public static int[][] GetLevelData(BufferedImage img) {
+    public static int[][] GetLevelData(BufferedImage img, Point playerSpawn) {
         if (img == null) {
             System.err.println("Level data image is null. Returning empty array.");
             return new int[0][0];
@@ -76,17 +73,23 @@ public class HelpMethods {
             for (int i = 0; i < img.getWidth(); i++) {
                 Color color = new Color(img.getRGB(i, j));
                 int redValue = color.getRed();
+                int greenValue = color.getGreen();
                 int blueValue = color.getBlue();
 
-                if (blueValue == 130) { // vase - 130
-                    lvlData[j][i] = 18; // empty
+                if (greenValue == 100) { //spawnpoint
+                    playerSpawn.x = i * Game.TILES_SIZE;
+                    playerSpawn.y = j * Game.TILES_SIZE;
+                    System.out.println("Spawn Found at Tile: " + i + ", " + j);
+                    lvlData[j][i] = 18;
                 }
 
-                else if (blueValue == 131) { // spike - 131
-                    lvlData[j][i] = 18; // empty
+                else if (blueValue == 130) { // vase
+                    lvlData[j][i] = 18;
                 }
-
-                else { // regular terrain
+                else if (blueValue == 131) { // spike
+                    lvlData[j][i] = 18;
+                }
+                else {
                     if (redValue >= 48) redValue = 0;
                     lvlData[j][i] = redValue;
                 }

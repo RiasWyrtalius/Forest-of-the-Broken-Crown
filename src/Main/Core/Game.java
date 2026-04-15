@@ -72,12 +72,11 @@ public class Game implements Runnable {
 
     public void initClasses() {
         levelHandler = new LevelHandler(this);
+        Level currentLvl = levelHandler.getCurrentLevel();
+        Point spawn = currentLvl.getPlayerSpawn();
+        player = new Player(spawn.x, spawn.y, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         objectManager = new ObjectManager();
         objectManager.loadObjects(levelHandler.getCurrentLevel());
-
-        //TODO: spawnpoint & fix resizing of character
-        player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
-
 
         //TODO: use similar logic to drawing tiles via getColor() @ ;
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
@@ -98,15 +97,36 @@ public class Game implements Runnable {
         playing = new Playing(this);
     }
 
-    public void initPlayerCharacter(PlayerCharacter selectedChar) {
-        levelHandler.loadLevel(1);
+    public void initPlayerCharacter(PlayerCharacter selectedChar, int levelNum) {
+        levelHandler.loadLevel(levelNum);
+        Level currentLevel = levelHandler.getCurrentLevel();
+
+        player = new Player(0, 0, 160, 160, currentLevel.getLevelData(), selectedChar);
+        setupLevel(levelNum);
+        player.updateLevelData(currentLevel.getLevelData());
+
         updateLevelOffsets();
-        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
-        player = new Player(200, 200, 160, 160, lvlData, selectedChar);
         playing.setPlayer(player);
-        objectManager.loadObjects(levelHandler.getCurrentLevel());
+        objectManager.loadObjects(currentLevel);
         playing.resetCamera();
+
         startFadeTo(GameState.PLAYING);
+    }
+
+    public void setupLevel(int levelNum) {
+        levelHandler.loadLevel(levelNum);
+        Level cur = levelHandler.getCurrentLevel();
+        Point spawn = cur.getPlayerSpawn();
+
+        player.setX(spawn.x);
+        player.setY(spawn.y - (player.getHitbox().height - TILES_SIZE));
+        player.updateLevelData(cur.getLevelData());
+        player.resetAll();
+
+        updateBackground();
+        updateLevelOffsets();
+        objectManager.loadObjects(cur);
+        playing.resetCamera();
     }
 
     private void startGameLoop() {
@@ -296,9 +316,8 @@ public class Game implements Runnable {
     }
 
     public void updateLevelOffsets() { playing.updateLevelOffsets(); }
-    public void windowFocusLost() {
-        player.resetDirectionBooleans();
-    }
+    public void windowFocusLost() { player.resetDirectionBooleans(); }
+
     public Player getPlayer() {return player;}
     public MainMenu getMainMenu() {return mainMenu;}
     public LevelHandler getLevelHandler() {return levelHandler;}

@@ -6,6 +6,8 @@ import static Utils.Constants.ANIMATION_SPEED;
 import static Utils.Constants.GRAVITY;
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.HelpMethods.*;
+
+import Utils.HelpMethods;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -337,6 +339,13 @@ public class Player extends Entity{
         }
     }
 
+    public void updateLevelData(int[][] lvlData) {
+        this.lvlData = lvlData;
+        if (!HelpMethods.isEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
+    }
+
     public void resetDirectionBooleans() { left = right = false; }
 
     public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
@@ -354,7 +363,10 @@ public class Player extends Entity{
     public void setJump (boolean jump) {
         this.jump = jump;
         if (!jump) {
-            jumpPressed = false; // Key was released, allow the next jump
+            jumpPressed = false; // if released, then jump
         }
     }
+
+    public void setY(float y) { this.y = y; }
+    public void setX(float x) {this.x = x;}
 }

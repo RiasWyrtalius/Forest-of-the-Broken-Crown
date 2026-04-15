@@ -1,6 +1,9 @@
 package Levels;
 
 import Main.Core.Game;
+import Utils.HelpMethods;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import static Utils.HelpMethods.GetLevelData;
 
@@ -10,32 +13,28 @@ public class Level {
     private String atlasPath;
     private int[][] lvlData;
     private int lvlTilesWide;
-    private int maxTilesOffset;
     private int maxLvlOffsetX;
     private String bgPath;
+    private Point playerSpawn = new Point(0, 0);
 
     public Level(BufferedImage img, String atlasPath, String bgPath) {
         this.img = img;
         this.atlasPath = atlasPath;
         this.bgPath = bgPath;
-        createLevelData();
         //createBoss(); //TODO: IMPLEMENT
+        this.lvlData = HelpMethods.GetLevelData(img, playerSpawn);
         calculateLevelOffsets();
     }
 
     private void calculateLevelOffsets() {
         lvlTilesWide = img.getWidth();
-        maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-        maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
+        maxLvlOffsetX = (lvlTilesWide - Game.TILES_IN_WIDTH) * Game.TILES_SIZE;
     }
 
-    private void createLevelData() {
-        lvlData = GetLevelData(img);
-    }
+    public Point getPlayerSpawn() { return playerSpawn; }
     public int getSpriteIndex(int x, int y) {
         return lvlData[y][x];
     }
-    public int getLvlOffset() { return maxLvlOffsetX; }
     public int[][] getLevelData(){ return lvlData; }
     public BufferedImage getLevelDataImg() { return img; }
     public String getBackgroundPath() { return bgPath; }
