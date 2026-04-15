@@ -128,15 +128,9 @@ public class SlotScreen {
         }
 
 
-        if (slot1.contains(e.getPoint())) {
-            handleSlot(1);
-        }
-        else if (slot2.contains(e.getPoint())) {
-            handleSlot(2);
-        }
-        else if (slot3.contains(e.getPoint())) {
-            handleSlot(3);
-        }
+        if (slot1.contains(e.getPoint()))       handleSlot(1);
+        else if (slot2.contains(e.getPoint()))  handleSlot(2);
+        else if (slot3.contains(e.getPoint()))  handleSlot(3);
 
         else if (btnBack.contains(e.getPoint())) {
             if (mode.equals("SAVE")) {

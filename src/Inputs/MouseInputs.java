@@ -23,19 +23,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        //current scale
-        double scaleX = (double) gamePanel.getWidth() / GAME_WIDTH;
-        double scaleY = (double) gamePanel.getHeight() / GAME_HEIGHT;
-
-        //adjust mouse coordinates to actual game res.
-        int adjustedX = (int) (e.getX() / scaleX);
-        int adjustedY = (int) (e.getY() / scaleY);
-
-        MouseEvent adjustedEvent = new MouseEvent(
-                (Component) e.getSource(), e.getID(), e.getWhen(), e.getModifiersEx(),
-                adjustedX, adjustedY, e.getClickCount(), e.isPopupTrigger()
-        );
-
+        MouseEvent adjustedEvent = getMouseEvent(e);
 
         switch (GameState.state) {
             case MENU:
@@ -85,23 +73,23 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         gamePanel.getGame().getPlayer().setAttacking(false);
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    private MouseEvent getMouseEvent(MouseEvent e) {
+        double scaleX = (double) gamePanel.getWidth() / GAME_WIDTH;
+        double scaleY = (double) gamePanel.getHeight() / GAME_HEIGHT;
 
+        //adjust mouse coordinates to actual game res.
+        int adjustedX = (int) (e.getX() / scaleX);
+        int adjustedY = (int) (e.getY() / scaleY);
+
+        MouseEvent adjustedEvent = new MouseEvent(
+                (Component) e.getSource(), e.getID(), e.getWhen(), e.getModifiersEx(),
+                adjustedX, adjustedY, e.getClickCount(), e.isPopupTrigger()
+        );
+        return adjustedEvent;
     }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
+    
+    @Override public void mouseEntered(MouseEvent e) {}
+    @Override public void mouseExited(MouseEvent e) {}
+    @Override public void mouseDragged(MouseEvent e) {}
+    @Override public void mouseMoved(MouseEvent e) {}
 }

@@ -5,6 +5,7 @@ import Main.GameState;
 import Utils.LoadSave;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class MainMenu {
@@ -38,6 +39,22 @@ public class MainMenu {
         bgImage = Toolkit.getDefaultToolkit().getImage("Assets/MainMenu/MainMenu_Variant.jpg");
     }
 
+    public void update() {}
+
+    private void goBack() {
+        currentScreen = Screen.MAIN_MENU;
+        message = "";
+    }
+
+    private boolean isNearButton(int mx, int my, int x, int y) {
+        return mx >= x && mx <= x + 220
+                && my >= y - btnFontSize - 5 && my <= y + 15;
+    }
+
+    public void saveGame() { }
+    private void loadGame() { }
+
+    //DRAW METHODS
     public void draw(Graphics g) {
         g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
@@ -89,6 +106,13 @@ public class MainMenu {
         g.drawString("Back",                 backBtnX, backBtnY);
     }
 
+    //INPUT METHODS
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            handleEscapeKey();
+        }
+    }
+
     public void mouseClicked(MouseEvent e) {
         int mx = e.getX();
         int my = e.getY();
@@ -100,6 +124,10 @@ public class MainMenu {
                 if (isNearButton(mx, my, backBtnX, backBtnY)) goBack();
             }
         }
+    }
+
+    public void handleEscapeKey() {
+        if (currentScreen != Screen.MAIN_MENU) goBack();
     }
 
     private void handleMainMenuClick(int mx, int my) {
@@ -130,22 +158,4 @@ public class MainMenu {
             goBack();
         }
     }
-
-    private void goBack() {
-        currentScreen = Screen.MAIN_MENU;
-        message = "";
-    }
-
-    private boolean isNearButton(int mx, int my, int x, int y) {
-        return mx >= x && mx <= x + 220
-                && my >= y - btnFontSize - 5 && my <= y + 15;
-    }
-
-    public void handleEscapeKey() {
-        if (currentScreen != Screen.MAIN_MENU) goBack();
-    }
-
-
-    public void saveGame() { }
-    private void loadGame() { }
 }

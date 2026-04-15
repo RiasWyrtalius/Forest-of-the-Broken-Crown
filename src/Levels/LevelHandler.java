@@ -60,11 +60,7 @@ public class LevelHandler {
 
 
     public void draw(Graphics g, int lvlOffset) {
-
-        // 1. Check if the level list actually has data
         if (levels.isEmpty() || lvlIndex >= levels.size()) return;
-
-        // 2. Check if the sprite array for this level is empty or null
         if (levelSprite == null || levelSprite.length <= lvlIndex || levelSprite[lvlIndex] == null) {
             return;
         }
@@ -84,13 +80,18 @@ public class LevelHandler {
         }
     }
 
+    public void updateBackground() {
+        game.updateBackground();
+    }
 
-    public void update() {}
     public void loadLevel(int levelNum) {
         this.currentLevelNum = levelNum;
         this.lvlIndex = levelNum - 1;
         if (lvlIndex >= levels.size()) lvlIndex = 0;
     }
+
+    public void update() {}
+
     public Level getCurrentLevel() { return levels.get(lvlIndex); }
     public int getAmountOfLevels() { return levels.size(); }
     public int getCurrentLevelNum() { return currentLevelNum; }

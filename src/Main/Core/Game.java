@@ -15,14 +15,11 @@ import java.awt.image.BufferedImage;
 
 public class Game implements Runnable {
 
-    private int xLvlOffset;
-    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
-    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-    private int maxLvlOffsetX;
     private GameState previousState = GameState.MENU;
 
     private MainMenu mainMenu;
     private GameWindow gameWindow;
+    private Playing playing;
     private GamePanel gamePanel;
     private Thread gameThread;
     private final int FPS_SET = 120;
@@ -37,25 +34,25 @@ public class Game implements Runnable {
     private AudioPlayer audioPlayer;
 
     // this generates "Saved Game!" on screen
-    private String saveMessage = "";
-    private long saveMessageTimer = 0;
+    private String saveMessage          = "";
+    private long saveMessageTimer       = 0;
     private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
     // this makes the transition to black
-    private boolean fadingOut = false; // this fades to black
-    private boolean fadingIn  = false; // this fades back from black
-    private int fadeAlpha     = 0;
-    private GameState fadeTarget = GameState.MENU;
-    private final int FADE_SPEED = 5;
+    private boolean fadingOut       = false; // this fades to black
+    private boolean fadingIn        = false; // this fades back from black
+    private int fadeAlpha           = 0;
+    private GameState fadeTarget    = GameState.MENU;
+    private final int FADE_SPEED    = 5;
 
-    public final static int TILES_DEFAULT_SIZE = 32;
+    public final static int TILES_DEFAULT_SIZE  = 32;
     public final static int SPRITE_DEFAULT_SIZE = 64;
-    public final static float SCALE = 1.5f;
-    public final static int TILES_IN_WIDTH = 26;
-    public final static int TILES_IN_HEIGHT = 14;
-    public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
-    public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
-    public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+    public final static float SCALE             = 1.5f;
+    public final static int TILES_IN_WIDTH      = 26;
+    public final static int TILES_IN_HEIGHT     = 14;
+    public final static int TILES_SIZE          = (int) (TILES_DEFAULT_SIZE * SCALE);
+    public final static int GAME_WIDTH          = TILES_SIZE * TILES_IN_WIDTH;
+    public final static int GAME_HEIGHT         = TILES_SIZE * TILES_IN_HEIGHT;
 
     private BufferedImage backgroundImg;
     private UI ui;
@@ -65,7 +62,7 @@ public class Game implements Runnable {
     public Game() {
         LoadSave.getAllLevels();
         initClasses();
-        updateBackground();
+        levelHandler.updateBackground();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);
@@ -80,10 +77,11 @@ public class Game implements Runnable {
 
         //TODO: spawnpoint & fix resizing of character
         player = new Player(200, 200, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
-        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
+
 
         //TODO: use similar logic to drawing tiles via getColor() @ ;
         // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
+        //int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
 //        int bossWidth = 250;
 //        int bossHeight = 250;
 //        float bossX = 200 + 53 * TILES_SIZE;
@@ -97,13 +95,18 @@ public class Game implements Runnable {
         slotScreen = new SlotScreen(this);
         pauseScreen = new PauseScreen(this);
         deathScreen = new DeathScreen(this);
+        playing = new Playing(this);
     }
 
-    public void updateLevelOffsets() {
-        Level current = levelHandler.getCurrentLevel();
-        int lvlTilesWide = current.getLevelData()[0].length;
-        int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
-        maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
+    public void initPlayerCharacter(PlayerCharacter selectedChar) {
+        levelHandler.loadLevel(1);
+        updateLevelOffsets();
+        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
+        player = new Player(200, 200, 160, 160, lvlData, selectedChar);
+        playing.setPlayer(player);
+        objectManager.loadObjects(levelHandler.getCurrentLevel());
+        playing.resetCamera();
+        startFadeTo(GameState.PLAYING);
     }
 
     private void startGameLoop() {
@@ -112,41 +115,20 @@ public class Game implements Runnable {
     }
 
     public void update() {
-
-        // FADE OUT — go from transparent to black
-        if (fadingOut) {
-            fadeAlpha += FADE_SPEED;
-            if (fadeAlpha >= 255) {
-                fadeAlpha  = 255;
-                fadingOut  = false;
-                fadingIn   = true;             // start fading back in
-                GameState.state = fadeTarget;  // switch to the new state
-            }
+        switch (GameState.state) {
+            case MENU               -> mainMenu.update();
+            case PLAYING            -> playing.update();
+            case CHARACTER_SELECT   -> characterSelect.update();
+            case DEATH              -> deathScreen.update();
+            case PAUSED, SLOTS -> {} //insert any update() if theres any.
         }
 
-        // FADE IN — go from black back to transparent
-        if (fadingIn) {
-            fadeAlpha -= FADE_SPEED;
-            if (fadeAlpha <= 0) {
-                fadeAlpha = 0;
-                fadingIn  = false;             // fade fully done
-            }
-        }
+        handleFadeLogic();
+    }
 
-        if (GameState.state == GameState.PLAYING) {
-            player.update();
-            //boss.update(player);
-            levelHandler.update();
-            objectManager.update(player);
-            checkCloseToBorder();
-            checkLevelCompleted();
-        }else if (GameState.state == GameState.CHARACTER_SELECT) {
-            characterSelect.update();
-        } else if (GameState.state == GameState.DEATH) {
-            deathScreen.update();
-        }
-
-        handleStateTransitions();
+    public void updateBackground() {
+        String bgPath = levelHandler.getCurrentLevel().getBackgroundPath();
+        this.backgroundImg = Utils.LoadSave.getSpriteAtlas(bgPath);
     }
 
     private void handleStateTransitions() {
@@ -156,44 +138,14 @@ public class Game implements Runnable {
         previousState = GameState.state;
     }
 
-    private void checkCloseToBorder() {
-        int playerX = (int) player.getHitbox().x;
-        int diff = playerX - xLvlOffset;
-
-        if (diff > rightBorder) {
-            xLvlOffset += diff - rightBorder;
-        } else if (diff < leftBorder) {
-            xLvlOffset += diff - leftBorder;
-        }
-
-        if (xLvlOffset > maxLvlOffsetX){
-            xLvlOffset = maxLvlOffsetX;
-        } else if (xLvlOffset < 0){
-            xLvlOffset = 0;
-        }
-    }
-
     public void render(Graphics g) {
-        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-
-        if (GameState.state == GameState.MENU) {
-            mainMenu.draw(g);
-        } else if (GameState.state == GameState.CHARACTER_SELECT) {
-            characterSelect.draw(g);
-        } else if (GameState.state == GameState.SLOTS) {
-            drawGameBackground(g);
-            slotScreen.draw(g);
-        } else if (GameState.state == GameState.PAUSED) {
-            drawGameBackground(g);
-            pauseScreen.draw(g);
-        } else if (GameState.state == GameState.DEATH) {
-            drawGameBackground(g);
-            deathScreen.draw(g);
-        } else if (GameState.state == GameState.PLAYING) {
-            drawGameBackground(g);
-            objectManager.draw(g, xLvlOffset);
-            ui.draw(g);
-            drawSaveMessage(g);
+        switch (GameState.state) {
+            case MENU -> mainMenu.draw(g);
+            case PLAYING -> playing.draw(g);
+            case CHARACTER_SELECT -> characterSelect.draw(g);
+            case SLOTS -> slotScreen.draw(g);
+            case PAUSED -> pauseScreen.draw(g);
+            case DEATH -> deathScreen.draw(g);
         }
 
         // it draws a fade overlay on top of everything
@@ -203,7 +155,7 @@ public class Game implements Runnable {
         }
     }
 
-    private void drawSaveMessage(Graphics g) {
+    public void drawSaveMessage(Graphics g) {
         if (!saveMessage.isEmpty()) {
             long elapsed = System.currentTimeMillis() - saveMessageTimer;
             if (elapsed < MESSAGE_DURATION) {
@@ -218,14 +170,17 @@ public class Game implements Runnable {
         }
     }
 
-    private void drawGameBackground(Graphics g) {
-        levelHandler.draw(g, xLvlOffset);
-        player.render(g, xLvlOffset);
+    public void drawGameBackground(Graphics g) {
+        int offset = playing.getxLvlOffset();
+        levelHandler.draw(g, offset);
+        player.render(g, offset);
         //boss.render(g, xLvlOffset);
     }
 
     public void resetAll() {
-        player.resetAll();
+        if (player != null) {
+            player.resetAll();
+        }
         objectManager.resetAllObjects();
         //TODO: enemy reset can go here.
     }
@@ -234,10 +189,9 @@ public class Game implements Runnable {
         player.resetAll();
         objectManager.resetAllObjects();
         //boss.reset();
-        // Reset level offset
-        xLvlOffset = 0;
+        playing.resetCamera();
         levelHandler.loadLevel(1);
-        updateBackground();
+        levelHandler.updateBackground();
         player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
         objectManager.loadObjects(levelHandler.getCurrentLevel());
     }
@@ -248,7 +202,6 @@ public class Game implements Runnable {
         fadeAlpha  = 0;
         fadeTarget = targetState;
     }
-
 
     /**
      * NOTE by Charlz:
@@ -306,15 +259,6 @@ public class Game implements Runnable {
         saveMessageTimer = System.currentTimeMillis();
     }
 
-    public void initPlayerCharacter(PlayerCharacter selectedChar) {
-        levelHandler.loadLevel(1);
-        updateLevelOffsets();
-        int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
-        player = new Player(200, 200, 160, 160, lvlData, selectedChar);
-        objectManager.loadObjects(levelHandler.getCurrentLevel());
-        startFadeTo(GameState.PLAYING);
-    }
-
     public BufferedImage getCharacterAtlas(PlayerCharacter character) {
         return switch (character) {
             case KAELTHORN -> LoadSave.getSpriteAtlas(LoadSave.Kaelthron_Atlas);
@@ -323,42 +267,29 @@ public class Game implements Runnable {
         };
     }
 
-    //TEMPORARY
-    private void checkLevelCompleted() {
-        // Get the width of the CURRENT level
-        int lvlWidth = levelHandler.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE;
-
-        // If player hits the right edge
-        if (player.getHitbox().x >= lvlWidth - (Game.TILES_SIZE * 2)) {
-            System.out.println("Level Complete Triggered!");
-            int nextLevel = levelHandler.getCurrentLevelNum() + 1;
-
-            if (nextLevel <= levelHandler.getAmountOfLevels()) {
-                // GO TO NEXT LEVEL
-                startFadeTo(GameState.PLAYING);
-                levelHandler.loadLevel(nextLevel);
-                updateBackground();
-                updateLevelOffsets(); // Refresh camera
-                objectManager.loadObjects(levelHandler.getCurrentLevel());
-                player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
-                player.resetAll();    // Move player back to start
-            } else {
-                // YOU WIN! (Go back to menu)
-                startFadeTo(GameState.MENU);
-                resetGame();
+    private void handleFadeLogic() {
+        if (fadingOut) {
+            fadeAlpha += FADE_SPEED;
+            if (fadeAlpha >= 255) {
+                fadeAlpha = 255;
+                fadingOut = false;
+                fadingIn = true;
+                GameState.state = fadeTarget;
+            }
+        }
+        if (fadingIn) {
+            fadeAlpha -= FADE_SPEED;
+            if (fadeAlpha <= 0) {
+                fadeAlpha = 0;
+                fadingIn = false;
             }
         }
     }
 
-    public void updateBackground() {
-        String bgPath = levelHandler.getCurrentLevel().getBackgroundPath();
-        this.backgroundImg = LoadSave.getSpriteAtlas(bgPath);
-    }
-
+    public void updateLevelOffsets() { playing.updateLevelOffsets(); }
     public void windowFocusLost() {
         player.resetDirectionBooleans();
     }
-
     public Player getPlayer() {return player;}
     public MainMenu getMainMenu() {return mainMenu;}
     public LevelHandler getLevelHandler() {return levelHandler;}
@@ -367,4 +298,8 @@ public class Game implements Runnable {
     public DeathScreen getDeathScreen() {return deathScreen;}
     public AudioPlayer getAudioPlayer() {return audioPlayer;}
     public CharacterSelect getCharacterSelect() { return characterSelect; }
+    public ObjectManager getObjectManager() { return objectManager; }
+    public UI getUi() { return ui; }
+    public BufferedImage getBackgroundImg() { return backgroundImg; }
+    public Playing getPlaying() { return playing; }
 }

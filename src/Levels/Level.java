@@ -32,7 +32,6 @@ public class Level {
     private void createLevelData() {
         lvlData = GetLevelData(img);
     }
-
     public int getSpriteIndex(int x, int y) {
         return lvlData[y][x];
     }
