@@ -6,6 +6,11 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import static Utils.Constants.NPCConstants.NINO_TQ;
+import static Utils.Constants.ObjectConstants.SPIKE_COLOR;
+import static Utils.Constants.ObjectConstants.VASE_COLOR;
+import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
+
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
         //-1 to ensure we check the exact edge of the body.
@@ -76,20 +81,20 @@ public class HelpMethods {
                 int greenValue = color.getGreen();
                 int blueValue = color.getBlue();
 
-                if (greenValue == 100) { //spawnpoint
+                if (greenValue == PLAYER_SPAWN) { //spawnpoint
                     playerSpawn.x = i * Game.TILES_SIZE;
                     playerSpawn.y = j * Game.TILES_SIZE;
                     System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = 18;
                 }
 
-                else if (blueValue == 130) { // vase
+                else if (blueValue == VASE_COLOR) { // vase
                     lvlData[j][i] = 18;
-                }
-                else if (blueValue == 131) { // spike
+                } else if (blueValue == SPIKE_COLOR) { // spike
                     lvlData[j][i] = 18;
-                }
-                else {
+                } else if (blueValue == NINO_TQ) {
+                    lvlData[j][i] = 18;
+                } else {
                     if (redValue >= 48) redValue = 0;
                     lvlData[j][i] = redValue;
                 }

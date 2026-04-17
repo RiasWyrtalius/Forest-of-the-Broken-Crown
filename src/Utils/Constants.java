@@ -23,14 +23,18 @@ public class Constants {
         public static final int LANDING = 5;
         public static final int DOUBLEJUMP = 6;
 
-        //TODO: Implement spawn point
-        //public static final int PLAYER_SPAWN = 100;
+        public static final int PLAYER_SPAWN = 100;
+    }
 
-        public static class ObjectConstants {
-            public static final int VASE = 0;
-            public static final int VASE_COLOR = 130;
-            public static final int SPIKE = 1;
-            public static final int SPIKE_COLOR = 131;
-        }
+    public static class ObjectConstants {
+        public static final int VASE = 0;
+        public static final int VASE_COLOR = 130;
+        public static final int SPIKE = 1;
+        public static final int SPIKE_COLOR = 131;
+    }
+
+    public static class NPCConstants {
+        public static final int NINO_TQ = 200;
+        public static final int NINO_ID = 200;
     }
 }

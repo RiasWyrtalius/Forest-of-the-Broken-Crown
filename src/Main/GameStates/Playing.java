@@ -1,10 +1,12 @@
 package Main.GameStates;
 
+import Entities.NPC;
 import Entities.Player;
 import Levels.Level;
 import Levels.LevelHandler;
 import Main.Core.Game;
 import Main.GameState;
+import Main.UI.DialogueManager;
 import Objects.ObjectManager;
 
 import java.awt.*;
@@ -13,9 +15,10 @@ import java.awt.event.MouseEvent;
 
 public class Playing {
     private Player player;
-    ObjectManager objectManager;
+    private ObjectManager objectManager;
     private Game game;
     private LevelHandler levelHandler;
+    private DialogueManager dialogueManager;
 
     private int xLvlOffset;
     private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
@@ -27,6 +30,7 @@ public class Playing {
         this.levelHandler = game.getLevelHandler();
         this.player = game.getPlayer();
         this.objectManager = game.getObjectManager();
+        this.dialogueManager = new DialogueManager();
     }
 
     public void update() {
@@ -35,14 +39,20 @@ public class Playing {
         game.getPlayer().update();
         checkCloseToBorder();
         checkLevelCompleted();
+
+        if (dialogueManager.isActive()) {
+            dialogueManager.update();
+        }
     }
 
     public void draw(Graphics g) {
         g.drawImage(game.getBackgroundImg(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-        game.drawGameBackground(g);
-        game.getObjectManager().draw(g, xLvlOffset);
+        levelHandler.draw(g, xLvlOffset);
+        objectManager.draw(g, xLvlOffset);
+        player.render(g, xLvlOffset);
         game.getUi().draw(g);
         game.drawSaveMessage(g);
+        dialogueManager.draw(g);
     }
 
     public void updateLevelOffsets() {
@@ -95,11 +105,22 @@ public class Playing {
     //INPUT METHODS
 
     public void keyPressed(KeyEvent e) {
+        if (dialogueManager.isActive() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            dialogueManager.skipOrNext();
+            return;
+        }
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.setJump(true);
             case KeyEvent.VK_ESCAPE -> GameState.state = GameState.PAUSED;
+            case KeyEvent.VK_ENTER -> {
+                NPC npc = objectManager.getHoveredNPC();
+                if (npc != null) {
+                    dialogueManager.startDialogue(npc.getDialogue());
+                }
+            }
         }
     }
 

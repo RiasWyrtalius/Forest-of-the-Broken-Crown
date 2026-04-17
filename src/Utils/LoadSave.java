@@ -25,6 +25,9 @@ public class LoadSave {
     //Pause
     public static final String PauseBg = "Pause/PauseBg.png";
 
+    //NPC
+    public static final String Nino_Atlas = "Characters/NPC/TheQueerSS.png";
+
     //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";
     public static final String Kaelthron_Atlas = "Characters/Hero/Kaelthorn/KaelthornSpriteSheet.png";

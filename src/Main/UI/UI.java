@@ -1,5 +1,6 @@
-package Main.Core;
+package Main.UI;
 
+import Main.Core.Game;
 import Utils.LoadSave;
 
 import java.awt.*;

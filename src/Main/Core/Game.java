@@ -8,6 +8,7 @@ import Levels.Level;
 import Levels.LevelHandler;
 import Main.GameState;
 import Main.GameStates.*;
+import Main.UI.UI;
 import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
@@ -75,7 +76,7 @@ public class Game implements Runnable {
         Level currentLvl = levelHandler.getCurrentLevel();
         Point spawn = currentLvl.getPlayerSpawn();
         player = new Player(spawn.x, spawn.y, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
-        objectManager = new ObjectManager();
+        objectManager = new ObjectManager(this);
         objectManager.loadObjects(levelHandler.getCurrentLevel());
 
         //TODO: use similar logic to drawing tiles via getColor() @ ;
