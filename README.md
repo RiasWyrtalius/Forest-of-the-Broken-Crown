@@ -1,4 +1,4 @@
-# README: Forest of the Broken Crown
+# Forest of the Broken Crown
 
 ---
 
@@ -11,15 +11,15 @@ In a kingdom where a shattered crown seeps corruption into the roots of the worl
 
 ## Key Features
 * **Scalable NPC System:** Interact with unique characters like **Chadon the Panda** and **Denbel the Sloth** using a data-driven system that supports typewriter-style dialogue.
-* **Unique Character Mechanics:**
-    * **Embjorn (The Snake):** High mobility with venom dashes and faster movement on narrow platforms.
-    <img width="258" height="221" alt="image" src="https://github.com/user-attachments/assets/2f1ee59a-7fb1-4a5d-8463-ac79d02eb962" />
+  
+## 🎮 The Forsaken Heroes
+These are not noble heroes, but individuals desperate for meaning in a world that cast them aside.
 
-    * **Kaelthorn (The Wolf Knight):** Controlled, heavy jumps and long-distance vertical leaps.
-    <img width="202" height="224" alt="image" src="https://github.com/user-attachments/assets/db10596f-a273-4f09-b80a-938f39f654ed" />
-
-    * **Sylvara (The Owl Mage):** Ranged "Gust" attacks, graceful double jumps, and slow-descent gliding.
-    <img width="207" height="198" alt="image" src="https://github.com/user-attachments/assets/47827a27-399e-4c5a-a199-1fdd6f64cab2" />
+| Character | Mechanics | Sprite Preview |
+| :--- | :--- | :--- |
+| **Embjorn, The Snake** | **Venom Dash:** A quick horizontal dash to slip past hazards. <br> **Slither Step:** Moves faster on narrow platforms. | <img width="150" alt="Embjorn" src="https://github.com/user-attachments/assets/2f1ee59a-7fb1-4a5d-8463-ac79d02eb962" /> |
+| **Kaelthorn, The Wolf Knight** | **Wolf Leap:** A long vertical jump for reaching far platforms. <br> **Steady Step:** Controlled jumps make landing easier. | <img width="202" alt="Kaelthorn" src="https://github.com/user-attachments/assets/db10596f-a273-4f09-b80a-938f39f654ed" /> |
+| **Sylvara, The Owl Mage** | **Gust:** A long-range magical wind attack. <br> **Flap and Float:** Double jumps and slow-descent gliding. | <img width="150" alt="Sylvara" src="https://github.com/user-attachments/assets/47827a27-399e-4c5a-a199-1fdd6f64cab2" /> |
 
 * **Resource Economy:**
     * **Hearts:** Limited health that does **not** regenerate; players must rely on healing items found throughout battle.
