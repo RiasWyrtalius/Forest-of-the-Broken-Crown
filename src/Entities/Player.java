@@ -46,7 +46,11 @@ public class Player extends Entity{
     public int invincibleCounter = 0;
     private final int INVINCIBILITY_TIME = 50; // 200 UPS = 1 sec / Quarter of a second
 
-    //TODO: Implement Mana
+    //Mana
+    private int manaBottles; // temporary
+    private int maxManaBottles;
+    private int manaRegenTick = 0;
+    private final int REGEN_THRESHOLD = 5 * 200;
 
     public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
@@ -58,6 +62,9 @@ public class Player extends Entity{
 
         this.maxLife = characterData.defaultLives;
         this.life = maxLife;
+
+        this.maxManaBottles = characterData.defaultManaBottles;
+        this.manaBottles = maxManaBottles;
 
         this.walkSpeed = 1.0f * Game.SCALE * characterData.speedMultiplier;
 
@@ -88,6 +95,7 @@ public class Player extends Entity{
         updateAnimationTick(); // then tick based on the correct action
         updatePos();
         updateHealthStatus();
+        updateMana();
     }
 
     private void updateHealthStatus() {
@@ -100,8 +108,16 @@ public class Player extends Entity{
         }
     }
 
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
+    private void updateMana() {
+        if (manaBottles < maxManaBottles) {
+            manaRegenTick++;
+            if (manaRegenTick >= REGEN_THRESHOLD) {
+                manaBottles++;
+                manaRegenTick = 0;
+            }
+        } else {
+            manaRegenTick = 0;
+        }
     }
 
     public void render(Graphics g, int lvlOffset) {
@@ -136,8 +152,8 @@ public class Player extends Entity{
     }
 
     public void loadAnimations() {
-
         String atlastPath = "";
+
         switch (characterData) {
             case KAELTHORN -> atlastPath = LoadSave.Kaelthron_Atlas;
             case SYLVARA -> atlastPath = LoadSave.Sylvara_Atlas;
@@ -265,7 +281,7 @@ public class Player extends Entity{
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
-                airSpeed += GRAVITY;
+                airSpeed += characterData.defaultGravity;
             } else {
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
                 if (airSpeed > 0) {
@@ -346,6 +362,11 @@ public class Player extends Entity{
         }
     }
 
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
     public void resetDirectionBooleans() { left = right = false; }
 
     public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
@@ -369,4 +390,7 @@ public class Player extends Entity{
 
     public void setY(float y) { this.y = y; }
     public void setX(float x) {this.x = x;}
+
+    public int getMaxManaBottles() { return maxManaBottles; }
+    public int getManaBottles() { return manaBottles; }
 }

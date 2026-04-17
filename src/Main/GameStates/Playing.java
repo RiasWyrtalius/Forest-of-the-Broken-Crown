@@ -2,7 +2,6 @@ package Main.GameStates;
 
 import Entities.NPC;
 import Entities.Player;
-import Levels.Level;
 import Levels.LevelHandler;
 import Main.Core.Game;
 import Main.GameState;

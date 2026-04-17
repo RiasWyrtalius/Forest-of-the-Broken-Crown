@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,9 @@ public class LoadSave {
     //ICON
     public static final String GAME_ICON = "Icon.jpg";
 
-    //Hearts
-    public static final String Hearts_Atlas = "Characters/Hero/Lives/Life.png";
+    //Stats
+    public static final String Hearts_Atlas = "Characters/Hero/Stats/Life.png";
+    public static final String Mana_Atlas = "Characters/Hero/Stats/Mana.png";
 
     //Character Selection
     public static final String CSelection_Atlas = "Characters/CharacterSelectBG.png";

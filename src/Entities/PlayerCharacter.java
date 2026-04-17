@@ -1,26 +1,30 @@
 package Entities;
 
+import Main.Core.Game;
+
+import static Utils.Constants.GRAVITY;
+
 public enum PlayerCharacter {
     KAELTHORN(4, 6, 6, 5, 1, 6,
             0,1,2,3,4,5,
             30, 50,
             34f, 30f,
-            5,
-            1.0f),
+            5, 10,
+            1.0f, GRAVITY),
 
     SYLVARA(4, 9, 9, 6, 1, 7, 5,
             0, 1, 2, 3, 4, 5, 6,
             32, 45,
             38f, 30f,
-            3,
-            1.3f),
+            3, 20,
+            1.3f, 0.02f * Game.SCALE),
 
     EMBJORN(4, 6, 6, 5, 1, 6,
             0, 1, 2, 3, 4, 5,
             40, 55,
             37f, 20f,
-            6,
-            1.2f);
+            6, 10,
+            1.2f, GRAVITY);
 
     //Amount of Sprites
     int spriteA_IDLE;
@@ -47,6 +51,9 @@ public enum PlayerCharacter {
     public int defaultLives;
     public float speedMultiplier;
 
+    public int defaultManaBottles;
+    public float defaultGravity;
+
     //For Sylvara specifically
     PlayerCharacter (int spriteA_IDLE,
                      int spriteA_WALKR,
@@ -62,12 +69,10 @@ public enum PlayerCharacter {
                      int rowAIRBORNE,
                      int rowDOUBLEJUMP,
                      int rowLANDING,
-                     int hitboxWidth,
-                     int hitboxHeight,
-                     float xOff,
-                     float yOff,
-                     int lives,
-                     float speedMult) {
+                     int hitboxWidth, int hitboxHeight,
+                     float xOff, float yOff,
+                     int lives, int mana,
+                     float speedMult, float gravity) {
 
         // Animation Sprite IDs
         this.spriteA_IDLE = spriteA_IDLE;
@@ -93,9 +98,11 @@ public enum PlayerCharacter {
         this.xOffset = xOff;
         this.yOffset = yOff;
 
-        //HP & Speed
+        //HP, Mana, Speed, Gravity
         this.defaultLives = lives;
+        this.defaultManaBottles = mana;
         this.speedMultiplier = speedMult;
+        this.defaultGravity = gravity;
     }
 
     //For KaelThorn & Embjorn specifically
@@ -111,17 +118,16 @@ public enum PlayerCharacter {
                      int rowJUMP,
                      int rowAIRBORNE,
                      int rowLANDING,
-                     int hitboxWidth,
-                     int hitboxHeight,
-                     float xOff,
-                     float yOff,
-                     int lives,
-                     float speedMult) {
+                     int hitboxWidth, int hitboxHeight,
+                     float xOff, float yOff,
+                     int lives, int mana,
+                     float speedMult, float gravity) {
         this(spriteA_IDLE, spriteA_WALKR, spriteA_WALKL, spriteA_JUMP, spriteA_AIRBORNE, 0, spriteA_LANDING,
                 rowIDLE, rowWALKR, rowWALKL, rowJUMP, rowAIRBORNE, -1, rowLANDING,
                 hitboxWidth, hitboxHeight,
                 xOff, yOff,
-                lives, speedMult);
+                lives, mana,
+                speedMult, gravity);
     }
 
     public int getSpriteAmountIDLE() { return spriteA_IDLE; }
