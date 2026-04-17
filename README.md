@@ -12,7 +12,7 @@ In a kingdom where a shattered crown seeps corruption into the roots of the worl
 ## Key Features
 * **Scalable NPC System:** Interact with unique characters like **Chadon the Panda** and **Denbel the Sloth** using a data-driven system that supports typewriter-style dialogue.
   
-## 🎮 The Forsaken Heroes
+## The Forsaken Heroes
 These are not noble heroes, but individuals desperate for meaning in a world that cast them aside.
 
 | Character | Mechanics | Sprite Preview |
