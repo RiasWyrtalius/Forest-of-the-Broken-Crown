@@ -13,13 +13,19 @@ import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
 
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
-        //-1 to ensure we check the exact edge of the body.
-        if (!IsSolid(x, y, lvlData)) // Top Left
-            if (!IsSolid(x + width - 1, y, lvlData)) // Top Right
-                if (!IsSolid(x, y + height - 1, lvlData)) // Bottom Left
-                    if (!IsSolid(x + width - 1, y + height - 1, lvlData)) // Bottom Right
-                        return true;
+        // Check Corners
+        if (!IsSolid(x, y, lvlData)) // Top-Left
+            if (!IsSolid(x + width, y, lvlData)) // Top-Right
+                if (!IsSolid(x, y + height, lvlData)) // Bottom-Left
+                    if (!IsSolid(x + width, y + height, lvlData)) // Bottom-Right
 
+                        if (!IsSolid(x, y + (height / 2), lvlData)) // Left-Middle
+                            if (!IsSolid(x + width, y + (height / 2), lvlData)) // Right-Middle
+
+                                if (!IsSolid(x + (width / 2), y, lvlData)) // Top-Middle
+                                    if (!IsSolid(x + (width / 2), y + height, lvlData)) // Bottom-Middle
+
+                                        return true; //if solid then no return
         return false;
     }
 
@@ -86,13 +92,7 @@ public class HelpMethods {
                     playerSpawn.y = j * Game.TILES_SIZE;
                     System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = 18;
-                }
-
-                else if (blueValue == VASE_COLOR) { // vase
-                    lvlData[j][i] = 18;
-                } else if (blueValue == SPIKE_COLOR) { // spike
-                    lvlData[j][i] = 18;
-                } else if (blueValue == NINO_TQ) {
+                } else if (blueValue == VASE_COLOR || blueValue == SPIKE_COLOR || blueValue == NINO_TQ) {
                     lvlData[j][i] = 18;
                 } else {
                     if (redValue >= 48) redValue = 0;

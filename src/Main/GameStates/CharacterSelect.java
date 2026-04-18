@@ -184,7 +184,7 @@ public class CharacterSelect {
                 startTransition(1);
                 break;
             case KeyEvent.VK_ENTER, KeyEvent.VK_SPACE:
-                game.initPlayerCharacter(characters[currentIndex], 0);
+                game.initPlayerCharacter(characters[currentIndex], 1);
                 break;
         }
     }

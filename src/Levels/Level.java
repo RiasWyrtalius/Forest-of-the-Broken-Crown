@@ -5,7 +5,7 @@ import Utils.HelpMethods;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import static Utils.HelpMethods.GetLevelData;
+
 
 public class Level {
 

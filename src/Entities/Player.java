@@ -27,6 +27,7 @@ public class Player extends Entity{
     private float yDrawOffset;
 
     private int[][] lvlData;
+    private int airValue;
 
     //Attack
     private long lastAttackTime;

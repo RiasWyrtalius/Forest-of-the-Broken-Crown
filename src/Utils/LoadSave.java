@@ -33,6 +33,11 @@ public class LoadSave {
     public static final String Kaelthron_Atlas = "Characters/Hero/Kaelthorn/KaelthornSpriteSheet.png";
     public static final String Embjorn_Atlas = "Characters/Hero/Embjorn/EmbjornSpriteSheet.png";
 
+//    //Map
+//    public static final int FOREST_AIR = 18;
+//    public static final int CAVE_AIR = 12;
+//    public static final int CASTLE_AIR = 9;
+
     //Level 1
     public static final String Level_Atlas = "Levels/Level1/TSFloor1.png";
     public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";

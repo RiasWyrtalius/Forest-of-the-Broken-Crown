@@ -31,6 +31,13 @@ public class Constants {
         public static final int VASE_COLOR = 130;
         public static final int SPIKE = 1;
         public static final int SPIKE_COLOR = 131;
+
+        public static final int SPIKE_FLOOR_MID = 0;
+        public static final int SPIKE_FLOOR_RIGHT = 1;
+        public static final int SPIKE_FLOOR_LEFT = 5;
+
+        public static final int SPIKE_LEFT = 3;
+        public static final int SPIKE_CEILING = 4;
     }
 
     public static class NPCConstants {
