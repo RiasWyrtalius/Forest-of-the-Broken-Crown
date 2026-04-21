@@ -70,6 +70,9 @@ public class AudioPlayer {
         }
     }
 
+    /**
+     * this is heavy for a game.. (wmplayer.exe)
+     * */
     public void playMP3Effect(String mp3Path) {
         // Use Windows Media Player with /play and /close flags to play without opening visible window
         try {

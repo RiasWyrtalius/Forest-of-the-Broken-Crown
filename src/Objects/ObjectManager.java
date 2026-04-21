@@ -67,6 +67,7 @@ public class ObjectManager {
     public void loadObjects(Levels.Level level) {
         vases.clear();
         spikes.clear();
+        npcs.clear();
 
         BufferedImage img = level.getLevelDataImg();
 
