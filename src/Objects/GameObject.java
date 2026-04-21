@@ -9,12 +9,24 @@ public abstract class GameObject {
     protected float x, y;
     protected int objectType;
     protected Rectangle2D.Float hitbox;
-    protected boolean active = true;
+    protected boolean doAnimation, active = true;
+    protected int aniTick, aniIndex, aniSpeed = 25;
 
     public GameObject(float x, float y, int objectType) {
         this.x = x;
         this.y = y;
         this.objectType = objectType;
+    }
+
+    protected void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= 5) {
+                aniIndex = 0;
+            }
+        }
     }
 
     protected void initHitbox(float w, float h) {
@@ -26,6 +38,7 @@ public abstract class GameObject {
         g.drawRect((int) (hitbox.x - xLevelOffset), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
     }
 
+    public int getObjType() { return objectType; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
     public Rectangle2D.Float getHitbox() { return hitbox; }

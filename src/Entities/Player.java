@@ -121,6 +121,22 @@ public class Player extends Entity{
         }
     }
 
+    public void changeHealth(int value) {
+        life += value;
+        if (life > maxLife) {
+            life = maxLife;
+        } else if (life <= 0) {
+            GameState.state = GameState.DEATH;
+        }
+    }
+
+    public void gainMana(int value) {
+        manaBottles += value;
+        if (manaBottles > maxManaBottles) {
+            manaBottles = maxManaBottles;
+        }
+    }
+
     public void render(Graphics g, int lvlOffset) {
 
         if (animations == null || animations[playerAction][animationIndex] == null) {

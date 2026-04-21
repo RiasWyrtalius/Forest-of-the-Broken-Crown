@@ -31,6 +31,17 @@ public class Constants {
 
         public static final int SPIKE_LEFT = 3;
         public static final int SPIKE_CEILING = 4;
+
+        public static final int HEALTH_POTION = 0;
+        public static final int MANA_POTION = 1;
+        public static final int HEAL_POTION_VALUE = 1;
+        public static final int MANA_POTION_VALUE = 5;
+
+        //40% chance, theres nothing.
+        public static final int POTION_DROP_CHANCE = 60;
+
+        public static final int HEALTH_CHANCE = 25; // Hearts are rare/valuable
+        public static final int MANA_CHANCE = 75;   // Mana is more common
     }
 
     public static class NPCConstants {
