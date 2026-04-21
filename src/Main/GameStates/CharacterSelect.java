@@ -2,6 +2,7 @@ package Main.GameStates;
 
 import Entities.PlayerCharacter;
 import Main.Core.Game;
+import Main.UI.UI;
 import Utils.HelpMethods;
 import Utils.LoadSave;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class CharacterSelect {
 
     private Font customFont;
     private Game game;
+    private UI ui;
     private PlayerCharacter[] characters = PlayerCharacter.values();
     private int currentIndex = 0;
 
@@ -95,12 +97,14 @@ public class CharacterSelect {
 
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        PlayerCharacter currentHero = characters[currentIndex];
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
         g.drawImage(bgSprites[bgAniIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
         if (bgAniIndex >= bgSprites.length - 1) {
             drawCharacter(g);
+            game.getUi().drawCharacterStats(g, currentHero);
         }
 
         drawUI(g);
@@ -129,7 +133,7 @@ public class CharacterSelect {
         g.setFont(customFont);
         String name = selected.name();
         int nameWidth = g.getFontMetrics().stringWidth(name);
-        g.drawString(name, (Game.GAME_WIDTH / 2) - (nameWidth / 2), y - 20);
+        g.drawString(name, (Game.GAME_WIDTH / 2) - (nameWidth / 2), y);
     }
 
     private void drawUI(Graphics g) {
