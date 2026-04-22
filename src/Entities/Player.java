@@ -3,7 +3,6 @@ package Entities;
 import Main.Core.Game;
 import Main.GameState;
 import static Utils.Constants.ANIMATION_SPEED;
-import static Utils.Constants.GRAVITY;
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.HelpMethods.*;
 
@@ -137,7 +136,7 @@ public class Player extends Entity{
         }
     }
 
-    public void render(Graphics g, int lvlOffset) {
+    public void render(Graphics g, int lvlOffset, int yLvlOffset) {
 
         if (animations == null || animations[playerAction][animationIndex] == null) {
             return;
@@ -160,12 +159,12 @@ public class Player extends Entity{
 
         g.drawImage(animations[playerAction][animationIndex],
                 (int)(hitbox.x - xDrawOffset) - lvlOffset + flipX,
-                (int)(hitbox.y - yDrawOffset),
+                (int)(hitbox.y - yDrawOffset) - yLvlOffset,
                 width * flipW, height, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
-        drawHitbox(g, lvlOffset);
+        drawHitbox(g, lvlOffset, yLvlOffset);
     }
 
     public void loadAnimations() {

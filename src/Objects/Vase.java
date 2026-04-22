@@ -47,11 +47,11 @@ public class Vase extends GameObject {
         }
     }
 
-    public void draw(Graphics g, int xLevelOffset) {
+    public void draw(Graphics g, int xLevelOffset, int yLvlOffset) {
         if ((active || breaking) && images != null && images[animationIndex] != null) {
             g.drawImage(images[animationIndex],
                     (int) (hitbox.x - xLevelOffset),
-                    (int) hitbox.y,
+                    (int) hitbox.y - yLvlOffset,
                     (int) hitbox.width,
                     (int) hitbox.height,
                     null);

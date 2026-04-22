@@ -20,9 +20,13 @@ public class Playing {
     private DialogueManager dialogueManager;
 
     private int xLvlOffset;
+    private int yLvlOffset;
     private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
     private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
+    private int bottomBorder = (int) (0.6 * Game.GAME_HEIGHT);
     private int maxLvlOffsetX;
+    private int maxLvlOffsetY;
 
     public Playing(Game game) {
         this.game = game;
@@ -46,9 +50,9 @@ public class Playing {
 
     public void draw(Graphics g) {
         g.drawImage(game.getBackgroundImg(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-        levelHandler.draw(g, xLvlOffset);
-        objectManager.draw(g, xLvlOffset);
-        player.render(g, xLvlOffset);
+        levelHandler.draw(g, xLvlOffset, yLvlOffset);
+        objectManager.draw(g, xLvlOffset, yLvlOffset);
+        player.render(g, xLvlOffset, yLvlOffset);
         game.getUi().draw(g);
         game.drawSaveMessage(g);
         dialogueManager.draw(g);
@@ -59,21 +63,34 @@ public class Playing {
         maxLvlOffsetX = (lvlTilesWide - Game.TILES_IN_WIDTH) * Game.TILES_SIZE;
     }
 
-    public void checkCloseToBorder() {
-        int playerX = (int) game.getPlayer().getHitbox().x;
-        int diff = playerX - xLvlOffset;
+    private void checkCloseToBorder() {
+        int playerX = (int) player.getHitbox().x;
+        int diffX = playerX - xLvlOffset;
 
-        if (diff > rightBorder) {
-            xLvlOffset += diff - rightBorder;
-        } else if (diff < leftBorder) {
-            xLvlOffset += diff - leftBorder;
-        }
+        // Horizontal Scroll
+        if (diffX > rightBorder)
+            xLvlOffset += diffX - rightBorder;
+        else if (diffX < leftBorder)
+            xLvlOffset += diffX - leftBorder;
 
-        if (xLvlOffset > maxLvlOffsetX){
-            xLvlOffset = maxLvlOffsetX;
-        } else if (xLvlOffset < 0){
-            xLvlOffset = 0;
-        }
+        if (xLvlOffset < 0) xLvlOffset = 0;
+        else if (xLvlOffset > maxLvlOffsetX) xLvlOffset = maxLvlOffsetX;
+
+        // Vertical Scroll
+        int playerY = (int) player.getHitbox().y;
+        int diffY = playerY - yLvlOffset;
+
+        if (diffY > bottomBorder)
+            yLvlOffset += diffY - bottomBorder;
+        else if (diffY < topBorder)
+            yLvlOffset += diffY - topBorder;
+
+        // this calculates the max vertical scroll based on whatever the map height is.
+        int lvlHeightPixels = levelHandler.getCurrentLevel().getLevelData().length * Game.TILES_SIZE;
+        maxLvlOffsetY = lvlHeightPixels - Game.GAME_HEIGHT;
+
+        if (yLvlOffset < 0) yLvlOffset = 0;
+        else if (yLvlOffset > maxLvlOffsetY) yLvlOffset = maxLvlOffsetY;
     }
 
     //TEMPORARY
@@ -102,7 +119,6 @@ public class Playing {
     }
 
     //INPUT METHODS
-
     public void keyPressed(KeyEvent e) {
         if (dialogueManager.isActive() && e.getKeyCode() == KeyEvent.VK_ENTER) {
             dialogueManager.skipOrNext();
@@ -136,6 +152,6 @@ public class Playing {
     }
 
     public int getxLvlOffset() { return xLvlOffset; }
-
+    public int getyLvlOffset() { return yLvlOffset; }
     public void setPlayer(Player player) { this.player = player; }
 }

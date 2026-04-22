@@ -16,7 +16,7 @@ public enum PlayerCharacter {
 
     SYLVARA(4, 9, 9, 6, 1, 7, 5,
             0, 1, 2, 3, 4, 5, 6,
-            32, 45,
+            20, 45,
             38f, 30f,
             3, 20,
             1.3f, 0.02f * Game.SCALE,

@@ -146,24 +146,24 @@ public class ObjectManager {
         }
     }
 
-    public void draw(Graphics g, int xLvlOffset) {
+    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Vase v : vases) {
             if (v.isActive()) {
-                v.draw(g, xLvlOffset);
+                v.draw(g, xLvlOffset, yLvlOffset);
             }
         }
 
         for (Spike s : spikes) {
-            s.draw(g, xLvlOffset);
+            s.draw(g, xLvlOffset, yLvlOffset);
         }
 
         for (NPC npc : npcs) {
-            npc.draw(g, xLvlOffset);
+            npc.draw(g, xLvlOffset, yLvlOffset);
         }
 
         for (Potion p : potions) {
             if (p.isActive()) {
-                p.draw(g, xLvlOffset);
+                p.draw(g, xLvlOffset, yLvlOffset);
             }
         }
     }

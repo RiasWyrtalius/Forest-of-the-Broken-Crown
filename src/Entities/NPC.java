@@ -33,15 +33,15 @@ public class NPC extends Entity {
         }
     }
 
-    public void draw(Graphics g, int xLvlOffset) {
+    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         int drawX = (int)(hitbox.x - xLvlOffset) - (width - (int)hitbox.width) / 2;
-        int drawY = (int)(hitbox.y + hitbox.height) - height;
+        int drawY = (int)(hitbox.y + hitbox.height) - height - yLvlOffset;
 
         if (isHovered) {
             g.setColor(Color.WHITE);
 
             int arrowCenterX = (int)(hitbox.x - xLvlOffset + (hitbox.width / 2));
-            int arrowTopY = (int)(hitbox.y + 5);
+            int arrowTopY = (int)(hitbox.y + 5) - yLvlOffset;
 
             int[] xPoints = {arrowCenterX - 8, arrowCenterX + 8, arrowCenterX};
             int[] yPoints = {arrowTopY, arrowTopY, arrowTopY + 10};

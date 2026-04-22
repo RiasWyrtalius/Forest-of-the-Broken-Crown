@@ -52,7 +52,7 @@ public class Boss extends Entity {
     public void render(Graphics g, int xLvlOffset) {
         g.drawImage(sprite, (int) (x - xLvlOffset), (int) y, width, height, null);
         // Uncomment to draw hitbox for debugging
-        drawHitbox(g, xLvlOffset);
+//        drawHitbox(g, xLvlOffset);
     }
 
     public int getHealth() {

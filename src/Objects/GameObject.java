@@ -33,9 +33,9 @@ public abstract class GameObject {
         hitbox = new Rectangle2D.Float(x, y, w * Game.SCALE, h * Game.SCALE);
     }
 
-    public void drawHitbox(Graphics g, int xLevelOffset) {
+    public void drawHitbox(Graphics g, int xLevelOffset, int yLevelOffset) {
         g.setColor(Color.PINK);
-        g.drawRect((int) (hitbox.x - xLevelOffset), (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        g.drawRect((int) (hitbox.x - xLevelOffset), (int) (hitbox.y - yLevelOffset), (int) hitbox.width, (int) hitbox.height);
     }
 
     public int getObjType() { return objectType; }

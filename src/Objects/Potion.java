@@ -55,7 +55,7 @@ public class Potion extends GameObject {
         else if (hoverOffset <= 0) up = true;
     }
 
-    public void draw(Graphics g, int xLvlOffset) {
+    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         if (active) {
             Graphics2D g2d = (Graphics2D) g;
 
@@ -65,11 +65,11 @@ public class Potion extends GameObject {
 
             g.drawImage(imgs[aniIndex],
                     (int) (hitbox.x - xLvlOffset - (6 * Game.SCALE)),
-                    (int) (hitbox.y - (hoverOffset * 10) - (6 * Game.SCALE)),
+                    (int) (hitbox.y - (hoverOffset * 10) - (6 * Game.SCALE) - yLvlOffset),
                     (int) (32 * Game.SCALE),
                     (int) (32 * Game.SCALE),
                     null);
-            drawHitbox(g, xLvlOffset);
+            drawHitbox(g, xLvlOffset, yLvlOffset);
         }
     }
 }

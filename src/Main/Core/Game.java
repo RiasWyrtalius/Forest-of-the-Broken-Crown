@@ -200,21 +200,6 @@ public class Game implements Runnable {
         }
     }
 
-    public void drawGameBackground(Graphics g) {
-        int offset = playing.getxLvlOffset();
-        levelHandler.draw(g, offset);
-        player.render(g, offset);
-        //boss.render(g, xLvlOffset);
-    }
-
-    public void resetAll() {
-        if (player != null) {
-            player.resetAll();
-        }
-        objectManager.resetAllObjects();
-        //TODO: enemy reset can go here.
-    }
-
     public void resetGame() {
         player.resetAll();
         objectManager.resetAllObjects();
