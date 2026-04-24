@@ -1,5 +1,8 @@
 package Entities;
 
+import Entities.Passives.EmbjornPassive;
+import Entities.Passives.KaelthornPassive;
+import Entities.Passives.SylvaraPassive;
 import Main.Core.Game;
 
 import static Utils.Constants.GRAVITY;
@@ -18,6 +21,7 @@ public enum PlayerCharacter {
             34f, 30f,
             5, 10,
             1.0f, GRAVITY,
+            new KaelthornPassive(),
             "A broken oathbearer and former noble knight who was banished as a traitor after his liege turned into a tyrant. " +
                     "He specializes in precision platforming with a high-reaching Wolf Leap and controlled, steady jumps."),
 
@@ -27,6 +31,7 @@ public enum PlayerCharacter {
             38f, 30f,
             3, 20,
             1.3f, 0.02f * Game.SCALE,
+            new SylvaraPassive(),
             "A once-bright mystic whose magic fractured into a shadow known as the Fallen Owl Witch. " +
                     "She is a ranged specialist who uses Gust magic to strike from a distance and can gracefully glide over collapsing terrain."),
 
@@ -36,6 +41,7 @@ public enum PlayerCharacter {
             32f, 20f,
             6, 10,
             1.2f, GRAVITY,
+            new EmbjornPassive(),
             "A former temple oracle branded a deceiver after his prophecies turned to madness. " +
             "He slithers through the forest with high mobility, using Venom Dashes to slip past hazards and moving faster on narrow platforms.");
 
@@ -67,6 +73,8 @@ public enum PlayerCharacter {
     public int defaultManaBottles;
     public float defaultGravity;
 
+    private final Passive passive;
+
     public String description = "";
 
     //For Sylvara specifically
@@ -76,6 +84,7 @@ public enum PlayerCharacter {
                      float xOff, float yOff,
                      int lives, int mana,
                      float speedMult, float gravity,
+                     Passive passive,
                      String desc) {
 
         // Animation Sprite IDs
@@ -108,6 +117,8 @@ public enum PlayerCharacter {
         this.speedMultiplier = speedMult;
         this.defaultGravity = gravity;
 
+        this.passive = passive;
+
         this.description = desc;
     }
 
@@ -118,6 +129,7 @@ public enum PlayerCharacter {
                      float xOff, float yOff,
                      int lives, int mana,
                      float speedMult, float gravity,
+                     Passive passive,
                      String desc) {
         this(spriteA_IDLE, spriteA_WALKR, spriteA_WALKL, spriteA_JUMP, spriteA_AIRBORNE, 0, spriteA_LANDING,
                 rowIDLE, rowWALKR, rowWALKL, rowJUMP, rowAIRBORNE, -1, rowLANDING,
@@ -125,6 +137,7 @@ public enum PlayerCharacter {
                 xOff, yOff,
                 lives, mana,
                 speedMult, gravity,
+                passive,
                 desc);
     }
 
@@ -132,5 +145,6 @@ public enum PlayerCharacter {
     public int getRowIDLE() { return rowIDLE; }
     public int getLives() { return defaultLives; }
     public int getMana() { return defaultManaBottles; }
+    public Passive getPassive() { return passive; }
     public String getDescription() { return description; }
 }

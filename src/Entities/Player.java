@@ -96,6 +96,7 @@ public class Player extends Entity{
         updatePos();
         updateHealthStatus();
         updateMana();
+        characterData.getPassive().update(this);
     }
 
     private void updateHealthStatus() {
@@ -327,7 +328,7 @@ public class Player extends Entity{
     private void jump() {
         if (jumpPressed) return; // If we haven't released the key, don't jump again!
 
-        maxJumps = (characterData == PlayerCharacter.SYLVARA) ? 2 : 1;
+        maxJumps= characterData.getPassive().getMaxJumps();
 
         if (inAir && jumpCount >= maxJumps)
             return;
@@ -337,6 +338,8 @@ public class Player extends Entity{
             inAir = true;
             jumpCount++;
             jumpPressed = true; // Lock the jump until the key is released
+
+            characterData.getPassive().onJump(this);
 
             if (jumpCount == 2) {
                 playerAction = DOUBLEJUMP;
@@ -379,30 +382,28 @@ public class Player extends Entity{
     }
 
 
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
-    }
-
-    public void resetDirectionBooleans() { left = right = false; }
+    public void setAttacking(boolean attacking) { this.attacking = attacking; }
+    public void setWalkSpeed(float walkSpeed) { this.walkSpeed = walkSpeed; }
 
     public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
+    public PlayerCharacter getCharacterData() { return characterData; }
 
     public float getAirSpeed() { return airSpeed; }
     public void setAirSpeed(float airSpeed) { this.airSpeed = airSpeed; }
+
     public float getJumpSpeed() { return jumpSpeed; }
-
-    public boolean isLeft() { return left; }
-    public void setLeft(boolean left) { this.left = left; }
-
-    public boolean isRight() { return right; }
-    public void setRight(boolean right) { this.right = right; }
-
     public void setJump (boolean jump) {
         this.jump = jump;
         if (!jump) {
             jumpPressed = false; // if released, then jump
         }
     }
+
+    public void resetDirectionBooleans() { left = right = false; }
+    public boolean isLeft() { return left; }
+    public void setLeft(boolean left) { this.left = left; }
+    public boolean isRight() { return right; }
+    public void setRight(boolean right) { this.right = right; }
 
     public void setY(float y) { this.y = y; }
     public void setX(float x) {this.x = x;}

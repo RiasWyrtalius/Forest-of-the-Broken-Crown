@@ -33,6 +33,8 @@ public class CharacterSelect {
 
     private Rectangle hoveredBtn = null;
 
+    private int mouseX, mouseY;
+
     // UI Elements
     private Rectangle leftArrow = new Rectangle(150, 300, 60, 60);
     private Rectangle rightArrow = new Rectangle(Game.GAME_WIDTH - 210, 300, 60, 60);
@@ -102,12 +104,12 @@ public class CharacterSelect {
 
         g.drawImage(bgSprites[bgAniIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
+        drawUI(g);
+
         if (bgAniIndex >= bgSprites.length - 1) {
             drawCharacter(g);
-            game.getUi().drawCharacterStats(g, currentHero);
+            game.getUi().drawCharacterStats(g, currentHero, mouseX, mouseY);
         }
-
-        drawUI(g);
     }
 
     private void drawCharacter(Graphics g) {
@@ -169,6 +171,8 @@ public class CharacterSelect {
     }
 
     public void mouseMoved(int x, int y) {
+        this.mouseX = x;
+        this.mouseY = y;
         Point mousePos = new Point(x, y);
 
         if (leftArrow.contains(mousePos)) hoveredBtn = leftArrow;

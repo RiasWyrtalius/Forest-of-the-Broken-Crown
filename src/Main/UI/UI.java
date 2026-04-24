@@ -85,34 +85,85 @@ public class UI {
         }
     }
 
-    public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero) {
+    public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero, int mouseX, int mouseY) {
+        drawHeroLore(g, selectedHero);
+        drawVitalStats(g, selectedHero);
+        drawPassiveSection(g, selectedHero, mouseX, mouseY);
+        //TODO: drawAbilitySection(g, selectedHero, mouseX, mouseY);
+    }
+
+    private void drawHeroLore(Graphics g, PlayerCharacter hero) {
         int descWidth = 650;
         int descX = (Game.GAME_WIDTH / 2) - (descWidth / 2);
-        int descY = slotY - 120;
 
         g.setFont(customFont.deriveFont(Font.PLAIN, 20));
         g.setColor(new Color(142, 142, 142));
-        drawWrappedString(g, selectedHero.getDescription(), descX + 20, descY + 420, descWidth - 40);
+        drawWrappedString(g, hero.getDescription(), descX + 20, slotY + 300, descWidth - 40);
+    }
 
-        //HP
+    private void drawVitalStats(Graphics g, PlayerCharacter hero) {
+        g.setFont(customFont);
+
+        // HP
         g.drawImage(heartSprite[0], slotX, slotY + 80, 64, 64, null);
         g.setColor(Color.RED);
-        g.setFont(customFont);
-        g.drawString(String.valueOf(selectedHero.getLives()), slotX + 70, slotY + 120);
+        g.drawString(String.valueOf(hero.getLives()), slotX + 70, slotY + 120);
 
-        //MANA
-        // Drawing the mana icon and the bottle count
+        // MANA
         g.drawImage(manaSprite[0], slotX, slotY + 150, 64, 64, null);
         g.setColor(new Color(0, 150, 255));
-        g.drawString(String.valueOf(selectedHero.getMana()), slotX + 70, slotY + 190);
+        g.drawString(String.valueOf(hero.getMana()), slotX + 70, slotY + 190);
+    }
 
-        //ABILITY
-        /*
-        g.setColor(new Color(0, 255, 0, 100));
-        g.drawRect(slotX + 450, slotY + 60, 200, 150);
-        g.setColor(Color.GREEN);
-        g.drawString("ABILITY:", slotX + 460, slotY + 40);
-        */
+    private void drawPassiveSection(Graphics g, PlayerCharacter hero, int mouseX, int mouseY) {
+        g.setFont(customFont.deriveFont(Font.PLAIN, 25));
+        int labelX = slotX + 500;
+        int labelY = slotY + 100;
+
+        //label
+        g.setColor(new Color(170, 168, 168));
+        String label = "Passive: ";
+        g.drawString(label, labelX, labelY);
+
+        //name
+        int labelWidth = g.getFontMetrics().stringWidth(label);
+        g.setColor(Color.YELLOW);
+        String passiveName = hero.getPassive().getName();
+        g.drawString(passiveName, labelX + labelWidth, labelY);
+
+        //tooltip check
+        int totalWidth = labelWidth + g.getFontMetrics().stringWidth(passiveName);
+        if (isMouseOver(mouseX, mouseY, labelX, labelY, totalWidth, g.getFontMetrics().getHeight())) {
+            drawPassiveTooltip(g, mouseX, mouseY, hero.getPassive().getDescription());
+        }
+    }
+
+    private void drawPassiveTooltip(Graphics g, int x, int y, String description) {
+        g.setFont(customFont.deriveFont(Font.PLAIN, 18));
+        FontMetrics fm = g.getFontMetrics();
+
+        int padding = 10;
+        int maxWidth = 300;
+
+        //tooltip dimensions
+        int boxW = Math.min(fm.stringWidth(description) + (padding * 2), maxWidth);
+        int boxH = (fm.stringWidth(description) / (maxWidth - padding * 2) + 1) * fm.getHeight() + (padding * 2);
+
+        g.setColor(new Color(0, 0, 0, 220));
+        g.fillRect(x + 15, y + 15, boxW, boxH);
+
+        //TODO: replace with graphics
+        //border
+        g.setColor(Color.LIGHT_GRAY);
+        g.drawRect(x + 15, y + 15, boxW, boxH);
+
+        //desc
+        g.setColor(Color.WHITE);
+        drawWrappedString(g, description, x + 15 + padding, y + 15 + padding + fm.getAscent(), boxW - padding);
+    }
+
+    private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y - height && mouseY <= y;
     }
 
     private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {
