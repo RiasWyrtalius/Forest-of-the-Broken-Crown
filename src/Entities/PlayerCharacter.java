@@ -4,6 +4,13 @@ import Main.Core.Game;
 
 import static Utils.Constants.GRAVITY;
 
+/**
+ * Previous Hitbox Values:
+ * - Kael: 30, 50
+ * - Syl : 32, 45
+ * - Emb : 40, 55
+ */
+
 public enum PlayerCharacter {
     KAELTHORN(4, 6, 6, 5, 1, 6,
             0,1,2,3,4,5,
@@ -16,7 +23,7 @@ public enum PlayerCharacter {
 
     SYLVARA(4, 9, 9, 6, 1, 7, 5,
             0, 1, 2, 3, 4, 5, 6,
-            32, 45,
+            30, 45,
             38f, 30f,
             3, 20,
             1.3f, 0.02f * Game.SCALE,
@@ -25,8 +32,8 @@ public enum PlayerCharacter {
 
     EMBJORN(4, 6, 6, 5, 1, 6,
             0, 1, 2, 3, 4, 5,
-            40, 55,
-            37f, 20f,
+            30, 55,
+            32f, 20f,
             6, 10,
             1.2f, GRAVITY,
             "A former temple oracle branded a deceiver after his prophecies turned to madness. " +
