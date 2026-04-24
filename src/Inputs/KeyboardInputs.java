@@ -20,7 +20,15 @@ public class KeyboardInputs implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (GameState.state) {
             case MENU -> game.getMainMenu().keyPressed(e);
-            case PLAYING -> game.getPlaying().keyPressed(e);
+            case PLAYING -> {
+                //temp save keybind
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    game.getSlotScreen().saveToSlot(1);
+                    System.out.println("DEBUG: Quick Save Successful!");
+                } else {
+                    game.getPlaying().keyPressed(e);
+                }
+            }
             case CHARACTER_SELECT -> game.getCharacterSelect().keyPressed(e);
             case PAUSED -> {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE)

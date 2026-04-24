@@ -46,7 +46,6 @@ public class SlotScreen {
         drawSlot(g, slot2, 2);
         drawSlot(g, slot3, 3);
 
-
         if (mode.equals("LOAD")) {
             drawDeleteButton(g, deleteBtn1, 1);
             drawDeleteButton(g, deleteBtn2, 2);
@@ -76,7 +75,8 @@ public class SlotScreen {
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 float x = Float.parseFloat(br.readLine());
                 float y = Float.parseFloat(br.readLine());
-                int levelNum = Integer.parseInt(br.readLine());
+                String lvlLine = br.readLine();
+                int levelNum = Integer.parseInt(lvlLine);
                 br.close();
 
                 g.setColor(Color.WHITE);
@@ -140,12 +140,12 @@ public class SlotScreen {
         }
     }
 
-    private void saveToSlot(int slotNum) {
+    public void saveToSlot(int slotNum) {
         try {
             FileWriter fw = new FileWriter("save_slot" + slotNum + ".txt");
             fw.write(game.getPlayer().getHitbox().x + "\n");
             fw.write(game.getPlayer().getHitbox().y + "\n");
-            fw.write(game.getLevelHandler().getCurrentLevel() + "\n");
+            fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
             fw.close();
 
             game.setSaveMessage("Saved Game!");
@@ -160,21 +160,27 @@ public class SlotScreen {
         File file = new File("save_slot" + slotNum + ".txt");
         if (!file.exists()) return;
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            float x = Float.parseFloat(br.readLine());
-            float y = Float.parseFloat(br.readLine());
-            int levelNum = Integer.parseInt(br.readLine());
-            br.close();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String lineX = br.readLine();
+            String lineY = br.readLine();
+            String lineLvl = br.readLine();
 
-            game.getPlayer().getHitbox().x = x;
-            game.getPlayer().getHitbox().y = y;
-            game.getLevelHandler().loadLevel(levelNum);
+            if (lineX != null && lineY != null && lineLvl != null) {
+                float x = Float.parseFloat(lineX.trim());
+                float y = Float.parseFloat(lineY.trim());
+                int levelNum = Integer.parseInt(lineLvl.trim());
 
-            GameState.state = GameState.PLAYING;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+                if (levelNum >= 0) {
+                    game.getPlayer().getHitbox().x = x;
+                    game.getPlayer().getHitbox().y = y;
+                    game.getLevelHandler().loadLevel(levelNum);
+                    GameState.state = GameState.PLAYING;
+                } else {
+                    System.out.println("Load Failed: Negative level index found in file.");
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error loading slot: " + e.getMessage());
         }
     }
 

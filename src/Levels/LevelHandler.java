@@ -86,8 +86,14 @@ public class LevelHandler {
 
     public void loadLevel(int levelNum) {
         this.currentLevelNum = levelNum;
-        this.lvlIndex = levelNum - 1;
-        if (lvlIndex >= levels.size()) lvlIndex = 0;
+        if (levelNum == 0) {
+            this.lvlIndex = 0;
+        } else {
+            this.lvlIndex = levelNum - 1;
+        }
+
+        if (lvlIndex < 0) lvlIndex = 0;
+        if (lvlIndex >= levels.size()) lvlIndex = levels.size() - 1;
 
         Point p = levels.get(lvlIndex).getPlayerSpawn();
         System.out.println("Loaded Level " + levelNum + " - Spawn: " + p.x + ", " + p.y);
@@ -98,4 +104,6 @@ public class LevelHandler {
     public Level getCurrentLevel() { return levels.get(lvlIndex); }
     public int getAmountOfLevels() { return levels.size(); }
     public int getCurrentLevelNum() { return currentLevelNum; }
+
+    public int getLevelIndex() { return lvlIndex; }
 }
