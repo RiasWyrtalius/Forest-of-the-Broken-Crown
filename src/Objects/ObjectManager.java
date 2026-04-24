@@ -41,12 +41,6 @@ public class ObjectManager {
             }
         }
 
-        for (Spike s : spikes) {
-            if (s.getHitbox().intersects(player.getHitbox())) {
-                player.loseLife();
-            }
-        }
-
         for (NPC npc : npcs) {
             npc.update();
 
@@ -93,7 +87,7 @@ public class ObjectManager {
                     vases.add(new Vase(i * Game.TILES_SIZE, j * Game.TILES_SIZE, VASE));
                 } else if (value == SPIKE_COLOR) {
                     int spikeIndex = color.getGreen();
-                    spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, SPIKE, spikeImgs, spikeIndex));
+                    spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, spikeIndex, spikeImgs, spikeIndex));
                 } else if (value == NINO_TQ) {
                     //System.out.println("NPC Spawned at: " + i + ", " + j);
                     String[] lines = Utils.DialogueData.getLinesFor(npcID);
@@ -189,6 +183,22 @@ public class ObjectManager {
 
             // Debug Check
             //System.out.println("Drop successful! Type: " + (potionType == 0 ? "Health" : "Mana"));
+        }
+    }
+
+    public void checkSpikesTouched(Player p) {
+        for (Spike s : spikes) {
+            if (s.getHitbox().intersects(p.getHitbox())) {
+                switch (s.getSpriteIndex()) {
+                    case SPIKE_FLOOR_MID, SPIKE_FLOOR_LEFT, SPIKE_FLOOR_RIGHT, SPIKE_LEFT -> {
+                        p.teleportToSpawn();
+                        p.loseLife();
+                    }
+                    default -> {
+                        p.changeHealth(-1); //ceiling/wall spikes
+                    }
+                }
+            }
         }
     }
 

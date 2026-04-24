@@ -40,6 +40,7 @@ public class Playing {
         levelHandler.update();
         objectManager.update(game.getPlayer());
         game.getPlayer().update();
+        objectManager.checkSpikesTouched(player);
         checkCloseToBorder();
         checkLevelCompleted();
 

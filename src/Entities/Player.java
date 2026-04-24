@@ -122,10 +122,21 @@ public class Player extends Entity{
     }
 
     public void changeHealth(int value) {
+
+        //gain hp
+        if (value > 0) {
+            life += value;
+            if (life > maxLife) life = maxLife;
+            return;
+        }
+
+        if (invincible) return;
+
         life += value;
-        if (life > maxLife) {
-            life = maxLife;
-        } else if (life <= 0) {
+        invincible = true;
+        invincibleCounter = 0;
+
+        if (life <= 0) {
             GameState.state = GameState.DEATH;
         }
     }
@@ -372,6 +383,17 @@ public class Player extends Entity{
         if (!isEntityOnFloor(hitbox, lvlData)) {
             inAir = true;
         }
+    }
+
+    public void teleportToSpawn() {
+        resetDirectionBooleans();
+        inAir = true;
+        moving = false;
+        playerAction = IDLE;
+
+        //spawn point
+        hitbox.x = x;
+        hitbox.y = y;
     }
 
     public void updateLevelData(int[][] lvlData) {

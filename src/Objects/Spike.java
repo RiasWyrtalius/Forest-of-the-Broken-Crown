@@ -9,12 +9,13 @@ import static Utils.Constants.ObjectConstants.*;
 public class Spike extends GameObject {
     private BufferedImage[] imgs;
     private int spriteIndex;
+    private int spikeType;
 
     public Spike(float x, float y, int objectType, BufferedImage[] imgs, int spriteIndex) {
         super(x, y, objectType);
         this.imgs = imgs;
         this.spriteIndex = spriteIndex;
-
+        this.spikeType = objectType;
         initDynamicHitbox();
     }
 
@@ -69,4 +70,6 @@ public class Spike extends GameObject {
 
         drawHitbox(g, xLvlOffset, yLvlOffset);
     }
+
+    public int getSpriteIndex() { return spriteIndex; }
 }
