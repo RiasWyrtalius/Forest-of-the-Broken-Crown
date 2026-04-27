@@ -26,13 +26,16 @@ public class LevelHandler {
     private void importAllLevelsAtlases() {
         levelSprite = new BufferedImage[levels.size()][];
         levelSprite[0] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.Level_Atlas));
-        levelSprite[1] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelTwo_Atlas));
-        levelSprite[2] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelThree_Atlas));
+        levelSprite[1] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.Level_Atlas));
+        levelSprite[2] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelTwo_Atlas));
+        levelSprite[3] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelThree_Atlas));
     }
 
     private void buildAllLevels() {
         // Level 1: Forest
         levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_DATA), LoadSave.Level_Atlas, LoadSave.LEVELONE_BACKGROUND_IMAGE));
+        // Level 2: Forest - Boss
+        levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_BOSS_DATA), LoadSave.Level_Atlas, LoadSave.LEVELONE_BACKGROUND_IMAGE));
         // Level 2: Cave
         levels.add(new Level(LoadSave.getSpriteAtlas(LoadSave.LEVEL_TWO_DATA), LoadSave.LevelTwo_Atlas, LoadSave.LEVELTWO_BACKGROUND_IMAGE));
         // Level 3: Castle

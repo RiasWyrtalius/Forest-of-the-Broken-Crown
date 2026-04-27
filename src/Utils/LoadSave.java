@@ -38,6 +38,9 @@ public class LoadSave {
     public static final String LEVEL_ONE_DATA = "Levels/Level1/level_one_data.png";
     public static final String LEVELONE_BACKGROUND_IMAGE = "Levels/Level1/Forest.jpeg";
 
+    //Level 1 - Boss
+    public static final String LEVEL_ONE_BOSS_DATA = "Levels/Level1_Boss/level_one_boss_data.png";
+
     //Level 2
     public static final String LevelTwo_Atlas = "Levels/Level2/TSFloor2.png";
     public static final String LEVEL_TWO_DATA = "Levels/Level2/level_two_data.png";
