@@ -1,7 +1,9 @@
 package Main.GameStates;
 
+import Entities.Boss.EnemyManager;
 import Entities.NPC;
 import Entities.Player;
+import Levels.Level;
 import Levels.LevelHandler;
 import Main.Core.Game;
 import Main.GameState;
@@ -11,6 +13,7 @@ import Objects.ObjectManager;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class Playing {
     private Player player;
@@ -18,6 +21,7 @@ public class Playing {
     private Game game;
     private LevelHandler levelHandler;
     private DialogueManager dialogueManager;
+    private EnemyManager enemyManager;
 
     private int xLvlOffset;
     private int yLvlOffset;
@@ -34,13 +38,16 @@ public class Playing {
         this.player = game.getPlayer();
         this.objectManager = game.getObjectManager();
         this.dialogueManager = new DialogueManager();
+        this.enemyManager = new EnemyManager(this);
+        loadEnemiesForLevel(levelHandler.getCurrentLevelNum());
     }
 
     public void update() {
         levelHandler.update();
-        objectManager.update(game.getPlayer());
+        objectManager.update(player);
         game.getPlayer().update();
         objectManager.checkSpikesTouched(player);
+        enemyManager.update(levelHandler.getCurrentLevel().getLevelData(), player);
         checkCloseToBorder();
         checkLevelCompleted();
 
@@ -53,6 +60,7 @@ public class Playing {
         g.drawImage(game.getBackgroundImg(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         levelHandler.draw(g, xLvlOffset, yLvlOffset);
         objectManager.draw(g, xLvlOffset, yLvlOffset);
+        enemyManager.draw(g, xLvlOffset, yLvlOffset);
         player.render(g, xLvlOffset, yLvlOffset);
         game.getUi().draw(g);
         game.drawSaveMessage(g);
@@ -152,7 +160,19 @@ public class Playing {
         // Placeholder for future combat/interaction
     }
 
+    public void loadEnemiesForLevel(int levelNum) {
+        System.out.println("Loading enemies for level: " + levelNum);
+        Level level = levelHandler.getCurrentLevel();
+
+        if (level != null) {
+            enemyManager.loadEnemies(level);
+            System.out.println("Bosses loaded!");
+        }
+    }
+
+    public Player getPlayer() { return player; }
     public int getxLvlOffset() { return xLvlOffset; }
     public int getyLvlOffset() { return yLvlOffset; }
     public void setPlayer(Player player) { this.player = player; }
+    public EnemyManager getEnemyManager() {return enemyManager;}
 }

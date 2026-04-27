@@ -1,7 +1,7 @@
 package Main.Core;
 
 import Audio.AudioPlayer;
-import Entities.Boss;
+import Entities.Boss.EnemyManager;
 import Entities.Player;
 import Entities.PlayerCharacter;
 import Levels.Level;
@@ -27,7 +27,6 @@ public class Game implements Runnable {
     private final int UPS_SET = 200;
 
     private Player player;
-    private Boss boss;
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
@@ -116,6 +115,7 @@ public class Game implements Runnable {
 
     public void setupLevel(int levelNum) {
         levelHandler.loadLevel(levelNum);
+        playing.loadEnemiesForLevel(levelNum);
         Level cur = levelHandler.getCurrentLevel();
         Point spawn = cur.getPlayerSpawn();
 
@@ -316,4 +316,5 @@ public class Game implements Runnable {
     public UI getUi() { return ui; }
     public BufferedImage getBackgroundImg() { return backgroundImg; }
     public Playing getPlaying() { return playing; }
+    public EnemyManager getEnemyManager() {return playing.getEnemyManager();}
 }

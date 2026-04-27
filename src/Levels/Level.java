@@ -38,4 +38,5 @@ public class Level {
     public int[][] getLevelData(){ return lvlData; }
     public BufferedImage getLevelDataImg() { return img; }
     public String getBackgroundPath() { return bgPath; }
+    public BufferedImage getLevelDataImage() { return img; }
 }

@@ -1,11 +1,14 @@
 package Utils;
 
+import Entities.Boss.Embryn;
 import Main.Core.Game;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
+import static Utils.Constants.EnemyConstants.BOSS_LAYER;
 import static Utils.Constants.NPCConstants.NINO_TQ;
 import static Utils.Constants.ObjectConstants.SPIKE_COLOR;
 import static Utils.Constants.ObjectConstants.VASE_COLOR;
@@ -95,7 +98,10 @@ public class HelpMethods {
                     playerSpawn.y = j * Game.TILES_SIZE;
                     System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = 18;
-                } else if (blueValue == VASE_COLOR || blueValue == SPIKE_COLOR || blueValue == NINO_TQ) {
+                } else if ( blueValue == VASE_COLOR  ||
+                            blueValue == SPIKE_COLOR ||
+                            blueValue == NINO_TQ     ||
+                            blueValue == BOSS_LAYER) {
                     lvlData[j][i] = 18;
                 } else {
                     if (redValue >= 48) redValue = 0;
@@ -117,7 +123,7 @@ public class HelpMethods {
         int textY = btn.y + (btn.height / 2) + (fm.getAscent() / 2) - 2;
 
         if (isHovered) {
-            g.setColor(new Color(255, 255, 255, 50)); // faint white shadow
+            g.setColor(new Color(255, 255, 255, 50));
             g.drawString(label, textX + 2, textY + 2);
             g.setColor(Color.YELLOW); // hover
         } else {
@@ -125,5 +131,44 @@ public class HelpMethods {
         }
 
         g.drawString(label, textX, textY);
+    }
+
+    public static boolean isFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
+        // Check if there's a floor tile below the next horizontal position
+        if (xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+        else
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+    }
+
+    public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int tileY) {
+        // Get the tile X positions of both entities
+        int firstXTile  = (int) (firstHitbox.x  / Game.TILES_SIZE);
+        int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
+
+        // Check every tile between the two entities on the same row
+        if (firstXTile > secondXTile) {
+            for (int i = secondXTile; i <= firstXTile; i++)
+                if (IsSolid(i * Game.TILES_SIZE, tileY * Game.TILES_SIZE, lvlData))
+                    return false;
+        } else {
+            for (int i = firstXTile; i <= secondXTile; i++)
+                if (IsSolid(i * Game.TILES_SIZE, tileY * Game.TILES_SIZE, lvlData))
+                    return false;
+        }
+        return true;
+    }
+
+    public static boolean isBossPixel(int blueValue) {
+        return blueValue == BOSS_LAYER;
+    }
+
+    public static int getBossType(int greenValue) {
+        // Green 101 = Embryn
+        //       102 = next boss
+        return switch (greenValue) {
+            case 101 -> Utils.Constants.EnemyConstants.EMBRYN;
+            default -> -1;
+        };
     }
 }

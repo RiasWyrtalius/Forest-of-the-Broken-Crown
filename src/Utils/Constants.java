@@ -6,6 +6,8 @@ public class Constants {
 
     public static final float GRAVITY = 0.03f * Game.SCALE;
     public static final int ANIMATION_SPEED = 30;
+    public static final int LEFT  = 0;
+    public static final int RIGHT = 1;
 
     public static class PlayerConstants {
         public static final int IDLE = 0;
@@ -47,5 +49,26 @@ public class Constants {
     public static class NPCConstants {
         public static final int NINO_TQ = 200;
         public static final int NINO_ID = 200;
+    }
+
+    public class EnemyConstants {
+
+        public static final int BOSS_LAYER = 199;
+
+        public static final int EMBRYN = 0;
+        //TODO: future bosses
+
+        public static final int IDLE    = 0;
+        public static final int RUNNING = 1;
+        public static final int ATTACK  = 2;
+        public static final int HIT     = 3;
+        public static final int DEAD    = 4;
+
+        public static final int ANI_SPEED = 25;
+
+        public static final int EMBRYN_WIDTH_DEFAULT  = 128;
+        public static final int EMBRYN_HEIGHT_DEFAULT = 128;
+        public static final int EMBRYN_WIDTH  = (int) (180 * Game.SCALE);
+        public static final int EMBRYN_HEIGHT = (int) (180 * Game.SCALE);
     }
 }

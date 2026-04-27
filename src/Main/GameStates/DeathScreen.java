@@ -128,7 +128,8 @@ public class DeathScreen {
                 game.resetGame();
                 GameState.state = GameState.PLAYING;
                 resetAnimationState();
-
+                game.getPlaying().getEnemyManager().reset();
+                game.getPlaying().loadEnemiesForLevel(game.getLevelHandler().getCurrentLevelNum());
             } else if (btnMainMenu.contains(e.getPoint())) {
                 // go back to main menu
                 cleanup();

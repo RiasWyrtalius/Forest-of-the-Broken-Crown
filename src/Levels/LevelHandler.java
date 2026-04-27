@@ -104,6 +104,13 @@ public class LevelHandler {
     public Level getCurrentLevel() { return levels.get(lvlIndex); }
     public int getAmountOfLevels() { return levels.size(); }
     public int getCurrentLevelNum() { return currentLevelNum; }
-
+    public BufferedImage getLevelDataImage(int levelNum) {
+        return switch (levelNum) {
+            case 1 -> LoadSave.getSpriteAtlas(LoadSave.LEVEL_ONE_DATA);
+            case 2 -> LoadSave.getSpriteAtlas(LoadSave.LEVEL_TWO_DATA);
+            case 3 -> LoadSave.getSpriteAtlas(LoadSave.LEVEL_THREE_DATA);
+            default -> null;
+        };
+    }
     public int getLevelIndex() { return lvlIndex; }
 }
