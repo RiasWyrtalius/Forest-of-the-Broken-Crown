@@ -1,5 +1,6 @@
 package Main.GameStates;
 
+import Audio.AudioPlayer;
 import Main.Core.Game;
 import Main.GameState;
 import Utils.HelpMethods;
@@ -41,6 +42,7 @@ public class MainMenu {
     private Font customFont;
 
     private Rectangle hoveredBtn = null;
+    private Rectangle lastHovered = null;
 
     private Rectangle playBtn = new Rectangle(btnStartX, btnStartY - 40, 220, 50);
     private Rectangle loadBtn = new Rectangle(btnLoadX, btnLoadY - 40, 220, 50);
@@ -152,6 +154,11 @@ public class MainMenu {
             else if (credBtn.contains(mousePos)) hoveredBtn = credBtn;
             else if (quitBtn.contains(mousePos)) hoveredBtn = quitBtn;
         }
+
+        if (hoveredBtn != null && hoveredBtn != lastHovered) {
+            game.getAudioPlayer().playEffect(AudioPlayer.HOVER);
+        }
+        lastHovered = hoveredBtn;
     }
 
     public void handleEscapeKey() {
@@ -159,6 +166,16 @@ public class MainMenu {
     }
 
     private void handleMainMenuClick(int mx, int my) {
+
+        if (isNearButton(mx, my, btnX, btnStartY) ||
+                isNearButton(mx, my, btnX, btnLoadY) ||
+                isNearButton(mx, my, btnX, btnOptionsY) ||
+                isNearButton(mx, my, btnX, btnCreditsY) ||
+                isNearButton(mx, my, btnX, btnQuitY)) {
+
+            game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
+        }
+
         if (isNearButton(mx, my, btnX, btnStartY)) {
             GameState.state = GameState.CHARACTER_SELECT;
         } else if (isNearButton(mx, my, btnX, btnLoadY)) {

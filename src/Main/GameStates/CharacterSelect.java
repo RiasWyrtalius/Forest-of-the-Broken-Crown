@@ -1,5 +1,6 @@
 package Main.GameStates;
 
+import Audio.AudioPlayer;
 import Entities.PlayerCharacter;
 import Main.Core.Game;
 import Main.UI.UI;
@@ -32,6 +33,7 @@ public class CharacterSelect {
     private int targetDir = 0;
 
     private Rectangle hoveredBtn = null;
+    private Rectangle lastHovered = null;
 
     private int mouseX, mouseY;
 
@@ -162,10 +164,13 @@ public class CharacterSelect {
         if (transitioning) return;
 
         if (leftArrow.contains(e.getPoint())) {
+            game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
             startTransition(-1);
         } else if (rightArrow.contains(e.getPoint())) {
+            game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
             startTransition(1);
         } else if (selectBtn.contains(e.getPoint())) {
+            game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
             game.initPlayerCharacter(characters[currentIndex], 1);
         }
     }
@@ -179,6 +184,11 @@ public class CharacterSelect {
         else if (rightArrow.contains(mousePos)) hoveredBtn = rightArrow;
         else if (selectBtn.contains(mousePos)) hoveredBtn = selectBtn;
         else hoveredBtn = null;
+
+        if (hoveredBtn != null && hoveredBtn != lastHovered) {
+            game.getAudioPlayer().playEffect(AudioPlayer.HOVER);
+        }
+        lastHovered = hoveredBtn;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -186,12 +196,15 @@ public class CharacterSelect {
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT, KeyEvent.VK_A:
+                game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
                 startTransition(-1);
                 break;
             case KeyEvent.VK_RIGHT, KeyEvent.VK_D:
+                game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
                 startTransition(1);
                 break;
             case KeyEvent.VK_ENTER, KeyEvent.VK_SPACE:
+                game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
                 game.initPlayerCharacter(characters[currentIndex], 1);
                 break;
         }

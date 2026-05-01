@@ -9,12 +9,16 @@ public class AudioPlayer {
 
     public static int MENU_1 = 0;
 
+    public static int CLICK = 0;
+    public static int HOVER = 1;
+
     private Clip[] songs, effects;
     private int currentSongId;
     private float volume = 1f;
 
     public AudioPlayer(){
         loadSongs();
+        loadEffects();
         playSong(MENU_1);
     }
 
@@ -58,68 +62,6 @@ public class AudioPlayer {
         }
 
     }
-    
-    public void playEffect(String effectName) {
-        try {
-            Clip effectClip = getClip(effectName);
-            if (effectClip != null) {
-                effectClip.start();
-            }
-        } catch (Exception e) {
-            System.err.println("Error playing effect: " + effectName + " - " + e.getMessage());
-        }
-    }
-
-    /**
-     * this is heavy for a game.. (wmplayer.exe)
-     * */
-    public void playMP3Effect(String mp3Path) {
-        // Use Windows Media Player with /play and /close flags to play without opening visible window
-        try {
-            File audio = new File(mp3Path);
-            if (!audio.exists()) {
-                System.err.println("MP3 file not found: " + mp3Path);
-                return;
-            }
-
-            // Use Windows Media Player with flags to play in background
-            ProcessBuilder pb = new ProcessBuilder(
-                "C:\\Program Files\\Windows Media Player\\wmplayer.exe",
-                "/play",
-                "/close",
-                audio.getAbsolutePath()
-            );
-
-            // Start the process in background
-            Process audioProcess = pb.start();
-
-            // Monitor the process in a separate thread
-            new Thread(() -> {
-                try {
-                    audioProcess.waitFor();
-                } catch (InterruptedException e) {
-                    audioProcess.destroy();
-                }
-            }).start();
-
-            System.out.println("Playing MP3 effect: " + mp3Path);
-
-        } catch (Exception e) {
-            System.err.println("MP3 playback failed: " + e.getMessage());
-            // Try PowerShell fallback
-            try {
-                ProcessBuilder pb = new ProcessBuilder(
-                    "powershell.exe",
-                    "-Command",
-                    "(New-Object Media.SoundPlayer '" + mp3Path.replace("\\", "\\\\") + "').PlaySync();"
-                );
-                pb.start();
-                System.out.println("Playing MP3 with PowerShell fallback");
-            } catch (Exception e2) {
-                System.err.println("All MP3 playback methods failed: " + e2.getMessage());
-            }
-        }
-    }
 
     public void playSong(int song){
         if(songs[currentSongId].isActive())
@@ -127,5 +69,25 @@ public class AudioPlayer {
 
         currentSongId = song;
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    private void loadEffects() {
+        String[] effectNames = {"button_click", "button_hover"};
+        effects = new Clip[effectNames.length];
+
+        for(int i = 0; i < effects.length; i++) {
+            effects[i] = getClip(effectNames[i]);
+        }
+    }
+
+    public void playEffect(int effectID) {
+        if (effectID < 0 || effectID >= effects.length) return;
+
+        if (effects[effectID].isRunning()) {
+            effects[effectID].stop();
+        }
+
+        effects[effectID].setFramePosition(0);
+        effects[effectID].start();
     }
 }
