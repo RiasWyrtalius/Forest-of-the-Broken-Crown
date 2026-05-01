@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static Utils.Constants.EnemyConstants.BOSS_LAYER;
-import static Utils.Constants.NPCConstants.NINO_TQ;
+import static Utils.Constants.NPCConstants.*;
 import static Utils.Constants.ObjectConstants.SPIKE_COLOR;
 import static Utils.Constants.ObjectConstants.VASE_COLOR;
 import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
@@ -101,6 +101,10 @@ public class HelpMethods {
                 } else if ( blueValue == VASE_COLOR  ||
                             blueValue == SPIKE_COLOR ||
                             blueValue == NINO_TQ     ||
+                            blueValue == CHAD_TB     ||
+                            blueValue == CHARLZ_TS   ||
+                            blueValue == RILEY_TZ    ||
+                            blueValue == DENVER_TC   ||
                             blueValue == BOSS_LAYER) {
                     lvlData[j][i] = 18;
                 } else {

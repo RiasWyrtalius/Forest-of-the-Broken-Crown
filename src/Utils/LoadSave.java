@@ -27,6 +27,10 @@ public class LoadSave {
 
     //NPC
     public static final String Nino_Atlas = "Characters/NPC/TheQueerSS.png";
+    public static final String Chad_Atlas = "Characters/NPC/TheBraveSS.png";
+    public static final String Charlz_Atlas = "Characters/NPC/TheSageSS.png";
+    public static final String Riley_Atlas = "Characters/NPC/TheZephyrSS.png";
+    public static final String Denver_Atlas = "Characters/NPC/TheCursedSS.png";
 
     //Characters
     public static final String Sylvara_Atlas = "Characters/Hero/Sylvara/SylvaraSpriteSheet.png";

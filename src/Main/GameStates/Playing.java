@@ -144,7 +144,7 @@ public class Playing {
             case KeyEvent.VK_ENTER -> {
                 NPC npc = objectManager.getHoveredNPC();
                 if (npc != null) {
-                    dialogueManager.startDialogue(npc.getDialogue());
+                    dialogueManager.startDialogue(npc.getDialogue(), npc);
                 }
             }
         }

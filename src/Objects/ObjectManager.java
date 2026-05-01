@@ -12,7 +12,7 @@ import Main.Core.Game;
 import Utils.Constants;
 import Utils.LoadSave;
 
-import static Utils.Constants.NPCConstants.NINO_TQ;
+import static Utils.Constants.NPCConstants.*;
 import static Utils.Constants.ObjectConstants.*;
 
 
@@ -89,7 +89,11 @@ public class ObjectManager {
                 } else if (value == SPIKE_COLOR) {
                     int spikeIndex = color.getGreen();
                     spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, spikeIndex, spikeImgs, spikeIndex));
-                } else if (value == NINO_TQ) {
+                } else if (value == NINO_TQ ||
+                           value == CHAD_TB ||
+                           value == CHARLZ_TS ||
+                           value == RILEY_TZ ||
+                           value == DENVER_TC) {
                     //System.out.println("NPC Spawned at: " + i + ", " + j);
                     String[] lines = Utils.DialogueData.getLinesFor(npcID);
 

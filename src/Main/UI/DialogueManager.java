@@ -1,11 +1,16 @@
 package Main.UI;
 
 import java.awt.*;
+
+import Entities.NPC;
 import Main.Core.Game;
 import Utils.LoadSave;
 
+import static Utils.Constants.NPCConstants.getName;
+
 public class DialogueManager {
     private String[] currentDialogue;
+    private int activeNpcID;
     private int lineIndex = 0;
     private int visibleTextIndex = 0;
     private int tickCounter = 0;
@@ -15,8 +20,9 @@ public class DialogueManager {
 
     private final int TYPE_SPEED = 2; //bigger the value the slower
 
-    public void startDialogue(String[] lines) {
+    public void startDialogue(String[] lines, NPC npc) {
         this.currentDialogue = lines;
+        this.activeNpcID = npc.getNID();
         this.lineIndex = 0;
         this.visibleTextIndex = 0;
         this.active = true;
@@ -46,7 +52,7 @@ public class DialogueManager {
         g.drawRect(50, Game.GAME_HEIGHT - 150, Game.GAME_WIDTH - 100, 120);
 
         g.setColor(Color.YELLOW);
-        g.drawString("Niño", 70, Game.GAME_HEIGHT - 160);
+        g.drawString(getName(activeNpcID), 70, Game.GAME_HEIGHT - 160);
 
         g.setColor(Color.WHITE);
         String visibleText = currentDialogue[lineIndex].substring(0, visibleTextIndex);

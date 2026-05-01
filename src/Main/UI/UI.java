@@ -70,6 +70,8 @@ public class UI {
         }
 
         //Mana Bottles
+        Composite originalComposite = g2d.getComposite();
+
         for (int i = 0; i < maxMana; i++) {
             int x = (startX + 7) + (i * (manaSize - spacing + 2));
 
@@ -79,11 +81,15 @@ public class UI {
                 float pulse = (float) (Math.sin(System.currentTimeMillis() / 200) * 0.35 + 0.65);
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pulse));
                 g2d.drawImage(manaSprite[0], x, manaY, manaSize, manaSize, null);
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pulse));
+
+                //reset here so it doesn't apply to the other parts of the UI
+                g2d.setComposite(originalComposite);
             } else {
                 g2d.drawImage(manaSprite[1], x, manaY, manaSize, manaSize, null);
             }
         }
+
+        g2d.setComposite(originalComposite);
     }
 
     public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero, int mouseX, int mouseY) {

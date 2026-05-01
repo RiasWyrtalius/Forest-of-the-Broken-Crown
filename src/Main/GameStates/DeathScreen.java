@@ -68,11 +68,6 @@ public class DeathScreen {
     }
 
 
-
-
-
-
-
     private void drawDeathMenu(Graphics g) {
         // title
         g.setColor(Color.RED);
