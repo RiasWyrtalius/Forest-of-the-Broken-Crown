@@ -21,9 +21,9 @@ These are not noble heroes, but individuals desperate for meaning in a world tha
 
 | Character | Mechanics | Sprite Preview |
 | :--- | :--- | :--- |
-| **Embjorn, The Snake** | **Venom Dash:** A quick horizontal dash to slip past hazards. <br> **Slither Step:** Moves faster on narrow platforms. | <img width="150" alt="Embjorn" src="https://github.com/user-attachments/assets/2f1ee59a-7fb1-4a5d-8463-ac79d02eb962" /> |
-| **Kaelthorn, The Wolf Knight** | **Wolf Leap:** A long vertical jump for reaching far platforms. <br> **Steady Step:** Controlled jumps make landing easier. | <img width="150" alt="Kaelthorn" src="https://github.com/user-attachments/assets/db10596f-a273-4f09-b80a-938f39f654ed" /> |
-| **Sylvara, The Owl Mage** | **Gust:** A long-range magical wind attack. <br> **Flap and Float:** Double jumps and slow-descent gliding. | <img width="150" alt="Sylvara" src="https://github.com/user-attachments/assets/47827a27-399e-4c5a-a199-1fdd6f64cab2" /> |
+| **Embjorn, The Snake** | **Venom Dash (Skill):** A quick horizontal dash to slip past hazards. <br> **Slither Step (Passive):** Increased movement speed | <img width="150" alt="Embjorn" src="https://github.com/user-attachments/assets/2f1ee59a-7fb1-4a5d-8463-ac79d02eb962" /> |
+| **Kaelthorn, The Wolf Knight** | **Steady Step (Skill):** Hold to concentrate Kaelthorn’s strength into his stance. Releasing the charge propels him upward, with height increasing the longer the power is held. <br> **Feral Mending (Passive):** Every 15 seconds, Kaelthorn’s knightly resolve and lupine spirit harmonize, restoring 1 health. | <img width="150" alt="Kaelthorn" src="https://github.com/user-attachments/assets/db10596f-a273-4f09-b80a-938f39f654ed" /> |
+| **Sylvara, The Owl Mage** | **Zephyr Bound (Skill):** Harness a burst of magical wind to kick off the air, allowing for a second jump mid-flight. <br> **Sylph’s Descent (Passive):** Gravity holds less sway over Sylvara; she glides gently toward the earth after any leap. | <img width="150" alt="Sylvara" src="https://github.com/user-attachments/assets/47827a27-399e-4c5a-a199-1fdd6f64cab2" /> |
 
 ---
 
