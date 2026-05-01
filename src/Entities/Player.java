@@ -1,5 +1,6 @@
 package Entities;
 
+import Entities.Skills.Skill;
 import Main.Core.Game;
 import Main.GameState;
 import static Utils.Constants.ANIMATION_SPEED;
@@ -20,6 +21,7 @@ public class Player extends Entity{
     private int faceDirection = WALKR;
 
     private PlayerCharacter characterData;
+    private Skill activeSkill;
 
     //Hitbox
     private float xDrawOffset;
@@ -70,6 +72,8 @@ public class Player extends Entity{
 
         loadAnimations();
         initHitbox(characterData.hitboxWidth, characterData.hitboxHeight);
+
+        this.activeSkill = characterData.getSkill(this);
     }
 
     public void loseLife() {
@@ -97,6 +101,9 @@ public class Player extends Entity{
         updateHealthStatus();
         updateMana();
         characterData.getPassive().update(this);
+        if (activeSkill != null) {
+            activeSkill.update();
+        }
     }
 
     private void updateHealthStatus() {
@@ -175,6 +182,10 @@ public class Player extends Entity{
                 width * flipW, height, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
+        if (activeSkill != null) {
+            activeSkill.render(g, lvlOffset, yLvlOffset);
+        }
 
         drawHitbox(g, lvlOffset, yLvlOffset);
     }
@@ -412,6 +423,10 @@ public class Player extends Entity{
 
     public float getAirSpeed() { return airSpeed; }
     public void setAirSpeed(float airSpeed) { this.airSpeed = airSpeed; }
+    public boolean isInAir() { return inAir; }
+    public void startAirborne() { this.inAir = true; }
+
+    public Skill getActiveSkill() { return activeSkill; }
 
     public float getJumpSpeed() { return jumpSpeed; }
     public void setJump (boolean jump) {

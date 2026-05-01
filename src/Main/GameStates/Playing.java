@@ -138,6 +138,7 @@ public class Playing {
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.setJump(true);
+            case KeyEvent.VK_E -> player.getActiveSkill().activate();
             case KeyEvent.VK_ESCAPE -> GameState.state = GameState.PAUSED;
             case KeyEvent.VK_ENTER -> {
                 NPC npc = objectManager.getHoveredNPC();
@@ -153,6 +154,7 @@ public class Playing {
             case KeyEvent.VK_A -> player.setLeft(false);
             case KeyEvent.VK_D -> player.setRight(false);
             case KeyEvent.VK_SPACE -> player.setJump(false);
+            case KeyEvent.VK_E -> player.getActiveSkill().deactivate();
         }
     }
 

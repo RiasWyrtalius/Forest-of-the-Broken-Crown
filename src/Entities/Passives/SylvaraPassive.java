@@ -4,10 +4,8 @@ import Entities.Passive;
 
 public class SylvaraPassive implements Passive {
 
-    public String getName() { return "Flap and Float"; }
+    public String getName() { return "Sylph’s Descent"; }
     public String getDescription() {
-        return "Her wings grant her a graceful double jump and slower descent, allowing her to glide through collapsing platforms.";
+        return "Gravity holds less sway over Sylvara; she glides gently toward the earth after any leap.";
     }
-
-    @Override public int getMaxJumps() { return 2; }
 }
