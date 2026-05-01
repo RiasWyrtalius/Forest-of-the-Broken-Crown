@@ -14,6 +14,6 @@ public class EmbjornPassive implements Passive {
     @Override
     public void update(Player player) {
         float baseSpeed = 1.0f * Game.SCALE * player.getCharacterData().speedMultiplier;
-        player.setWalkSpeed(baseSpeed * 2.0f);
+        player.setWalkSpeed(baseSpeed * 1.5f);
     }
 }

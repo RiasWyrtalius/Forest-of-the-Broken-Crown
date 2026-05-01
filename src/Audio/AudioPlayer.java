@@ -12,6 +12,9 @@ public class AudioPlayer {
     public static int CLICK = 0;
     public static int HOVER = 1;
 
+    public static int CONSUME_POTION = 2;
+    public static int VASE_BREAK = 3;
+
     private Clip[] songs, effects;
     private int currentSongId;
     private float volume = 1f;
@@ -72,7 +75,7 @@ public class AudioPlayer {
     }
 
     private void loadEffects() {
-        String[] effectNames = {"button_click", "button_hover"};
+        String[] effectNames = {"button_click", "button_hover", "consume_potion", "vase_break"};
         effects = new Clip[effectNames.length];
 
         for(int i = 0; i < effects.length; i++) {

@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import Audio.AudioPlayer;
 import Entities.NPC;
 import Entities.Player;
 import Main.Core.Game;
@@ -133,9 +134,8 @@ public class ObjectManager {
                     v.setBreaking(true);
                     player.setAirSpeed(player.getJumpSpeed() * 0.6f);
                     generateDrop(v);
-                    //TODO: implement breaking audio here.
+                    game.getAudioPlayer().playEffect(AudioPlayer.VASE_BREAK);
                 }
-
             }
         }
     }
@@ -221,6 +221,7 @@ public class ObjectManager {
         } else {
             p.gainMana(Constants.ObjectConstants.MANA_POTION_VALUE);
         }
+        game.getAudioPlayer().playEffect(AudioPlayer.CONSUME_POTION);
     }
 
     public NPC getHoveredNPC() {
