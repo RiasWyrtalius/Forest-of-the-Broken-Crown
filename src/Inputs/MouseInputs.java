@@ -69,10 +69,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         }
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        gamePanel.getGame().getPlayer().setAttacking(false);
-    }
+    @Override public void mouseReleased(MouseEvent e) {}
 
     private MouseEvent getMouseEvent(MouseEvent e) {
         double scaleX = (double) gamePanel.getWidth() / GAME_WIDTH;

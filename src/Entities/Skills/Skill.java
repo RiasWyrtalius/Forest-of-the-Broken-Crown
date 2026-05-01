@@ -7,4 +7,6 @@ public interface Skill {
     void render(Graphics g, int lvlOffset, int yLvlOffset);
     void activate();
     void deactivate();
+    String getName();
+    String getSkillDescription();
 }

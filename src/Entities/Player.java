@@ -17,7 +17,7 @@ public class Player extends Entity{
     private BufferedImage[][] animations;
     private int playerAction = IDLE;
     private boolean moving = false;
-    private boolean left, right, jump;
+    private boolean left, right, jump, down;
     private int faceDirection = WALKR;
 
     private PlayerCharacter characterData;
@@ -28,20 +28,14 @@ public class Player extends Entity{
     private float yDrawOffset;
 
     private int[][] lvlData;
-    private int airValue;
-
-    //Attack
-    private long lastAttackTime;
-    private long atkCd = 500;
-    private boolean attacking = false;
 
     //Gravity / Jumping
     private float jumpSpeed = -2.23f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 
     private int jumpCount = 0;
-    private int maxJumps = 1;
     private boolean jumpPressed;
+    private float extraHSpeed = 0;
 
     //Lives
     public boolean invincible = false;
@@ -299,9 +293,13 @@ public class Player extends Entity{
         moving = false;
         if (jump) jump();
 
+        float xSpeed = 0;
+
         if (!left && !right && !inAir) return;
 
-        float xSpeed = 0;
+        xSpeed += extraHSpeed;
+        extraHSpeed *= 0.92f;
+        if (Math.abs(extraHSpeed) < 0.1f) extraHSpeed = 0;
 
         if (left) {
             xSpeed -= walkSpeed;
@@ -340,33 +338,27 @@ public class Player extends Entity{
         if (xSpeed != 0) {
             if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.x += xSpeed;
-                moving = true;
+                if(extraHSpeed == 0) moving = true;
             } else {
                 hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
+                extraHSpeed = 0;
             }
         }
     }
 
     private void jump() {
-        if (jumpPressed) return; // If we haven't released the key, don't jump again!
+        if (jumpPressed) return;
 
-        maxJumps= characterData.getPassive().getMaxJumps();
-
-        if (inAir && jumpCount >= maxJumps)
-            return;
-
-        if (jumpCount < maxJumps) {
+        if (!inAir) {
+            //NORMAL JUMP
             airSpeed = jumpSpeed;
             inAir = true;
-            jumpCount++;
-            jumpPressed = true; // Lock the jump until the key is released
-
-            characterData.getPassive().onJump(this);
-
-            if (jumpCount == 2) {
-                playerAction = DOUBLEJUMP;
-                animationIndex = 0;
-                animationTick = 0;
+            jumpPressed = true;
+        } else {
+            //SYLVARA's SKILL
+            if (activeSkill != null) {
+                activeSkill.activate();
+                jumpPressed = true;
             }
         }
     }
@@ -380,7 +372,6 @@ public class Player extends Entity{
     public void resetAll() {
         resetDirectionBooleans();
         inAir        = true;
-        attacking    = false;
         moving       = false;
         playerAction = IDLE;
         this.life    = maxLife;
@@ -414,8 +405,6 @@ public class Player extends Entity{
         }
     }
 
-
-    public void setAttacking(boolean attacking) { this.attacking = attacking; }
     public void setWalkSpeed(float walkSpeed) { this.walkSpeed = walkSpeed; }
 
     public void loadLvlData(int[][] lvlData) { this.lvlData = lvlData; }
@@ -436,11 +425,22 @@ public class Player extends Entity{
         }
     }
 
+    public void setPlayerAction(int action) {
+        this.playerAction = action;
+        this.animationTick = 0;
+        this.animationIndex = 0;
+    }
+
+    public void fling(float force) { this.extraHSpeed = force; }
+    public int getFaceDirection() { return faceDirection; }
+
     public void resetDirectionBooleans() { left = right = false; }
-    public boolean isLeft() { return left; }
     public void setLeft(boolean left) { this.left = left; }
+    public boolean isLeft() { return left; }
     public boolean isRight() { return right; }
     public void setRight(boolean right) { this.right = right; }
+    public void setDown(boolean down) { this.down = down; }
+    public boolean isDown() { return down; }
 
     public void setY(float y) { this.y = y; }
     public void setX(float x) {this.x = x;}

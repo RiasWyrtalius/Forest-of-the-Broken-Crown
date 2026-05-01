@@ -68,9 +68,6 @@ public class MainMenu {
                 && my >= y - btnFontSize - 5 && my <= y + 15;
     }
 
-    public void saveGame() { }
-    private void loadGame() { }
-
     //DRAW METHODS
     public void draw(Graphics g) {
         g.drawImage(bgImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);

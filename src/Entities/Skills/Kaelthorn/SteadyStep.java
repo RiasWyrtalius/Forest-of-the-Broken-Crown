@@ -18,6 +18,11 @@ public class SteadyStep implements Skill {
         this.player = player;
     }
 
+    @Override public String getName() { return "Steady Step"; }
+    @Override public String getSkillDescription() {
+        return "Hold to charge Kaelthorn’s strength. Release to leap upward; height increases with charge time.";
+    }
+
     @Override
     public void update() {
         if (charging && player.getManaBottles() >= MANA_COST) {

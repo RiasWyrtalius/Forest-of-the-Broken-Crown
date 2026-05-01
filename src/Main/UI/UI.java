@@ -16,6 +16,7 @@ public class UI {
     private int slotX = (Game.GAME_WIDTH / 2) - 300;
     private int slotY = 200;
     private Font customFont;
+    private String tooltipText = null;
 
     public UI(Game game) {
         this.game = game;
@@ -86,10 +87,16 @@ public class UI {
     }
 
     public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero, int mouseX, int mouseY) {
+        tooltipText = null;
+
         drawHeroLore(g, selectedHero);
         drawVitalStats(g, selectedHero);
         drawPassiveSection(g, selectedHero, mouseX, mouseY);
-        //TODO: drawAbilitySection(g, selectedHero, mouseX, mouseY);
+        drawAbilitySection(g, selectedHero, mouseX, mouseY);
+
+        if (tooltipText != null) {
+            drawTooltip(g, mouseX, mouseY, tooltipText);
+        }
     }
 
     private void drawHeroLore(Graphics g, PlayerCharacter hero) {
@@ -132,13 +139,42 @@ public class UI {
         g.drawString(passiveName, labelX + labelWidth, labelY);
 
         //tooltip check
-        int totalWidth = labelWidth + g.getFontMetrics().stringWidth(passiveName);
-        if (isMouseOver(mouseX, mouseY, labelX, labelY, totalWidth, g.getFontMetrics().getHeight())) {
-            drawPassiveTooltip(g, mouseX, mouseY, hero.getPassive().getDescription());
+        int height = g.getFontMetrics().getHeight();
+        int nameWidth = g.getFontMetrics().stringWidth(passiveName);
+        int textTop = labelY - height + 10; // Calculate the top of the letters
+
+        if (isMouseOver(mouseX, mouseY, labelX + labelWidth, textTop, nameWidth, height)) {
+            tooltipText = hero.getPassive().getDescription();
         }
     }
 
-    private void drawPassiveTooltip(Graphics g, int x, int y, String description) {
+    private void drawAbilitySection(Graphics g, PlayerCharacter hero, int mouseX, int mouseY) {
+        g.setFont(customFont.deriveFont(Font.PLAIN, 25));
+        int labelX = slotX + 500;
+        int labelY = slotY + 180;
+
+        //label
+        g.setColor(new Color(170, 168, 168));
+        String label = "Skill: ";
+        g.drawString(label, labelX, labelY);
+
+        //SKILL NAME
+        int labelWidth = g.getFontMetrics().stringWidth(label);
+        g.setColor(new Color(0, 255, 150));
+
+        String skillName = hero.getSkill(game.getPlayer()).getName();
+        g.drawString(skillName, labelX + labelWidth, labelY);
+
+        int height = g.getFontMetrics().getHeight();
+        int nameWidth = g.getFontMetrics().stringWidth(skillName);
+        int textTop = labelY - height + 10; // Same calculation
+
+        if (isMouseOver(mouseX, mouseY, labelX + labelWidth, textTop, nameWidth, height)) {
+            tooltipText = hero.getSkill(game.getPlayer()).getSkillDescription();
+        }
+    }
+
+    private void drawTooltip(Graphics g, int x, int y, String description) {
         g.setFont(customFont.deriveFont(Font.PLAIN, 18));
         FontMetrics fm = g.getFontMetrics();
 
@@ -163,7 +199,7 @@ public class UI {
     }
 
     private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y - height && mouseY <= y;
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
     private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {

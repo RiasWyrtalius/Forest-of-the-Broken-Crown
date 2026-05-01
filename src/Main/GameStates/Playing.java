@@ -135,6 +135,7 @@ public class Playing {
         }
 
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_S -> player.setDown(true);
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.setJump(true);
@@ -151,6 +152,7 @@ public class Playing {
 
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_S -> player.setDown(false);
             case KeyEvent.VK_A -> player.setLeft(false);
             case KeyEvent.VK_D -> player.setRight(false);
             case KeyEvent.VK_SPACE -> player.setJump(false);
