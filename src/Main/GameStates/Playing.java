@@ -25,10 +25,10 @@ public class Playing {
 
     private int xLvlOffset;
     private int yLvlOffset;
-    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
-    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
-    private int topBorder = (int) (0.4 * Game.GAME_HEIGHT);
-    private int bottomBorder = (int) (0.6 * Game.GAME_HEIGHT);
+    private int leftBorder = (int) (0.5 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.5 * Game.GAME_WIDTH);
+    private int topBorder = (int) (0.5 * Game.GAME_HEIGHT);
+    private int bottomBorder = (int) (0.5 * Game.GAME_HEIGHT);
     private int maxLvlOffsetX;
     private int maxLvlOffsetY;
 
@@ -55,6 +55,8 @@ public class Playing {
             dialogueManager.update();
         }
     }
+
+
 
     public void draw(Graphics g) {
         g.drawImage(game.getBackgroundImg(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
@@ -135,6 +137,7 @@ public class Playing {
         }
 
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_W -> player.setClimbUp(true);
             case KeyEvent.VK_S -> player.setDown(true);
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
@@ -160,6 +163,7 @@ public class Playing {
 
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_W -> player.setClimbUp(false);
             case KeyEvent.VK_S -> player.setDown(false);
             case KeyEvent.VK_A -> player.setLeft(false);
             case KeyEvent.VK_D -> player.setRight(false);

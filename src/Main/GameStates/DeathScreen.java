@@ -118,17 +118,15 @@ public class DeathScreen {
     public void mouseClicked(MouseEvent e) {
         if (!animationPlaying) {
             if (btnRestart.contains(e.getPoint())) {
-                // restart the game - reset player and go back to playing
                 cleanup();
-                game.resetGame();
-                GameState.state = GameState.PLAYING;
-                resetAnimationState();
+                int currentLevel = game.getLevelHandler().getCurrentLevelNum();
+                game.setupLevel(currentLevel);
+                game.getPlayer().resetAll();
+                game.getObjectManager().resetAllObjects();
+                game.getPlaying().resetCamera();
                 game.getPlaying().getEnemyManager().reset();
-                game.getPlaying().loadEnemiesForLevel(game.getLevelHandler().getCurrentLevelNum());
-            } else if (btnMainMenu.contains(e.getPoint())) {
-                // go back to main menu
-                cleanup();
-                GameState.state = GameState.MENU;
+                game.getPlaying().loadEnemiesForLevel(currentLevel);
+                GameState.state = GameState.PLAYING;
                 resetAnimationState();
             }
         }

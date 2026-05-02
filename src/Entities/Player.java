@@ -17,7 +17,7 @@ public class Player extends Entity{
     private BufferedImage[][] animations;
     private int playerAction = IDLE;
     private boolean moving = false;
-    private boolean left, right, jump, down;
+    private boolean left, right, jump, down, climbUp;
     private boolean climbing = false;
     private int faceDirection = WALKR;
 
@@ -375,7 +375,7 @@ public class Player extends Entity{
     private void updateClimbing() {
         float climbSpeed = 1.0f * Game.SCALE;
 
-        if (jump) {
+        if (climbUp) {
             if (CanMoveHere(hitbox.x, hitbox.y - climbSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y -= climbSpeed;
                 moving = true;
@@ -457,7 +457,7 @@ public class Player extends Entity{
 
     public void fling(float force) { this.extraHSpeed = force; }
     public int getFaceDirection() { return faceDirection; }
-
+    public void setClimbUp(boolean climbUp) { this.climbUp = climbUp; }
     public void resetDirectionBooleans() { left = right = false; }
     public void setLeft(boolean left) { this.left = left; }
     public boolean isLeft() { return left; }

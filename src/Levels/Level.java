@@ -36,6 +36,7 @@ public class Level {
 
     public Point getPlayerSpawn() { return playerSpawn; }
     public int getSpriteIndex(int x, int y) {
+        if (y < 0 || y >= lvlData.length || x < 0 || x >= lvlData[y].length) return 0;
         return lvlData[y][x];
     }
     public int[][] getLevelData(){ return lvlData; }
@@ -43,4 +44,5 @@ public class Level {
     public String getBackgroundPath() { return bgPath; }
     public BufferedImage getLevelDataImage() { return img; }
     public BufferedImage getBackgroundImage() { return backgroundImg; }
+    public String getAtlasPath() { return atlasPath; }
 }

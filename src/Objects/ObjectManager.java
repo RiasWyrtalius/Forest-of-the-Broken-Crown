@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 import Audio.AudioPlayer;
 import Entities.NPC;
@@ -23,7 +25,7 @@ public class ObjectManager {
     private ArrayList<Spike> spikes;
     private ArrayList<NPC> npcs;
     private BufferedImage[] spikeImgs;
-    private ArrayList<Potion> potions;
+    private CopyOnWriteArrayList<Potion> potions;
     private Game game;
 
     public ObjectManager(Game game) {
@@ -31,7 +33,7 @@ public class ObjectManager {
         vases = new ArrayList<>();
         spikes = new ArrayList<>();
         npcs = new ArrayList<>();
-        potions = new ArrayList<>();
+        potions = new CopyOnWriteArrayList<>();
         loadSpikeImgs();
     }
 

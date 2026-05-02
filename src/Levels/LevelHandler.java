@@ -33,10 +33,12 @@ public class LevelHandler {
 
     private void importAllLevelsAtlases() {
         levelSprite = new BufferedImage[levels.size()][];
-        levelSprite[0] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.Level_Atlas));
-        levelSprite[1] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.Level_Atlas));
-        levelSprite[2] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelTwo_Atlas));
-        levelSprite[3] = splitAtlas(LoadSave.getSpriteAtlas(LoadSave.LevelThree_Atlas));
+        for (int i = 0; i < levels.size(); i++) {
+            String atlas = levels.get(i).getAtlasPath();
+            if (atlas != null) {
+                levelSprite[i] = splitAtlas(LoadSave.getSpriteAtlas(atlas));
+            }
+        }
     }
 
     private void buildAllLevels() {
@@ -71,14 +73,20 @@ public class LevelHandler {
 
 
     public void draw(Graphics g, int xOffset, int yOffset) {
-        if (levels.isEmpty() || lvlIndex >= levels.size()) return;
-        if (levelSprite == null || levelSprite.length <= lvlIndex || levelSprite[lvlIndex] == null) return;
+        int currentIdx = lvlIndex; // capture once so it can't change mid-draw
 
-        int[][] data = levels.get(lvlIndex).getLevelData();
+        if (levels.isEmpty() || currentIdx >= levels.size()) return;
+        if (levelSprite == null || levelSprite.length <= currentIdx) return;
+        if (levelSprite[currentIdx] == null) return;
+
+        int[][] data = levels.get(currentIdx).getLevelData();
+        if (data == null || data.length == 0) return;
+
+        BufferedImage[] sprites = levelSprite[currentIdx]; // capture reference too
 
         for (int j = 0; j < data.length; j++) {
-            for (int i = 0; i < data[0].length; i++) {
-                int index = levels.get(lvlIndex).getSpriteIndex(i, j);
+            for (int i = 0; i < data[j].length; i++) {
+                int index = levels.get(currentIdx).getSpriteIndex(i, j);
 
                 if (index == LADDER_COLOR) {
                     if (ladderSprite != null) {
@@ -87,8 +95,8 @@ public class LevelHandler {
                     continue;
                 }
 
-                if (index >= 0 && index < levelSprite[lvlIndex].length) {
-                    g.drawImage(levelSprite[lvlIndex][index],
+                if (index >= 0 && index < sprites.length) {
+                    g.drawImage(sprites[index],
                             Game.TILES_SIZE * i - xOffset,
                             Game.TILES_SIZE * j - yOffset,
                             Game.TILES_SIZE,
