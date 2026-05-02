@@ -13,6 +13,7 @@ public class SlotScreen {
     private Font customFont;
     private Game game;
     private String mode = "SAVE";
+    private Font saveMsgFont;
 
     private Rectangle slot1 = new Rectangle(424, 150, 400, 70);
     private Rectangle slot2 = new Rectangle(424, 260, 400, 70);
@@ -27,6 +28,7 @@ public class SlotScreen {
     public SlotScreen(Game game) {
         this.game = game;
         customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
+        saveMsgFont = customFont.deriveFont(32f);
     }
 
     public void setMode(String mode) {
@@ -73,16 +75,14 @@ public class SlotScreen {
         if (file.exists()) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(file));
-                float x = Float.parseFloat(br.readLine());
-                float y = Float.parseFloat(br.readLine());
+                br.readLine();
+                br.readLine();
                 String lvlLine = br.readLine();
                 int levelNum = Integer.parseInt(lvlLine);
                 br.close();
 
                 g.setColor(Color.WHITE);
-                g.drawString("Slot " + slotNum + "  —  Level: " + levelNum
-                                + "  |  x: " + (int)x + "  y: " + (int)y,
-                        slot.x + 20, slot.y + 40);
+                g.drawString("Slot " + slotNum + "  —  World: " + levelNum, slot.x + 20, slot.y + 40);
 
             } catch (IOException e) {
                 g.setColor(Color.RED);
@@ -148,7 +148,7 @@ public class SlotScreen {
             fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
             fw.close();
 
-            game.setSaveMessage("Saved Game!");
+            game.setSaveMessage("Game Progress Saved!");
             GameState.state = GameState.PLAYING;
 
         } catch (IOException e) {
@@ -161,27 +161,20 @@ public class SlotScreen {
         if (!file.exists()) return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String lineX = br.readLine();
-            String lineY = br.readLine();
-            String lineLvl = br.readLine();
+            float x = Float.parseFloat(br.readLine().trim());
+            float y = Float.parseFloat(br.readLine().trim());
+            int levelNum = Integer.parseInt(br.readLine().trim());
 
-            if (lineX != null && lineY != null && lineLvl != null) {
-                float x = Float.parseFloat(lineX.trim());
-                float y = Float.parseFloat(lineY.trim());
-                int levelNum = Integer.parseInt(lineLvl.trim());
+            // load world assets
+            game.getLevelHandler().loadLevel(levelNum);
 
-                if (levelNum >= 0) {
-                    game.getPlayer().getHitbox().x = x;
-                    game.getPlayer().getHitbox().y = y;
-                    game.getLevelHandler().loadLevel(levelNum);
-                    GameState.state = GameState.PLAYING;
-                } else {
-                    System.out.println("Load Failed: Negative level index found in file.");
-                }
-            }
-        } catch (IOException | NumberFormatException e) {
-            System.out.println("Error loading slot: " + e.getMessage());
-        }
+            // place player to saved location.
+            game.getPlayer().getHitbox().x = x;
+            game.getPlayer().getHitbox().y = y;
+            game.getPlayer().updateLevelData(game.getLevelHandler().getCurrentLevel().getLevelData());
+
+            GameState.state = GameState.PLAYING;
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void deleteSlot(int slotNum) {
@@ -199,4 +192,6 @@ public class SlotScreen {
             }
         }
     }
+
+    public Font getSaveMsgFont() { return saveMsgFont; }
 }

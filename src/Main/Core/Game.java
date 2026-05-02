@@ -1,3 +1,4 @@
+
 package Main.Core;
 
 import Audio.AudioPlayer;
@@ -13,6 +14,8 @@ import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import static java.awt.Font.PLAIN;
 
 public class Game implements Runnable {
 
@@ -34,6 +37,7 @@ public class Game implements Runnable {
     private AudioPlayer audioPlayer;
 
     // this generates "Saved Game!" on screen
+    private Font customFont;
     private String saveMessage          = "";
     private long saveMessageTimer       = 0;
     private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
@@ -68,6 +72,7 @@ public class Game implements Runnable {
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         startGameLoop();
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
     }
 
     public void initClasses() {
@@ -189,7 +194,8 @@ public class Game implements Runnable {
         if (!saveMessage.isEmpty()) {
             long elapsed = System.currentTimeMillis() - saveMessageTimer;
             if (elapsed < MESSAGE_DURATION) {
-                g.setFont(new Font("Arial", Font.BOLD, 18));
+                g.setFont(customFont.deriveFont(Font.PLAIN, 30));
+                g.setColor(new Color(208, 229, 7));
                 FontMetrics fm = g.getFontMetrics();
                 int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
                 g.setColor(Color.WHITE);
@@ -203,7 +209,6 @@ public class Game implements Runnable {
     public void resetGame() {
         player.resetAll();
         objectManager.resetAllObjects();
-        //boss.reset();
         playing.resetCamera();
         levelHandler.loadLevel(1);
         levelHandler.updateBackground();

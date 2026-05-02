@@ -110,8 +110,11 @@ public class HelpMethods {
                 } else if (blueValue == LADDER_COLOR) {
                     lvlData[j][i] = LADDER_COLOR; // 132
                 } else {
-                    if (redValue >= 48) redValue = 0;
-                    lvlData[j][i] = redValue;
+                    if (redValue >= 18) {
+                        lvlData[j][i] = AIR;
+                    } else {
+                        lvlData[j][i] = redValue;
+                    }
                 }
             }
         }

@@ -13,17 +13,19 @@ public class NPC extends Entity {
     private int npcID;
     private String[] dialogue;
     private boolean isHovered = false;
+    private boolean canSave = false;
     private BufferedImage[] npcImages;
     private static final int SOURCE_SIZE = 64;
     private int xDrawOffset, yDrawOffset;
 
-    public NPC(float x, float y, int width, int height, int npcID, String[] dialogue) {
+    public NPC(float x, float y, int width, int height, int npcID, String[] dialogue, boolean canSave) {
         super(x, y,
                 (int)(SOURCE_SIZE * getScale(npcID)),
                 (int)(SOURCE_SIZE * getScale(npcID)));
 
         this.npcID = npcID;
         this.dialogue = dialogue;
+        this.canSave = canSave;
 
         this.xDrawOffset = (width - Game.TILES_SIZE) / 2;
         this.yDrawOffset = (int) (getYOffset(npcID) * Game.SCALE);
@@ -92,4 +94,5 @@ public class NPC extends Entity {
     public void setHovered(boolean hovered) { this.isHovered = hovered; }
     public String[] getDialogue() { return dialogue; }
     public int getNID() { return npcID; }
+    public boolean isSavePoint() { return canSave; }
 }

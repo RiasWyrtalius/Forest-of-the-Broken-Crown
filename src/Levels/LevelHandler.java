@@ -91,7 +91,7 @@ public class LevelHandler {
                     }
                 }
 
-                if (index < levelSprite[lvlIndex].length && index >= 0) {
+                if (index >= 0 && index < levelSprite[lvlIndex].length) {
                     g.drawImage(levelSprite[lvlIndex][index],
                             Game.TILES_SIZE * i - xOffset,
                             Game.TILES_SIZE * j - yOffset,

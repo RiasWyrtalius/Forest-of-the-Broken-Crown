@@ -2,6 +2,7 @@ package Main.UI;
 
 import Entities.PlayerCharacter;
 import Main.Core.Game;
+import Main.GameStates.SlotScreen;
 import Utils.LoadSave;
 
 import java.awt.*;

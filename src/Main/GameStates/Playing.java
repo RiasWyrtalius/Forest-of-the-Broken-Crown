@@ -144,7 +144,15 @@ public class Playing {
             case KeyEvent.VK_ENTER -> {
                 NPC npc = objectManager.getHoveredNPC();
                 if (npc != null) {
+
                     dialogueManager.startDialogue(npc.getDialogue(), npc);
+
+                    if (npc.isSavePoint()) {
+                        game.getSlotScreen().setMode("SAVE");
+                        GameState.state = GameState.SLOTS;
+                    } else {
+                        dialogueManager.startDialogue(npc.getDialogue(), npc);
+                    }
                 }
             }
         }

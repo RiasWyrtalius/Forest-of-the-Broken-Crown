@@ -83,6 +83,7 @@ public class ObjectManager {
                 Color color = new Color(img.getRGB(i, j));
                 int value = color.getBlue();
                 int npcID = color.getGreen();
+                int redValue = color.getRed();
 
                 if (value == VASE_COLOR) {
                     vases.add(new Vase(i * Game.TILES_SIZE, j * Game.TILES_SIZE, VASE));
@@ -96,11 +97,12 @@ public class ObjectManager {
                            value == DENVER_TC) {
                     //System.out.println("NPC Spawned at: " + i + ", " + j);
                     String[] lines = Utils.DialogueData.getLinesFor(npcID);
+                    boolean canSave = (redValue == 1);
 
                     int centeredX = (i * Game.TILES_SIZE) - 22;
                     int groundedY = (j * Game.TILES_SIZE) - 32;
 
-                    npcs.add(new NPC(centeredX, groundedY, 64, 64, npcID, lines));
+                    npcs.add(new NPC(centeredX, groundedY, 64, 64, npcID, lines, canSave));
                 }
             }
         }

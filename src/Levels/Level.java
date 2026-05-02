@@ -21,7 +21,6 @@ public class Level {
         this.img = img;
         this.atlasPath = atlasPath;
         this.bgPath = bgPath;
-        //createBoss(); //TODO: IMPLEMENT
         this.lvlData = HelpMethods.GetLevelData(img, playerSpawn);
         calculateLevelOffsets();
     }
