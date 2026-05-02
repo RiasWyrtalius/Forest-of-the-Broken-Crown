@@ -43,9 +43,9 @@ The project is organized into a clean, modular package system:
 | :--- | :--- |
 | **Move** | WASD or Arrow Keys |
 | **Jump** | Space |
-| **Interact** | Enter / Left Click |
-| **Attack/Ability** | Character-specific binds |
-| **Pause** | P / Esc |
+| **Interact** | Enter / Spacebar |
+| **Attack/Ability** | E |
+| **Pause** | Esc |
 
 ---
 
