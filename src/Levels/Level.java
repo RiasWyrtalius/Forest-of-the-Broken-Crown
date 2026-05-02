@@ -6,10 +6,13 @@ import Utils.HelpMethods;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static Utils.LoadSave.getSpriteAtlas;
+
 
 public class Level {
 
     private BufferedImage img;
+    private BufferedImage backgroundImg;
     private String atlasPath;
     private int[][] lvlData;
     private int lvlTilesWide;
@@ -21,6 +24,7 @@ public class Level {
         this.img = img;
         this.atlasPath = atlasPath;
         this.bgPath = bgPath;
+        this.backgroundImg = getSpriteAtlas(bgPath);
         this.lvlData = HelpMethods.GetLevelData(img, playerSpawn);
         calculateLevelOffsets();
     }
@@ -38,4 +42,5 @@ public class Level {
     public BufferedImage getLevelDataImg() { return img; }
     public String getBackgroundPath() { return bgPath; }
     public BufferedImage getLevelDataImage() { return img; }
+    public BufferedImage getBackgroundImage() { return backgroundImg; }
 }

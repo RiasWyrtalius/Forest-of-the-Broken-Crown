@@ -309,6 +309,10 @@ public class Game implements Runnable {
     public void updateLevelOffsets() { playing.updateLevelOffsets(); }
     public void windowFocusLost() { player.resetDirectionBooleans(); }
 
+    public void setBackgroundImg(BufferedImage backgroundImg) {
+        this.backgroundImg = backgroundImg;
+    }
+
     public Player getPlayer() {return player;}
     public MainMenu getMainMenu() {return mainMenu;}
     public LevelHandler getLevelHandler() {return levelHandler;}

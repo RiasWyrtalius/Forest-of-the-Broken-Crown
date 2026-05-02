@@ -104,11 +104,11 @@ public class LevelHandler {
     }
 
     public void updateBackground() {
-        game.updateBackground();
+        BufferedImage newBg = levels.get(lvlIndex).getBackgroundImage();
+        game.setBackgroundImg(newBg);
     }
 
     public void loadLevel(int levelNum) {
-        this.currentLevelNum = levelNum;
         if (levelNum == 0) {
             this.lvlIndex = 0;
         } else {
@@ -118,7 +118,20 @@ public class LevelHandler {
         if (lvlIndex < 0) lvlIndex = 0;
         if (lvlIndex >= levels.size()) lvlIndex = levels.size() - 1;
 
+        updateBackground();
+        this.currentLevelNum = levelNum;
+        importAllLevelsAtlases();
+
+        Level currentLevel = levels.get(lvlIndex);
+        game.getObjectManager().loadObjects(currentLevel);
+
+        if (game.getPlaying() != null) {
+            game.getPlaying().getEnemyManager().loadEnemies(currentLevel);
+            game.getPlaying().updateLevelOffsets();
+        }
+
         Point p = levels.get(lvlIndex).getPlayerSpawn();
+        //game.getPlayer().setSpawn(p);
         System.out.println("Loaded Level " + levelNum + " - Spawn: " + p.x + ", " + p.y);
     }
 

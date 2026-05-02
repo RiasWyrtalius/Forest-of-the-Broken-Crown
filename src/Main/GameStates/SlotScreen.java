@@ -1,5 +1,6 @@
 package Main.GameStates;
 
+import Levels.Level;
 import Main.Core.Game;
 import Main.GameState;
 import Utils.LoadSave;
@@ -167,6 +168,12 @@ public class SlotScreen {
 
             // load world assets
             game.getLevelHandler().loadLevel(levelNum);
+            Level currentLevel = game.getLevelHandler().getCurrentLevel();
+
+            if (game.getPlaying() != null) {
+                game.getPlaying().getEnemyManager().loadEnemies(currentLevel);
+                game.getPlaying().updateLevelOffsets();
+            }
 
             // place player to saved location.
             game.getPlayer().getHitbox().x = x;

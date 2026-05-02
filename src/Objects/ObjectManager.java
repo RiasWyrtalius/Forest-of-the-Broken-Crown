@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import Audio.AudioPlayer;
 import Entities.NPC;
 import Entities.Player;
+import Levels.Level;
 import Main.Core.Game;
 import Utils.Constants;
 import Utils.LoadSave;
@@ -70,11 +71,11 @@ public class ObjectManager {
         }
     }
 
-    public void loadObjects(Levels.Level level) {
+    public void loadObjects(Level level) {
         vases.clear();
+        potions.clear();
         spikes.clear();
         npcs.clear();
-        potions.clear();
 
         BufferedImage img = level.getLevelDataImg();
 
