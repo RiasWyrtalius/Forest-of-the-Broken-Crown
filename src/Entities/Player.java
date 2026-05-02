@@ -18,6 +18,7 @@ public class Player extends Entity{
     private int playerAction = IDLE;
     private boolean moving = false;
     private boolean left, right, jump, down;
+    private boolean climbing = false;
     private int faceDirection = WALKR;
 
     private PlayerCharacter characterData;
@@ -290,7 +291,16 @@ public class Player extends Entity{
 
     private void updatePos() {
         moving = false;
-        if (jump) jump();
+
+        climbing = HelpMethods.isEntityOnLadder(hitbox, lvlData);
+
+        if (climbing) {
+            inAir = false;
+            airSpeed = 0;
+            updateClimbing();
+        } else {
+            if (jump) jump();
+        }
 
         float xSpeed = 0;
 
@@ -358,6 +368,22 @@ public class Player extends Entity{
             if (activeSkill != null) {
                 activeSkill.activate();
                 jumpPressed = true;
+            }
+        }
+    }
+
+    private void updateClimbing() {
+        float climbSpeed = 1.0f * Game.SCALE;
+
+        if (jump) {
+            if (CanMoveHere(hitbox.x, hitbox.y - climbSpeed, hitbox.width, hitbox.height, lvlData)) {
+                hitbox.y -= climbSpeed;
+                moving = true;
+            }
+        } else if (down) {
+            if (CanMoveHere(hitbox.x, hitbox.y + climbSpeed, hitbox.width, hitbox.height, lvlData)) {
+                hitbox.y += climbSpeed;
+                moving = true;
             }
         }
     }

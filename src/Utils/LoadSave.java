@@ -61,6 +61,7 @@ public class LoadSave {
     //Objects
     public static final String VASE_ATLAS = "Levels/Objects/Vase/vase_object.png";
     public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";
+    public static final String LADDER_ATLAS = "Levels/Objects/Ladder/LadderSprite.png";
 
     //Potions
     public static final String HEALTH_POTION_ATLAS = "Levels/Objects/DropHealthSS.png";

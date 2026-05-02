@@ -7,10 +7,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import static Utils.Constants.ObjectConstants.LADDER_COLOR;
+
 public class LevelHandler {
 
     private Game game;
     private BufferedImage[][] levelSprite;
+    private BufferedImage ladderSprite;
     private ArrayList<Level> levels;
     private int lvlIndex = 0;
     private int currentLevelNum = 1;
@@ -21,6 +24,11 @@ public class LevelHandler {
         levels = new ArrayList<>();
         buildAllLevels();
         importAllLevelsAtlases();
+        loadExtraSprites();
+    }
+
+    private void loadExtraSprites() {
+        ladderSprite = LoadSave.getSpriteAtlas(LoadSave.LADDER_ATLAS);
     }
 
     private void importAllLevelsAtlases() {
@@ -71,6 +79,18 @@ public class LevelHandler {
         for (int j = 0; j < levels.get(lvlIndex).getLevelData().length; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
+
+                if (index == LADDER_COLOR) {
+                    if (ladderSprite != null) {
+                        g.drawImage(ladderSprite,
+                                Game.TILES_SIZE * i - xOffset,
+                                Game.TILES_SIZE * j - yOffset,
+                                Game.TILES_SIZE,
+                                Game.TILES_SIZE,
+                                null);
+                    }
+                }
+
                 if (index < levelSprite[lvlIndex].length && index >= 0) {
                     g.drawImage(levelSprite[lvlIndex][index],
                             Game.TILES_SIZE * i - xOffset,

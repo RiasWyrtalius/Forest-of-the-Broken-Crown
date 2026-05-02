@@ -9,9 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static Utils.Constants.EnemyConstants.BOSS_LAYER;
+import static Utils.Constants.EnemyConstants.EMBRYN;
 import static Utils.Constants.NPCConstants.*;
-import static Utils.Constants.ObjectConstants.SPIKE_COLOR;
-import static Utils.Constants.ObjectConstants.VASE_COLOR;
+import static Utils.Constants.ObjectConstants.*;
 import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
 
 public class HelpMethods {
@@ -44,7 +44,7 @@ public class HelpMethods {
         float yIndex = y / Game.TILES_SIZE;
 
         int value = lvlData[(int) yIndex][(int) xIndex];
-        return value != 18; // 18 is air
+        return value != AIR && value != LADDER_COLOR; // 18 (Air) & 132 (Ladder)
     }
 
     public static float getEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {
@@ -97,7 +97,7 @@ public class HelpMethods {
                     playerSpawn.x = i * Game.TILES_SIZE;
                     playerSpawn.y = j * Game.TILES_SIZE;
                     System.out.println("Spawn Found at Tile: " + i + ", " + j);
-                    lvlData[j][i] = 18;
+                    lvlData[j][i] = AIR;
                 } else if ( blueValue == VASE_COLOR  ||
                             blueValue == SPIKE_COLOR ||
                             blueValue == NINO_TQ     ||
@@ -106,7 +106,9 @@ public class HelpMethods {
                             blueValue == RILEY_TZ    ||
                             blueValue == DENVER_TC   ||
                             blueValue == BOSS_LAYER) {
-                    lvlData[j][i] = 18;
+                    lvlData[j][i] = AIR;
+                } else if (blueValue == LADDER_COLOR) {
+                    lvlData[j][i] = LADDER_COLOR; // 132
                 } else {
                     if (redValue >= 48) redValue = 0;
                     lvlData[j][i] = redValue;
@@ -137,14 +139,6 @@ public class HelpMethods {
         g.drawString(label, textX, textY);
     }
 
-    public static boolean isFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
-        // Check if there's a floor tile below the next horizontal position
-        if (xSpeed > 0)
-            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
-        else
-            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
-    }
-
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int tileY) {
         // Get the tile X positions of both entities
         int firstXTile  = (int) (firstHitbox.x  / Game.TILES_SIZE);
@@ -171,8 +165,26 @@ public class HelpMethods {
         // Green 101 = Embryn
         //       102 = next boss
         return switch (greenValue) {
-            case 101 -> Utils.Constants.EnemyConstants.EMBRYN;
+            case 101 -> EMBRYN;
             default -> -1;
         };
+    }
+
+    public static boolean isEntityOnLadder(Rectangle2D.Float hitbox, int[][] lvlData) {
+        float centerX = hitbox.x + hitbox.width / 2;
+        float topY = hitbox.y;
+        float botY = hitbox.y + hitbox.height;
+
+        // coords
+        int xIndex = (int) (centerX / Game.TILES_SIZE);
+        int yTopIndex = (int) (topY / Game.TILES_SIZE);
+        int yBotIndex = (int) (botY / Game.TILES_SIZE);
+
+        // within bounds
+        if (xIndex < 0 || xIndex >= lvlData[0].length) return false;
+        if (yTopIndex < 0 || yTopIndex >= lvlData.length) return false;
+        if (yBotIndex < 0 || yBotIndex >= lvlData.length) return false;
+
+        return lvlData[yTopIndex][xIndex] == 132 || lvlData[yBotIndex][xIndex] == 132;
     }
 }

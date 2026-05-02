@@ -22,10 +22,14 @@ public class Constants {
     }
 
     public static class ObjectConstants {
+        public static final int AIR = 18;
+
         public static final int VASE = 0;
         public static final int VASE_COLOR = 130;
         public static final int SPIKE = 1;
         public static final int SPIKE_COLOR = 131;
+        public static final int LADDER = 2;
+        public static final int LADDER_COLOR = 132;
 
         public static final int SPIKE_FLOOR_MID = 0;
         public static final int SPIKE_FLOOR_RIGHT = 1;
