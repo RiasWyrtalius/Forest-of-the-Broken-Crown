@@ -108,9 +108,9 @@ public class ObjectManager {
 
     private void loadSpikeImgs() {
         BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.SPIKE_ATLAS);
-        spikeImgs = new BufferedImage[6];
+        spikeImgs = new BufferedImage[8];
 
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 4; j++) {
             for (int i = 0; i < 2; i++) {
                 spikeImgs[j * 2 + i] = temp.getSubimage(
                         i * Game.TILES_DEFAULT_SIZE,
@@ -194,7 +194,7 @@ public class ObjectManager {
         for (Spike s : spikes) {
             if (s.getHitbox().intersects(p.getHitbox())) {
                 switch (s.getSpriteIndex()) {
-                    case SPIKE_FLOOR_MID, SPIKE_FLOOR_LEFT, SPIKE_FLOOR_RIGHT, SPIKE_LEFT -> {
+                    case SPIKE_FLOOR_MID, SPIKE_FLOOR_LEFT, SPIKE_FLOOR_RIGHT, SPIKE_LEFT, SPIKE_RIGHT -> {
                         p.teleportToSpawn();
                         p.loseLife();
                     }

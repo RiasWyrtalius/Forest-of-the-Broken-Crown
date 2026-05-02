@@ -30,10 +30,9 @@ public class Player extends Entity{
     private int[][] lvlData;
 
     //Gravity / Jumping
-    private float jumpSpeed = -2.23f * Game.SCALE;
+    private float jumpSpeed = -2.41f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 
-    private int jumpCount = 0;
     private boolean jumpPressed;
     private float extraHSpeed = 0;
 
@@ -366,7 +365,6 @@ public class Player extends Entity{
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
-        jumpCount = 0;
     }
 
     public void resetAll() {
@@ -376,7 +374,7 @@ public class Player extends Entity{
         playerAction = IDLE;
         this.life    = maxLife;
 
-        this.jumpCount = 0;
+
 
         hitbox.x = x;
         hitbox.y = y;

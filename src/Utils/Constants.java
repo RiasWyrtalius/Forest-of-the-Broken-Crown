@@ -32,6 +32,7 @@ public class Constants {
         public static final int SPIKE_FLOOR_LEFT = 5;
 
         public static final int SPIKE_LEFT = 3;
+        public static final int SPIKE_RIGHT = 6;
         public static final int SPIKE_CEILING = 4;
 
         public static final int HEALTH_POTION = 0;

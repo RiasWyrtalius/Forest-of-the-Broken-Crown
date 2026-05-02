@@ -41,7 +41,12 @@ public class Spike extends GameObject {
                 xOff = 0; // pin to left
                 yOff = margin;
             }
-
+            case SPIKE_RIGHT -> {
+                w = thickness;
+                h = size - (margin * 2);
+                xOff = size - thickness;
+                yOff = margin;
+            }
             case SPIKE_CEILING -> {
                 w = size - (margin * 2);
                 h = thickness;
