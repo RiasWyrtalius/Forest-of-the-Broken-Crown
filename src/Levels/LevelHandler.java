@@ -72,23 +72,19 @@ public class LevelHandler {
 
     public void draw(Graphics g, int xOffset, int yOffset) {
         if (levels.isEmpty() || lvlIndex >= levels.size()) return;
-        if (levelSprite == null || levelSprite.length <= lvlIndex || levelSprite[lvlIndex] == null) {
-            return;
-        }
+        if (levelSprite == null || levelSprite.length <= lvlIndex || levelSprite[lvlIndex] == null) return;
 
-        for (int j = 0; j < levels.get(lvlIndex).getLevelData().length; j++) {
-            for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
+        int[][] data = levels.get(lvlIndex).getLevelData();
+
+        for (int j = 0; j < data.length; j++) {
+            for (int i = 0; i < data[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
 
                 if (index == LADDER_COLOR) {
                     if (ladderSprite != null) {
-                        g.drawImage(ladderSprite,
-                                Game.TILES_SIZE * i - xOffset,
-                                Game.TILES_SIZE * j - yOffset,
-                                Game.TILES_SIZE,
-                                Game.TILES_SIZE,
-                                null);
+                        g.drawImage(ladderSprite, Game.TILES_SIZE * i - xOffset, Game.TILES_SIZE * j - yOffset, Game.TILES_SIZE, Game.TILES_SIZE, null);
                     }
+                    continue;
                 }
 
                 if (index >= 0 && index < levelSprite[lvlIndex].length) {
