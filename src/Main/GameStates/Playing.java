@@ -64,8 +64,9 @@ public class Playing {
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
         player.render(g, xLvlOffset, yLvlOffset);
         game.getUi().draw(g);
-        game.drawSaveMessage(g);
+        game.getUi().drawSaveMessage(g);
         dialogueManager.draw(g);
+        game.getUi().drawBossDefeated(g);
     }
 
     public void updateLevelOffsets() {

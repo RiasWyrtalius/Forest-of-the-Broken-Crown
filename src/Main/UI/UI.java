@@ -8,16 +8,22 @@ import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static Main.Core.Game.GAME_WIDTH;
 import static java.awt.Font.PLAIN;
 
 public class UI {
     private Game game;
     private BufferedImage[] heartSprite = new BufferedImage[2]; // 0 = full, 1 = empty
     private BufferedImage[] manaSprite = new BufferedImage[2];
-    private int slotX = (Game.GAME_WIDTH / 2) - 300;
+    private int slotX = (GAME_WIDTH / 2) - 300;
     private int slotY = 200;
     private Font customFont;
     private String tooltipText = null;
+
+    private String saveMessage   = "";
+    private String bossDefeatMsg = "";
+    private long msgTimer = 0;
+    private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
     public UI(Game game) {
         this.game = game;
@@ -108,7 +114,7 @@ public class UI {
 
     private void drawHeroLore(Graphics g, PlayerCharacter hero) {
         int descWidth = 650;
-        int descX = (Game.GAME_WIDTH / 2) - (descWidth / 2);
+        int descX = (GAME_WIDTH / 2) - (descWidth / 2);
 
         g.setFont(customFont.deriveFont(Font.PLAIN, 20));
         g.setColor(new Color(142, 142, 142));
@@ -227,5 +233,46 @@ public class UI {
             }
         }
         g.drawString(line.toString(), x, currentY);
+    }
+
+    public void drawSaveMessage(Graphics g) {
+        if (!saveMessage.isEmpty()) {
+            long elapsed = System.currentTimeMillis() - msgTimer;
+            if (elapsed < MESSAGE_DURATION) {
+                g.setFont(customFont.deriveFont(Font.PLAIN, 30));
+                g.setColor(new Color(208, 229, 7));
+                FontMetrics fm = g.getFontMetrics();
+                int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
+                g.setColor(Color.WHITE);
+                g.drawString(saveMessage, msgX, 70);
+            } else {
+                saveMessage = "";
+            }
+        }
+    }
+
+    public void drawBossDefeated(Graphics g) {
+        if (!bossDefeatMsg.isEmpty()) {
+            long elapsed = System.currentTimeMillis() - msgTimer;
+            if (elapsed < MESSAGE_DURATION) {
+                g.setFont(customFont.deriveFont(Font.PLAIN, 50));
+                FontMetrics fm = g.getFontMetrics();
+                int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(bossDefeatMsg) / 2);
+                g.setColor(Color.RED);
+                g.drawString(bossDefeatMsg, msgX, 150);
+            } else {
+                bossDefeatMsg = "";
+            }
+        }
+    }
+
+    public void setSaveMessage(String msg) {
+        this.saveMessage = msg;
+        this.msgTimer = System.currentTimeMillis();
+    }
+
+    public void setBossDefeatMsg(String msg) {
+        this.bossDefeatMsg = msg;
+        this.msgTimer = System.currentTimeMillis();
     }
 }

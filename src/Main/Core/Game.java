@@ -15,7 +15,6 @@ import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static java.awt.Font.PLAIN;
 
 public class Game implements Runnable {
 
@@ -28,6 +27,7 @@ public class Game implements Runnable {
     private Thread gameThread;
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
+    private static Game instance;
 
     private Player player;
     private LevelHandler levelHandler;
@@ -35,12 +35,6 @@ public class Game implements Runnable {
     private PauseScreen pauseScreen;
     private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
-
-    // this generates "Saved Game!" on screen
-    private Font customFont;
-    private String saveMessage          = "";
-    private long saveMessageTimer       = 0;
-    private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
     // this makes the transition to black
     private boolean fadingOut       = false; // this fades to black
@@ -72,7 +66,7 @@ public class Game implements Runnable {
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         startGameLoop();
-        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
+        instance = this;
     }
 
     public void initClasses() {
@@ -180,22 +174,6 @@ public class Game implements Runnable {
         }
     }
 
-    public void drawSaveMessage(Graphics g) {
-        if (!saveMessage.isEmpty()) {
-            long elapsed = System.currentTimeMillis() - saveMessageTimer;
-            if (elapsed < MESSAGE_DURATION) {
-                g.setFont(customFont.deriveFont(Font.PLAIN, 30));
-                g.setColor(new Color(208, 229, 7));
-                FontMetrics fm = g.getFontMetrics();
-                int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(saveMessage) / 2);
-                g.setColor(Color.WHITE);
-                g.drawString(saveMessage, msgX, 70);
-            } else {
-                saveMessage = "";
-            }
-        }
-    }
-
     public void resetGame() {
         player.resetAll();
         objectManager.resetAllObjects();
@@ -264,11 +242,6 @@ public class Game implements Runnable {
         }
     }
 
-    public void setSaveMessage(String msg) {
-        saveMessage = msg;
-        saveMessageTimer = System.currentTimeMillis();
-    }
-
     public BufferedImage getCharacterAtlas(PlayerCharacter character) {
         return switch (character) {
             case KAELTHORN -> LoadSave.getSpriteAtlas(LoadSave.Kaelthron_Atlas);
@@ -303,7 +276,7 @@ public class Game implements Runnable {
         this.backgroundImg = backgroundImg;
     }
 
-    public Player getPlayer() {return player;}
+    public Player getPlayer() { return player;}
     public MainMenu getMainMenu() {return mainMenu;}
     public LevelHandler getLevelHandler() {return levelHandler;}
     public SlotScreen getSlotScreen()     {return slotScreen;}
@@ -316,4 +289,5 @@ public class Game implements Runnable {
     public BufferedImage getBackgroundImg() { return backgroundImg; }
     public Playing getPlaying() { return playing; }
     public EnemyManager getEnemyManager() {return playing.getEnemyManager();}
+    public static Game getInstance() { return instance; }
 }

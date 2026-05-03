@@ -1,6 +1,5 @@
 package Main.GameStates;
 
-import Entities.NPC;
 import Levels.Level;
 import Main.Core.Game;
 import Main.GameState;
@@ -9,7 +8,7 @@ import Utils.LoadSave;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import javax.swing.JOptionPane;   // Added for confirmation dialog
+import javax.swing.JOptionPane;
 
 public class SlotScreen {
     private Font customFont;
@@ -150,7 +149,7 @@ public class SlotScreen {
             fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
             fw.close();
 
-            game.setSaveMessage("Game Progress Saved!");
+            game.getUi().setSaveMessage("Game Progress Saved!");
             GameState.state = GameState.PLAYING;
 
         } catch (IOException e) {

@@ -13,7 +13,6 @@ import static Utils.Constants.LEFT;
 import static Utils.Constants.RIGHT;
 
 public class Embryn extends Boss {
-
     private Rectangle2D.Float attackBox;
     private float chaseSpeed = 2.5f * Game.SCALE;
     private float roamSpeed = 1.2f * Game.SCALE;
@@ -23,6 +22,8 @@ public class Embryn extends Boss {
     private boolean isTired = false;
     private int tiredTimer = 0;
     private int tiredMaxTime = 3 * 200;
+
+    private boolean defeatMsgSent = false;
 
     public Embryn(float x, float y) {
         super(x, y, EMBRYN_WIDTH, EMBRYN_HEIGHT, EMBRYN);
@@ -167,6 +168,12 @@ public class Embryn extends Boss {
 
                 case DETECT -> turnTowardsPlayer(player);
                 case ATTACK -> checkEnemyHit(attackBox, player);
+                case DEAD -> {
+                    if (!defeatMsgSent) {
+                        Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED");
+                        defeatMsgSent = true;
+                    }
+                }
             }
         }
     }
