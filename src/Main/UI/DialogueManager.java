@@ -2,10 +2,15 @@ package Main.UI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import Entities.NPC;
 import Main.Core.Game;
+import Utils.DialogueData;
 import Utils.LoadSave;
 import Utils.Constants;
+
+import static Main.Core.Game.*;
 import static Utils.Constants.NPCConstants.getName;
 
 public class DialogueManager {
@@ -17,6 +22,8 @@ public class DialogueManager {
     private boolean active = false;
     private Font customFont;
     private Font dialogueFont;
+
+    private ArrayList<String> wrappedLines = new ArrayList<>();
 
     // Sprite Handling
     private BufferedImage[][] npcAnimations;
@@ -30,17 +37,27 @@ public class DialogueManager {
 
     private final int TYPE_SPEED = 2;
 
+    public DialogueManager() {
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(24f);
+        dialogueFont = LoadSave.getFont("Font/VCR.ttf").deriveFont(8f);
+
+        npcAnimations = new BufferedImage[0][0];
+    }
+
     public void startDialogue(String[] lines, NPC npc) {
         this.currentDialogue = lines;
         this.activeNpcID = npc.getNID();
         this.lineIndex = 0;
         this.visibleTextIndex = 0;
         this.active = true;
+
+        prepareLines(lines[lineIndex]);
+
         this.aniIndex = 0;
         this.aniTick = 0;
 
         customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(24f);
-        dialogueFont = LoadSave.getFont("Font/VCR.ttf").deriveFont(20f);
+        dialogueFont = LoadSave.getFont("Font/VCR.ttf").deriveFont(10f);
 
         setSpriteRow(npc);
         loadNPCAnimations(npc);
@@ -50,7 +67,7 @@ public class DialogueManager {
         String name = getName(npc.getNID());
 
         if (name.contains("Denver")) {
-            this.currentAniRow = 1; // Waking up row index
+            this.currentAniRow = 1; // waking up
             this.isWakingUp = true;
             this.wakeUpComplete = false;
         } else if (name.contains("Queer")) {
@@ -68,7 +85,7 @@ public class DialogueManager {
         String path = Constants.NPCConstants.getSpritePath(npc.getNID());
         BufferedImage atlas = LoadSave.getSpriteAtlas(path);
 
-        int maxRowsAvailable = atlas.getHeight() / 64;
+        int maxRowsAvailable = atlas.getHeight() / SPRITE_DEFAULT_SIZE;
         npcAnimations = new BufferedImage[maxRowsAvailable][];
 
         for (int row = 0; row < maxRowsAvailable; row++) {
@@ -76,7 +93,7 @@ public class DialogueManager {
             int spritesInThisRow = 0;
 
             for (int i = 0; i < 10; i++) {
-                if ((i + 1) * 64 <= rowWidth) spritesInThisRow++;
+                if ((i + 1) * SPRITE_DEFAULT_SIZE <= rowWidth) spritesInThisRow++;
                 else break;
             }
 
@@ -95,6 +112,10 @@ public class DialogueManager {
     public void update() {
         if (!active) return;
 
+        if (npcAnimations == null || npcAnimations.length == 0 || npcAnimations[currentAniRow] == null) {
+            return;
+        }
+
         aniTick++;
         if (aniTick >= aniSpeed) {
             aniTick = 0;
@@ -105,14 +126,12 @@ public class DialogueManager {
                     isWakingUp = false;
                     wakeUpComplete = true;
                     currentAniRow = 2;
-                    aniIndex = 0;
-                } else {
-                    aniIndex = 0;
                 }
+                aniIndex = 0;
             }
         }
 
-        // 2. Update Text
+        // Update text
         if (wakeUpComplete) {
             tickCounter++;
             if (tickCounter >= TYPE_SPEED) {
@@ -128,12 +147,12 @@ public class DialogueManager {
         if (!active) return;
 
         int margin = 50;
-        int boxY = Game.GAME_HEIGHT - 170;
+        int boxY = GAME_HEIGHT - 170;
         int boxH = 130;
         int portW = 130;
         int portX = margin;
         int textX = portX + portW + 10;
-        int textW = Game.GAME_WIDTH - textX - margin;
+        int textW = GAME_WIDTH - textX - margin;
 
         g.setColor(new Color(0, 0, 0, 230));
         g.fillRect(portX, boxY, portW, boxH);
@@ -156,25 +175,67 @@ public class DialogueManager {
         if (wakeUpComplete) {
             g.setFont(dialogueFont.deriveFont(24f));
             g.setColor(Color.WHITE);
-            String visibleText = currentDialogue[lineIndex].substring(0, visibleTextIndex);
-            g.drawString(visibleText, textX + 20, boxY + 50);
+
+            int lineHeight = g.getFontMetrics().getHeight();
+            int drawY = boxY + 50;
+            int charsRevealed = visibleTextIndex;
+
+            for (String line : wrappedLines) {
+                if (charsRevealed <= 0) break; //nothing left
+
+                if (charsRevealed >= line.length()) {
+                    //visible
+                    g.drawString(line, textX + 20, drawY);
+                    charsRevealed -= line.length();
+                } else {
+                    // only part of this line is visible
+                    g.drawString(line.substring(0, charsRevealed), textX + 20, drawY);
+                    charsRevealed = 0;
+                }
+                drawY += lineHeight;
+            }
         }
     }
+
+    public boolean isActive() { return active; }
+
+    //dialogue stuff
 
     public void skipOrNext() {
         if (!wakeUpComplete) return;
 
         if (visibleTextIndex < currentDialogue[lineIndex].length()) {
+            //skip fx
             visibleTextIndex = currentDialogue[lineIndex].length();
         } else {
+            // next line
             lineIndex++;
             if (lineIndex < currentDialogue.length) {
                 visibleTextIndex = 0;
+                prepareLines(currentDialogue[lineIndex]);
             } else {
                 active = false;
             }
         }
     }
 
-    public boolean isActive() { return active; }
+    private void prepareLines(String fullText) {
+        wrappedLines.clear();
+        int maxWidth = Game.GAME_WIDTH - 270;
+        String[] words = fullText.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        Canvas c = new Canvas();
+        FontMetrics fm = c.getFontMetrics(dialogueFont.deriveFont(24f));
+
+        for (String word : words) {
+            if (fm.stringWidth(currentLine + word) < maxWidth) {
+                currentLine.append(word).append(" ");
+            } else {
+                wrappedLines.add(currentLine.toString());
+                currentLine = new StringBuilder(word + " ");
+            }
+        }
+        wrappedLines.add(currentLine.toString());
+    }
 }

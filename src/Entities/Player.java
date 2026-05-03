@@ -181,7 +181,7 @@ public class Player extends Entity{
             activeSkill.render(g, lvlOffset, yLvlOffset);
         }
 
-        drawHitbox(g, lvlOffset, yLvlOffset);
+        //drawHitbox(g, lvlOffset, yLvlOffset);
     }
 
     public void loadAnimations() {
@@ -365,7 +365,7 @@ public class Player extends Entity{
             jumpPressed = true;
         } else {
             //SYLVARA's SKILL
-            if (activeSkill != null) {
+            if (characterData == PlayerCharacter.SYLVARA && activeSkill != null) {
                 activeSkill.activate();
                 jumpPressed = true;
             }

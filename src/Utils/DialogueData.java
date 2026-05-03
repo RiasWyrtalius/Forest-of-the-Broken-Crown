@@ -11,7 +11,7 @@ public class DialogueData {
         //200 = Nino
         npcDialogues.put(NINO_ID, new String[] {
                 "Greetings, traveler. Another soul cast out by the sun, seeking refuge in the shade of the Broken Crown?",
-                "The path ahead is jagged. Smashing these vases might yield a scrap of life, but mind the spikes—they crave blood as much as the roots do.",
+                "The path ahead is jagged. Smashing these vases might yield a scrap of life, but mind the spikes-they crave blood as much as the roots do.",
                 "Whether you seek to mend the crown or wear it, the forest cares not. It only waits to bury you.",
                 "Keep your wits, little one. May the spirits guide your journey... or at least make it interesting"
         });

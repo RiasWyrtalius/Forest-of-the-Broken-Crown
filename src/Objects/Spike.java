@@ -73,7 +73,7 @@ public class Spike extends GameObject {
         g.drawImage(imgs[spriteIndex], (int)(x - xLvlOffset), (int)(y - yLvlOffset),
                 Game.TILES_SIZE, Game.TILES_SIZE, null);
 
-        drawHitbox(g, xLvlOffset, yLvlOffset);
+        //drawHitbox(g, xLvlOffset, yLvlOffset);
     }
 
     public int getSpriteIndex() { return spriteIndex; }

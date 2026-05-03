@@ -25,7 +25,7 @@ public class Playing {
     private int xLvlOffset;
     private int yLvlOffset;
     private float actualXOffset, actualYOffset;
-    private float smoothing = 0.03f;
+    private float smoothing = 0.015f;
     private int deadZone = (int) (Game.TILES_SIZE * 1.5);
 
     private int maxLvlOffsetX;
@@ -74,15 +74,15 @@ public class Playing {
     }
 
     private void checkCloseToBorder() {
-        // Get the Player's current center position
+        // current center position
         float playerCenterX = player.getHitbox().x + (player.getHitbox().width / 2);
         float playerCenterY = player.getHitbox().y + (player.getHitbox().height / 2);
 
-        // Define the ideal target (centering the player on screen)
+        // centering on player screen
         float targetX = playerCenterX - (Game.GAME_WIDTH / 2);
         float targetY = playerCenterY - (Game.GAME_HEIGHT / 2);
 
-        // Apply Dead Zone
+        // deadzone
         float currentCamCenterX = actualXOffset + (Game.GAME_WIDTH / 2);
         float currentCamCenterY = actualYOffset + (Game.GAME_HEIGHT / 2);
 

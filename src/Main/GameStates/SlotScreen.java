@@ -1,5 +1,6 @@
 package Main.GameStates;
 
+import Entities.NPC;
 import Levels.Level;
 import Main.Core.Game;
 import Main.GameState;
@@ -199,6 +200,4 @@ public class SlotScreen {
             }
         }
     }
-
-    public Font getSaveMsgFont() { return saveMsgFont; }
 }
