@@ -5,6 +5,7 @@ import Main.Core.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import static Utils.Constants.EnemyConstants.*;
+import static Utils.Constants.RIGHT;
 
 public abstract class Boss extends Enemy {
     protected BufferedImage[][] animations;
@@ -30,9 +31,11 @@ public abstract class Boss extends Enemy {
 
     private int getCorrectRow() {
         return switch (enemyState) {
-            case RUNNING -> (walkDir == Utils.Constants.RIGHT) ? bossData.rowWALKRIGHT : bossData.rowWALKLEFT;
-            case HIT -> (walkDir == Utils.Constants.RIGHT) ? bossData.rowDMGRIGHT : bossData.rowDMGLEFT;
-            case DEAD -> (walkDir == Utils.Constants.RIGHT) ? bossData.rowDIERIGHT : bossData.rowDIELEFT;
+            case ATTACK -> (walkDir == RIGHT) ? bossData.rowWALKRIGHT : bossData.rowWALKLEFT;
+            case RUNNING -> (walkDir == RIGHT) ? bossData.rowRUNRIGHT : bossData.rowRUNLEFT;
+            case DETECT -> (walkDir == RIGHT) ? bossData.rowDETECTRIGHT : bossData.rowDETECTLEFT;
+            case HIT -> (walkDir == RIGHT) ? bossData.rowDMGRIGHT : bossData.rowDMGLEFT;
+            case DEAD -> (walkDir == RIGHT) ? bossData.rowDIERIGHT : bossData.rowDIELEFT;
             default -> bossData.rowIDLE;
         };
     }

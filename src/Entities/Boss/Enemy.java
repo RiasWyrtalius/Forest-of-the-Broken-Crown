@@ -10,17 +10,25 @@ import static Utils.Constants.LEFT;
 import static Utils.Constants.RIGHT;
 import java.awt.geom.Rectangle2D;
 
-
 public abstract class Enemy extends Entity {
 
     protected int enemyType;
+    protected boolean attackChecked = false;
     protected boolean firstUpdate = true;
     protected int enemyState;
     protected float walkSpeed = 0.35f * Game.SCALE;
     protected int animationTick, animationIndex;
     protected int walkDir = LEFT;
-    protected float attackDistance = 1.5f * Game.TILES_SIZE;
+    protected float attackDistance;
     protected int maxHealth, currentHealth;
+
+    //invis frames
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
+    private final int INVINCIBILITY_TIME = 100;
+
+    //flag
+    protected boolean playerInSight = false;
     protected boolean active = true;
 
     public Enemy(float x, float y, int width, int height, int enemyType) {
@@ -54,60 +62,58 @@ public abstract class Enemy extends Entity {
 
     protected void move(int[][] lvlData) {
         float xSpeed = (walkDir == LEFT) ? -walkSpeed : walkSpeed;
-
         if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
-            hitbox.x += xSpeed;
-        } else {
-            changeWalkDir();
+            if (IsFloor(hitbox, xSpeed, lvlData)) {
+                hitbox.x += xSpeed;
+                return;
+            }
         }
-    }
-
-    protected void turnTowardsPlayer(Player player) {
-        if (player.getHitbox().x > hitbox.x)
-            walkDir = RIGHT;
-        else
-            walkDir = LEFT;
-    }
-
-    protected boolean canSeePlayer(int[][] lvlData, Player player) {
-        int playerTileY = (int) (player.getHitbox().y / Game.TILES_SIZE);
-        int enemyTileY = (int) (hitbox.y / Game.TILES_SIZE);
-
-        if (Math.abs(playerTileY - enemyTileY) <= 2)
-            if (isPlayerInRange(player))
-                if (isSightClear(lvlData, hitbox, player.getHitbox(), enemyTileY))
-                    return true;
-
-        return false;
-    }
-
-    protected boolean isPlayerInRange(Player player) {
-        int absValue = (int) Math.abs(player.getHitbox().x - hitbox.x);
-        return absValue <= attackDistance * 5;
-    }
-
-    protected boolean isPlayerCloseForAttack(Player player) {
-        int distance = (int) Math.abs(player.getHitbox().x - hitbox.x);
-        return distance <= attackDistance + (hitbox.width / 2);
+        changeWalkDir();
     }
 
     protected void newState(int enemyState) {
+        if (this.enemyState == enemyState)
+            return;
+
         this.enemyState = enemyState;
         animationTick = 0;
         animationIndex = 0;
+
+        if (enemyState == ATTACK) {
+            attackChecked = false;
+        }
     }
 
     public void hurt(int amount) {
+
+        if (invincible) return;
+
         currentHealth -= amount;
+
+        invincible = true;
+        invincibleCounter = 0;
+
         if (currentHealth <= 0)
             newState(DEAD);
         else
             newState(HIT);
     }
 
+    protected void updateHealthStatus() {
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > INVINCIBILITY_TIME) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+    }
+
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox()))
+        if (!attackChecked && attackBox.intersects(player.getHitbox())) {
             player.changeHealth(-getEnemyDamage());
+            attackChecked = true;
+        }
     }
 
     protected void updateAnimationTick(int[] spriteAmount) {
@@ -117,8 +123,12 @@ public abstract class Enemy extends Entity {
             animationIndex++;
             if (animationIndex >= spriteAmount[enemyState]) {
                 animationIndex = 0;
+
                 switch (enemyState) {
-                    case ATTACK, HIT -> newState(IDLE);
+                    case DETECT -> newState(RUNNING);
+                    case ATTACK, HIT -> {
+                        newState(IDLE);
+                    }
                     case DEAD -> active = false;
                 }
             }
@@ -135,12 +145,49 @@ public abstract class Enemy extends Entity {
 
     protected void changeWalkDir() {
         if (walkDir == LEFT) {
-            walkDir = LEFT;
-        } else
             walkDir = RIGHT;
+        } else {
+            walkDir = LEFT;
+        }
     }
 
     public boolean isActive() {
         return active;
+    }
+
+    protected void turnTowardsPlayer(Player player) {
+        if (player.getHitbox().x > hitbox.x)
+            walkDir = RIGHT;
+        else
+            walkDir = LEFT;
+    }
+
+    //detection logic
+    protected boolean canSeePlayer(int[][] lvlData, Player player) {
+        int playerFeetTileY = (int) ((player.getHitbox().y + player.getHitbox().height - 1) / Game.TILES_SIZE);
+        int enemyFeetTileY = (int) ((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
+
+        if (Math.abs(playerFeetTileY - enemyFeetTileY) <= 1) {
+            if (isPlayerInRange(player)) {
+                if (isSightClear(lvlData, hitbox, player.getHitbox(), enemyFeetTileY)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean isPlayerInRange(Player player) {
+        int absValue = (int) Math.abs(player.getHitbox().x - hitbox.x);
+        return absValue <= attackDistance * 20;
+    }
+
+    protected boolean isPlayerCloseForAttack(Player player) {
+        float bossCenterX = hitbox.x + (hitbox.width / 2);
+        float playerCenterX = player.getHitbox().x + (player.getHitbox().width / 2);
+
+        int distance = (int) Math.abs(bossCenterX - playerCenterX);
+
+        return distance <= (hitbox.width / 2) + (player.getHitbox().width / 2) + attackDistance;
     }
 }

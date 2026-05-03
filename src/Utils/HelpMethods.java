@@ -78,6 +78,13 @@ public class HelpMethods {
         return true;
     }
 
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
+        if (xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+        else
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+    }
+
     public static int[][] GetLevelData(BufferedImage img, Point playerSpawn) {
         if (img == null) {
             System.err.println("Level data image is null. Returning empty array.");
@@ -143,17 +150,17 @@ public class HelpMethods {
     }
 
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int tileY) {
-        // Get the tile X positions of both entities
-        int firstXTile  = (int) (firstHitbox.x  / Game.TILES_SIZE);
+        int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
         int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
 
-        // Check every tile between the two entities on the same row
         if (firstXTile > secondXTile) {
-            for (int i = secondXTile; i <= firstXTile; i++)
+            // Player is to the Left: Check tiles from Player + 1 to Boss - 1
+            for (int i = secondXTile + 1; i < firstXTile; i++)
                 if (IsSolid(i * Game.TILES_SIZE, tileY * Game.TILES_SIZE, lvlData))
                     return false;
         } else {
-            for (int i = firstXTile; i <= secondXTile; i++)
+            // Player is to the Right: Check tiles from Boss + 1 to Player - 1
+            for (int i = firstXTile + 1; i < secondXTile; i++)
                 if (IsSolid(i * Game.TILES_SIZE, tileY * Game.TILES_SIZE, lvlData))
                     return false;
         }

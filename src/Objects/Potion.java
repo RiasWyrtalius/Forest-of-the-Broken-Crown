@@ -69,7 +69,7 @@ public class Potion extends GameObject {
                     (int) (32 * Game.SCALE),
                     (int) (32 * Game.SCALE),
                     null);
-            drawHitbox(g, xLvlOffset, yLvlOffset);
+            //drawHitbox(g, xLvlOffset, yLvlOffset);d
         }
     }
 }

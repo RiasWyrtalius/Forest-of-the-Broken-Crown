@@ -143,6 +143,7 @@ public class Constants {
     }
 
     public class EnemyConstants {
+        public static final int DETECT = 5;
 
         public static final int BOSS_LAYER = 199;
 

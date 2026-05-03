@@ -33,14 +33,18 @@ public class Player extends Entity{
     //Gravity / Jumping
     private float jumpSpeed = -2.41f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-
     private boolean jumpPressed;
     private float extraHSpeed = 0;
+
+    //Attack
+    private boolean canStomp = true;
+    private int stompCDTick = 0;
+    private final int STOMP_CD = 1000;
 
     //Lives
     public boolean invincible = false;
     public int invincibleCounter = 0;
-    private final int INVINCIBILITY_TIME = 50; // 200 UPS = 1 sec / Quarter of a second
+    private final int INVINCIBILITY_TIME = 150; // 200 UPS = 1 sec / Quarter of a second
 
     //Mana
     private int manaBottles; // temporary
@@ -94,6 +98,7 @@ public class Player extends Entity{
         updatePos();
         updateHealthStatus();
         updateMana();
+        updateStompCooldown();
         characterData.getPassive().update(this);
         if (activeSkill != null) {
             activeSkill.update();
@@ -176,6 +181,27 @@ public class Player extends Entity{
                 width * flipW, height, null);
 
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
+        if (!canStomp) {
+            // dimensions
+            int barWidth = (int) hitbox.width;
+            int barHeight = (int) (4 * Game.SCALE);
+
+            // draw bar above player
+            int barX = (int) (hitbox.x - lvlOffset);
+            int barY = (int) (hitbox.y - yLvlOffset - (-50 * Game.SCALE));
+
+            //cooldown percent
+            float fillPercent = (float) stompCDTick / STOMP_CD;
+            int fillWidth = (int) (barWidth * fillPercent);
+
+            g.setColor(new Color(50, 50, 50, 150));
+            g.fillRect(barX, barY, barWidth, barHeight);
+            g.setColor(Color.CYAN);
+            g.fillRect(barX, barY, fillWidth, barHeight);
+            g.setColor(Color.BLACK);
+            g.drawRect(barX, barY, barWidth, barHeight);
+        }
 
         if (activeSkill != null) {
             activeSkill.render(g, lvlOffset, yLvlOffset);
@@ -370,6 +396,23 @@ public class Player extends Entity{
                 jumpPressed = true;
             }
         }
+    }
+
+    private void updateStompCooldown() {
+        if (!canStomp) {
+            stompCDTick++;
+            if (stompCDTick >= STOMP_CD) {
+                canStomp = true;
+                stompCDTick = 0;
+            }
+        }
+    }
+
+    public boolean canStomp() { return canStomp; }
+
+    public void triggerStompCooldown() {
+        canStomp = false;
+        stompCDTick = 0;
     }
 
     private void updateClimbing() {

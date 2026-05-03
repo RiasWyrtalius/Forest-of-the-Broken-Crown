@@ -82,16 +82,6 @@ public class Game implements Runnable {
         player = new Player(spawn.x, spawn.y, 160, 160, levelHandler.getCurrentLevel().getLevelData(), PlayerCharacter.SYLVARA);
         objectManager = new ObjectManager(this);
         objectManager.loadObjects(levelHandler.getCurrentLevel());
-
-        //TODO: use similar logic to drawing tiles via getColor() @ ;
-        // Hard-coded boss position: 50 blocks right and 5 blocks down from player spawn (200, 200)
-        //int[][] lvlData = levelHandler.getCurrentLevel().getLevelData();
-//        int bossWidth = 250;
-//        int bossHeight = 250;
-//        float bossX = 200 + 53 * TILES_SIZE;
-//        float bossY = 200 + 4 * TILES_SIZE;
-//        boss = new Boss(bossX, bossY, bossWidth, bossHeight, lvlData);
-
         ui = new UI(this);
         audioPlayer = new AudioPlayer();
         mainMenu = new MainMenu(this);
