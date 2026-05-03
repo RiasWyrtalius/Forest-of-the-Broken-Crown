@@ -318,38 +318,47 @@ public class Player extends Entity{
     private void updatePos() {
         moving = false;
 
-        climbing = HelpMethods.isEntityOnLadder(hitbox, lvlData);
-
-        if (climbing) {
-            inAir = false;
-            airSpeed = 0;
-            updateClimbing();
-        } else {
-            if (jump) jump();
-        }
+        if (!left && !right && !inAir && !knockbackActive && extraHSpeed == 0) return;
 
         float xSpeed = 0;
 
-        if (!left && !right && !inAir) return;
+        if (knockbackActive) {
+            knockbackTick++;
+            if (knockbackTick >= KNOCKBACK_DURATION) {
+                knockbackActive = false;
+            } else {
+                xSpeed = knockbackSpeed * knockbackDir;
+            }
+        } else {
+            climbing = HelpMethods.isEntityOnLadder(hitbox, lvlData);
 
-        xSpeed += extraHSpeed;
-        extraHSpeed *= 0.92f;
-        if (Math.abs(extraHSpeed) < 0.1f) extraHSpeed = 0;
+            if (climbing) {
+                inAir = false;
+                airSpeed = 0;
+                updateClimbing();
+            } else {
+                if (jump) jump();
+            }
 
-        if (left) {
-            xSpeed -= walkSpeed;
-            faceDirection = WALKL;
-        }
-        if (right) {
-            xSpeed += walkSpeed;
-            faceDirection = WALKR;
+            xSpeed += extraHSpeed;
+            extraHSpeed *= 0.92f;
+            if (Math.abs(extraHSpeed) < 0.1f) extraHSpeed = 0;
+
+            if (left) {
+                xSpeed -= walkSpeed;
+                faceDirection = WALKL;
+            }
+            if (right) {
+                xSpeed += walkSpeed;
+                faceDirection = WALKR;
+            }
         }
 
         if (!inAir) {
             if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
         }
 
-        // VERTICAL
+        // VERTICAL (Gravity)
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
@@ -369,14 +378,19 @@ public class Player extends Entity{
             }
         }
 
-        // HORIZONTAL
+        // HORIZONTAL (Collision)
         if (xSpeed != 0) {
             if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.x += xSpeed;
-                if(extraHSpeed == 0) moving = true;
+
+                // play animation if normal walking
+                if (extraHSpeed == 0 && !knockbackActive) moving = true;
             } else {
                 hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
                 extraHSpeed = 0;
+
+                // if wall hit, cancel kb
+                if (knockbackActive) knockbackActive = false;
             }
         }
     }
@@ -470,6 +484,20 @@ public class Player extends Entity{
         if (!HelpMethods.isEntityOnFloor(hitbox, lvlData)) {
             inAir = true;
         }
+    }
+
+    public void applyKnockback(float sourceX) {
+        this.knockbackActive = true;
+        this.knockbackTick = 0;
+
+        if (sourceX > hitbox.x) {
+            knockbackDir = -3;
+        } else {
+            knockbackDir = 3;
+        }
+
+        this.inAir = true;
+        this.airSpeed = -2f;
     }
 
     public void setWalkSpeed(float walkSpeed) { this.walkSpeed = walkSpeed; }

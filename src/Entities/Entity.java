@@ -18,6 +18,12 @@ public abstract class Entity {
     protected int life;
     protected float walkSpeed = 1.0f * Game.SCALE;
 
+    protected boolean knockbackActive = false;
+    protected int knockbackTick = 0;
+    protected final int KNOCKBACK_DURATION = 40; //0.2s at 200UPS
+    protected float knockbackSpeed = 2.5f; // slide
+    protected int knockbackDir = 1; // 1 for right, -1 for left
+
     public Entity(float x, float y, int width, int height) {
         this.x = x;
         this.y = y;

@@ -108,6 +108,9 @@ public class Embryn extends Boss {
     public void update(int[][] lvlData, Player player) {
         updateHealthStatus();
         updateBehavior(lvlData, player);
+        if (isActive() && enemyState != DEAD) {
+            checkBodyCollision(player);
+        }
         int[] liveCounts = new int[7];
 
         liveCounts[IDLE] = bossData.spriteA_IDLE;

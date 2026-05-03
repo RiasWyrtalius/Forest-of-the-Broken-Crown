@@ -75,7 +75,7 @@ public class EnemyManager {
 
                         if (!b.invincible) {
                             b.hurt(1);
-                            System.out.println("STOMPED! Boss HP: " + b.currentHealth);
+                            //System.out.println("STOMPED! Boss HP: " + b.currentHealth);
                         }
 
                         player.triggerStompCooldown();
@@ -87,8 +87,6 @@ public class EnemyManager {
                         if (player.getAirSpeed() < 0 && player.getHitbox().y < b.getHitbox().y) {
                             return;
                         }
-                        float knockDir = (player.getHitbox().x < b.getHitbox().x) ? -1f : 1f;
-                        player.fling(knockDir * 4.5f * Game.SCALE);
 
                         player.changeHealth(-b.getEnemyDamage());
                     }
