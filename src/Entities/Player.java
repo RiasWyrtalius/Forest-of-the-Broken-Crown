@@ -491,9 +491,9 @@ public class Player extends Entity{
         this.knockbackTick = 0;
 
         if (sourceX > hitbox.x) {
-            knockbackDir = -3;
+            knockbackDir = -2;
         } else {
-            knockbackDir = 3;
+            knockbackDir = 2;
         }
 
         this.inAir = true;
