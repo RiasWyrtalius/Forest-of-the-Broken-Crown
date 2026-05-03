@@ -112,7 +112,19 @@ public abstract class Enemy extends Entity {
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
         if (!attackChecked && attackBox.intersects(player.getHitbox())) {
             player.changeHealth(-getEnemyDamage());
+
+            float knockDir = (player.getHitbox().x < attackBox.x) ? -1f : 1f;
+            player.fling(knockDir * 4.5f * Game.SCALE);
+            player.setAirSpeed(-1.5f * Game.SCALE);
+
             attackChecked = true;
+
+            //pwede ma tune ang knockback strength
+            //4.5 is like the horizontal force, u can just adjust here
+            //
+            //weaker: 2.5f — subtle nudge
+            //current: 4.5f — solid push
+            //stronger: 7.0f — sends the player flying
         }
     }
 

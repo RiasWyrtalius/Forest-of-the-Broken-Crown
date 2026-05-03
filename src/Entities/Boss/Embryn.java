@@ -25,6 +25,14 @@ public class Embryn extends Boss {
 
     private boolean defeatMsgSent = false;
 
+    // i added an enraged system as told sa gc nato lel
+    private int hitsReceived = 0;
+    private final int HITS_TO_ENRAGE = 2;
+    private boolean isEnraged = false;
+    private int enrageDuration = 4 * 200; // 4 seconds, change this if u want
+    private int enrageTimer = 0;
+    private float enrageSpeed = 4.5f * Game.SCALE; // how fast when enraged
+
     public Embryn(float x, float y) {
         super(x, y, EMBRYN_WIDTH, EMBRYN_HEIGHT, EMBRYN);
         loadAnimations();
@@ -82,6 +90,21 @@ public class Embryn extends Boss {
                 (int) (40 * Game.SCALE));
     }
 
+    @Override
+    public void hurt(int amount) {
+        super.hurt(amount);
+
+        if (active && enemyState != DEAD) {
+            hitsReceived++;
+            if (hitsReceived >= HITS_TO_ENRAGE && !isEnraged) {
+                isEnraged = true;
+                enrageTimer = 0;
+                hitsReceived = 0;
+                walkSpeed = enrageSpeed;
+            }
+        }
+    }
+
     public void update(int[][] lvlData, Player player) {
         updateHealthStatus();
         updateBehavior(lvlData, player);
@@ -109,6 +132,17 @@ public class Embryn extends Boss {
     private void updateBehavior(int[][] lvlData, Player player) {
         if (firstUpdate) firstUpdateCheck(lvlData);
         updateAttackBox();
+
+        if (isEnraged) {
+            enrageTimer++;
+            walkSpeed = enrageSpeed;
+            if (enrageTimer >= enrageDuration) {
+                isEnraged = false;
+                enrageTimer = 0;
+                hitsReceived = 0;
+                walkSpeed = roamSpeed;
+            }
+        }
 
         if (isTired) {
             tiredTimer++;
@@ -170,7 +204,7 @@ public class Embryn extends Boss {
                 case ATTACK -> checkEnemyHit(attackBox, player);
                 case DEAD -> {
                     if (!defeatMsgSent) {
-                        Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED");
+                        Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED!");
                         defeatMsgSent = true;
                     }
                 }
