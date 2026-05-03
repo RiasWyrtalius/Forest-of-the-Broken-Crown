@@ -13,7 +13,6 @@ import Objects.ObjectManager;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 public class Playing {
     private Player player;
@@ -25,10 +24,10 @@ public class Playing {
 
     private int xLvlOffset;
     private int yLvlOffset;
-    private int leftBorder = (int) (0.5 * Game.GAME_WIDTH);
-    private int rightBorder = (int) (0.5 * Game.GAME_WIDTH);
-    private int topBorder = (int) (0.5 * Game.GAME_HEIGHT);
-    private int bottomBorder = (int) (0.5 * Game.GAME_HEIGHT);
+    private float actualXOffset, actualYOffset;
+    private float smoothing = 0.03f;
+    private int deadZone = (int) (Game.TILES_SIZE * 1.5);
+
     private int maxLvlOffsetX;
     private int maxLvlOffsetY;
 
@@ -75,33 +74,43 @@ public class Playing {
     }
 
     private void checkCloseToBorder() {
-        int playerX = (int) player.getHitbox().x;
-        int diffX = playerX - xLvlOffset;
+        // Get the Player's current center position
+        float playerCenterX = player.getHitbox().x + (player.getHitbox().width / 2);
+        float playerCenterY = player.getHitbox().y + (player.getHitbox().height / 2);
 
-        // Horizontal Scroll
-        if (diffX > rightBorder)
-            xLvlOffset += diffX - rightBorder;
-        else if (diffX < leftBorder)
-            xLvlOffset += diffX - leftBorder;
+        // Define the ideal target (centering the player on screen)
+        float targetX = playerCenterX - (Game.GAME_WIDTH / 2);
+        float targetY = playerCenterY - (Game.GAME_HEIGHT / 2);
 
-        if (xLvlOffset < 0) xLvlOffset = 0;
-        else if (xLvlOffset > maxLvlOffsetX) xLvlOffset = maxLvlOffsetX;
+        // Apply Dead Zone
+        float currentCamCenterX = actualXOffset + (Game.GAME_WIDTH / 2);
+        float currentCamCenterY = actualYOffset + (Game.GAME_HEIGHT / 2);
 
-        // Vertical Scroll
-        int playerY = (int) player.getHitbox().y;
-        int diffY = playerY - yLvlOffset;
+        if (Math.abs(playerCenterX - currentCamCenterX) < deadZone) {
+            targetX = actualXOffset;
+        }
+        if (Math.abs(playerCenterY - currentCamCenterY) < deadZone) {
+            targetY = actualYOffset;
+        }
 
-        if (diffY > bottomBorder)
-            yLvlOffset += diffY - bottomBorder;
-        else if (diffY < topBorder)
-            yLvlOffset += diffY - topBorder;
+        // camera smoothing
+        actualXOffset += (targetX - actualXOffset) * smoothing;
+        actualYOffset += (targetY - actualYOffset) * smoothing;
 
-        // this calculates the max vertical scroll based on whatever the map height is.
+        // constrain to Level Bounds
+        // calculate max vertical scroll dynamically based on level height
         int lvlHeightPixels = levelHandler.getCurrentLevel().getLevelData().length * Game.TILES_SIZE;
         maxLvlOffsetY = lvlHeightPixels - Game.GAME_HEIGHT;
 
-        if (yLvlOffset < 0) yLvlOffset = 0;
-        else if (yLvlOffset > maxLvlOffsetY) yLvlOffset = maxLvlOffsetY;
+        if (actualXOffset < 0) actualXOffset = 0;
+        else if (actualXOffset > maxLvlOffsetX) actualXOffset = maxLvlOffsetX;
+
+        if (actualYOffset < 0) actualYOffset = 0;
+        else if (actualYOffset > maxLvlOffsetY) actualYOffset = maxLvlOffsetY;
+
+        // final offsets to render
+        xLvlOffset = (int) actualXOffset;
+        yLvlOffset = (int) actualYOffset;
     }
 
     //TEMPORARY
