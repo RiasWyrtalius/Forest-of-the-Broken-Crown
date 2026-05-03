@@ -10,11 +10,11 @@ In a kingdom where a shattered crown seeps corruption into the roots of the worl
 ---
 
 ## Key Features
-* **Scalable NPC System:** Interact with unique characters like **Chadon the Panda** and **Denbel the Sloth** using a data-driven system that supports typewriter-style dialogue.
+* **Scalable NPC System:** Interact with unique characters like **Chadon the Panda** and **Denbel the Cursed** using a data-driven system that supports typewriter-style dialogue.
 * **Resource Economy:**
     * **Hearts:** Limited health that does **not** regenerate; players must rely on healing items found throughout battle.
     * **Mana:** Regenerates at a rate of **1 bottle every 5 seconds**, powering unique character abilities.
-* **Dynamic Boss Encounters:** Battle massive entities like **Embryn the Rotfang Boar** in arenas where the terrain literally breaks beneath your feet.
+* **Dynamic Boss Encounters:** Battle massive entities like **Embryn the Rotfang Boar** in arenas where he charges at you.
   
 ## The Forsaken Heroes
 These are not noble heroes, but individuals desperate for meaning in a world that cast them aside.
