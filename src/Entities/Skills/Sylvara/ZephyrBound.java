@@ -9,7 +9,7 @@ import static Utils.Constants.PlayerConstants.DOUBLEJUMP;
 
 public class ZephyrBound implements Skill {
     private Player player;
-    private final int MANA_COST = 3;
+    private final int MANA_COST = 4;
     private boolean canDoubleJump = true;
 
     public ZephyrBound(Player player) {
