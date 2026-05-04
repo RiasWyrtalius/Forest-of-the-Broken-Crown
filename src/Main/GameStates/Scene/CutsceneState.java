@@ -66,22 +66,22 @@ public class CutsceneState {
 
         List<Scene> embjorn = new ArrayList<>();
         embjorn.add(new Scene(Emb1, "Before the shattering, my venom was a sacred mirror that showed the future. Now, it only shows the end of all things."));
-        embjorn.add(new Scene(Emb2, "My kin banished me because they feared what I saw in my visions. They chose comforting ignorance over violent survival."));
-        embjorn.add(new Scene(Emb3, "This forest is poisoned by the very relic they revere. I will tear the crown from its roots and force them to look upon its ugliness."));
+        embjorn.add(new Scene(Emb2_3, "My kin banished me because they feared what I saw in my visions. They chose comforting ignorance over violent survival."));
+        embjorn.add(new Scene(Emb2_3, "This forest is poisoned by the very relic they revere. I will tear the crown from its roots and force them to look upon its ugliness."));
         embjorn.addAll(intro);
         cutsceneDatabase.put("EMBJORN", embjorn);
 
         List<Scene> kaelthorn = new ArrayList<>();
         kaelthorn.add(new Scene(Kael1, "I swore my life to a noble king, only to watch him twist into a tyrant, hollowed out by the crown's dark whispers."));
-        kaelthorn.add(new Scene(Kael2, "They stripped me of my title and cast me out as a traitor, but they could not strip me of my resolve."));
-        kaelthorn.add(new Scene(Kael3, "This rusted armor is my penance. I failed to protect my liege from the curse, but I will not fail to end this blight."));
+        kaelthorn.add(new Scene(Kael2_3, "They stripped me of my title and cast me out as a traitor, but they could not strip me of my resolve."));
+        kaelthorn.add(new Scene(Kael2_3, "This rusted armor is my penance. I failed to protect my liege from the curse, but I will not fail to end this blight."));
         kaelthorn.addAll(intro);
         cutsceneDatabase.put("KAELTHORN", kaelthorn);
 
         List<Scene> sylvara = new ArrayList<>();
         sylvara.add(new Scene(Syl1, "When the curse took root in my grove, my magic broke. My shame and fear physically manifested into the Witch that now guards the crown."));
-        sylvara.add(new Scene(Syl2, "I was meant to protect the ancient runes. Instead, they became the very chains that bind my twisted reflection."));
-        sylvara.add(new Scene(Syl3, "Defeating Sylthra is not just about saving the forest... it is about cutting away the piece of my soul I lost to the dark."));
+        sylvara.add(new Scene(Syl2_3, "I was meant to protect the ancient runes. Instead, they became the very chains that bind my twisted reflection."));
+        sylvara.add(new Scene(Syl2_3, "Defeating Sylthra is not just about saving the forest... it is about cutting away the piece of my soul I lost to the dark."));
         sylvara.addAll(intro);
         cutsceneDatabase.put("SYLVARA", sylvara);
     }

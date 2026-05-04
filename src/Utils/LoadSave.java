@@ -21,17 +21,14 @@ public class LoadSave {
     public static final String Outro2 = "Scenes/Introduction/scene2_outro.png";
     public static final String Outro3 = "Scenes/Introduction/scene3_outro.png";
 
-    public static final String Kael1 = "Scenes/Kaelthorn/scene1_kael.png";
-    public static final String Kael2 = "Scenes/Kaelthorn/scene2_kael.png";
-    public static final String Kael3 = "Scenes/Kaelthorn/scene3_kael.png";
+    public static final String Kael1 = "Scenes/Kaelthorn/KaelthornCutscene.jpeg";
+    public static final String Kael2_3 = "Scenes/Kaelthorn/KaelthornCutscene2.jpeg";
 
-    public static final String Syl1 = "Scenes/Sylvara/scene1_syl.png";
-    public static final String Syl2 = "Scenes/Sylvara/scene2_syl.png";
-    public static final String Syl3 = "Scenes/Sylvara/scene3_syl.png";
+    public static final String Syl1 = "Scenes/Sylvara/SylvaraCutscene.jpeg";
+    public static final String Syl2_3 = "Scenes/Sylvara/SylvaraCutscene2.jpeg";
 
-    public static final String Emb1 = "Scenes/Embjorn/scene1_emb.png";
-    public static final String Emb2 = "Scenes/Embjorn/scene2_emb.png";
-    public static final String Emb3 = "Scenes/Embjorn/scene3_emb.png";
+    public static final String Emb1 = "Scenes/Embjorn/EmbjornCutscene.jpeg";
+    public static final String Emb2_3 = "Scenes/Embjorn/EmbjornCutscene2.jpeg";
 
     //ICON
     public static final String GAME_ICON = "Icon.jpg";
