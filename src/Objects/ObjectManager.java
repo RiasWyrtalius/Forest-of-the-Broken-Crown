@@ -26,6 +26,7 @@ public class ObjectManager {
     private ArrayList<NPC> npcs;
     private BufferedImage[] spikeImgs;
     private CopyOnWriteArrayList<Potion> potions;
+    private ArrayList<CrumblingTile> crumblingTiles;
     private Game game;
 
     public ObjectManager(Game game) {
@@ -34,6 +35,7 @@ public class ObjectManager {
         spikes = new ArrayList<>();
         npcs = new ArrayList<>();
         potions = new CopyOnWriteArrayList<>();
+        crumblingTiles = new ArrayList<>();
         loadSpikeImgs();
     }
 
@@ -64,12 +66,55 @@ public class ObjectManager {
             }
         }
 
+        int[][] lvlData = game.getLevelHandler().getCurrentLevel().getLevelData();
+
+        for (CrumblingTile ct : crumblingTiles) {
+            ct.update(lvlData);
+        }
+
+        checkPlayerStandingOnCrumblingTile(player);
         checkPlayerPickup(player);
     }
 
     public void resetAllObjects() {
         for (Vase v : vases) {
             v.reset();
+        }
+        // Crumbling tiles: restore their solid tile entries in lvlData, then reset state
+        int[][] lvlData = game.getLevelHandler().getCurrentLevel().getLevelData();
+        for (CrumblingTile ct : crumblingTiles) {
+            if (ct.isGone()) {
+                // Force-respawn so lvlData is patched back to solid
+                ct.onPlayerStanding(); // won't trigger since isGone - handled by direct respawn below
+            }
+        }
+        // Simplest safe approach: reload objects fresh from the level image
+        loadObjects(game.getLevelHandler().getCurrentLevel());
+    }
+
+    // Checks if the player is standing on top of a crumbling tile and triggers it
+    private void checkPlayerStandingOnCrumblingTile(Player player) {
+        float playerBottom = player.getHitbox().y + player.getHitbox().height;
+        float playerLeft   = player.getHitbox().x;
+        float playerRight  = player.getHitbox().x + player.getHitbox().width;
+
+        for (CrumblingTile ct : crumblingTiles) {
+            if (ct.isGone()) continue;
+
+            float tileTop   = ct.getHitbox().y;
+            float tileLeft  = ct.getHitbox().x;
+            float tileRight = ct.getHitbox().x + ct.getHitbox().width;
+
+            // Player is standing on top: feet are just at tile surface, and horizontally overlapping
+            boolean feetOnTile = Math.abs(playerBottom - tileTop) <= (8 * Game.SCALE);
+            boolean horizontalOverlap = playerRight > tileLeft && playerLeft < tileRight;
+
+            // Only trigger if the player is not falling (airSpeed >= 0 means grounded or falling)
+            boolean isGrounded = player.getAirSpeed() >= 0 && !player.isInAir();
+
+            if (feetOnTile && horizontalOverlap && isGrounded) {
+                ct.onPlayerStanding();
+            }
         }
     }
 
@@ -78,6 +123,7 @@ public class ObjectManager {
         potions.clear();
         spikes.clear();
         npcs.clear();
+        crumblingTiles.clear();
 
         BufferedImage img = level.getLevelDataImg();
 
@@ -90,6 +136,8 @@ public class ObjectManager {
 
                 if (value == VASE_COLOR) {
                     vases.add(new Vase(i * Game.TILES_SIZE, j * Game.TILES_SIZE, VASE));
+                } else if (value == CRUMBLING_TILE_COLOR) {
+                    crumblingTiles.add(new CrumblingTile(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
                 } else if (value == SPIKE_COLOR) {
                     int spikeIndex = color.getGreen();
                     spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, spikeIndex, spikeImgs, spikeIndex));
@@ -168,6 +216,10 @@ public class ObjectManager {
             if (p.isActive()) {
                 p.draw(g, xLvlOffset, yLvlOffset);
             }
+        }
+
+        for (CrumblingTile ct : crumblingTiles) {
+            ct.draw(g, xLvlOffset, yLvlOffset);
         }
     }
 

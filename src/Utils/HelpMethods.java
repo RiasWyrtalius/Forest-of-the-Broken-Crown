@@ -106,14 +106,16 @@ public class HelpMethods {
                     System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = AIR;
                 } else if ( blueValue == VASE_COLOR  ||
-                            blueValue == SPIKE_COLOR ||
-                            blueValue == NINO_TQ     ||
-                            blueValue == CHAD_TB     ||
-                            blueValue == CHARLZ_TS   ||
-                            blueValue == RILEY_TZ    ||
-                            blueValue == DENVER_TC   ||
-                            blueValue == BOSS_LAYER) {
+                        blueValue == SPIKE_COLOR ||
+                        blueValue == NINO_TQ     ||
+                        blueValue == CHAD_TB     ||
+                        blueValue == CHARLZ_TS   ||
+                        blueValue == RILEY_TZ    ||
+                        blueValue == DENVER_TC   ||
+                        blueValue == BOSS_LAYER) {
                     lvlData[j][i] = AIR;
+                } else if (blueValue == CRUMBLING_TILE_COLOR) {
+                    lvlData[j][i] = 0; // solid tile — CrumblingTile object will clear this to AIR when it crumbles
                 } else if (blueValue == LADDER_COLOR) {
                     lvlData[j][i] = LADDER_COLOR; // 132
                 } else {

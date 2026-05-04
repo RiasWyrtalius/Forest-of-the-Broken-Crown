@@ -85,6 +85,9 @@ public class LoadSave {
     public static final String HEALTH_POTION_ATLAS = "Levels/Objects/DropHealthSS.png";
     public static final String MANA_POTION_ATLAS = "Levels/Objects/DropManaSS.png";
 
+    //Crumbling Tile
+    public static final String CRUMBLING_TILE_ATLAS = "Levels/Objects/CrumblingTile.png";
+
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
         try (InputStream is = LoadSave.class.getResourceAsStream("/" + fileName)) {
