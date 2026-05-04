@@ -16,6 +16,7 @@ public class EnemyManager {
 
     private Playing playing;
     private ArrayList<Boss> bosses = new ArrayList<>();
+    private ArrayList<Boss> droppedLoot = new ArrayList<>(); // tracks who already dropped
 
     public EnemyManager(Playing playing) {
         this.playing = playing;
@@ -46,6 +47,14 @@ public class EnemyManager {
         for (Boss b : bosses) {
             if (b.isActive()) {
                 b.update(lvlData, player);
+            } else {
+                // Boss just became inactive (died) — drop loot once
+                if (!droppedLoot.contains(b)) {
+                    droppedLoot.add(b);
+                    Game.getInstance().getObjectManager().spawnPotionDrop(
+                            b.getHitbox().x, b.getHitbox().y, 3, 3
+                    );
+                }
             }
         }
 
@@ -61,6 +70,7 @@ public class EnemyManager {
 
     public void reset() {
         bosses.clear();
+        droppedLoot.clear();
     }
 
     public void checkPlayerStomp(Player player) {

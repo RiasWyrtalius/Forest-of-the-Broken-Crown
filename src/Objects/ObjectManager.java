@@ -94,10 +94,10 @@ public class ObjectManager {
                     int spikeIndex = color.getGreen();
                     spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, spikeIndex, spikeImgs, spikeIndex));
                 } else if (value == NINO_TQ ||
-                           value == CHAD_TB ||
-                           value == CHARLZ_TS ||
-                           value == RILEY_TZ ||
-                           value == DENVER_TC) {
+                        value == CHAD_TB ||
+                        value == CHARLZ_TS ||
+                        value == RILEY_TZ ||
+                        value == DENVER_TC) {
                     //System.out.println("NPC Spawned at: " + i + ", " + j);
                     String[] lines = Utils.DialogueData.getLinesFor(npcID);
                     boolean canSave = (redValue == 1);
@@ -231,6 +231,20 @@ public class ObjectManager {
             p.gainMana(Constants.ObjectConstants.MANA_POTION_VALUE);
         }
         game.getAudioPlayer().playEffect(AudioPlayer.CONSUME_POTION);
+    }
+
+    // Called when an enemy dies to drop potions at its location
+    public void spawnPotionDrop(float x, float y, int hpCount, int manaCount) {
+        for (int i = 0; i < hpCount; i++) {
+            float spawnX = x + (i * Game.TILES_SIZE * 0.6f);
+            float spawnY = y - (20 * Game.SCALE);
+            potions.add(new Potion((int) spawnX, (int) spawnY, Constants.ObjectConstants.HEALTH_POTION));
+        }
+        for (int i = 0; i < manaCount; i++) {
+            float spawnX = x + ((hpCount + i) * Game.TILES_SIZE * 0.6f);
+            float spawnY = y - (20 * Game.SCALE);
+            potions.add(new Potion((int) spawnX, (int) spawnY, Constants.ObjectConstants.MANA_POTION));
+        }
     }
 
     public NPC getHoveredNPC() {
