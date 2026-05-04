@@ -12,6 +12,27 @@ import javax.imageio.ImageIO;
 
 public class LoadSave {
 
+    //CUTSCENE
+    public static final String Intro1 = "Scenes/Introduction/scene1_intro.png";
+    public static final String Intro2 = "Scenes/Introduction/scene2_intro.png";
+    public static final String Intro3 = "Scenes/Introduction/scene3_intro.png";
+
+    public static final String Outro1 = "Scenes/Introduction/scene1_outro.png";
+    public static final String Outro2 = "Scenes/Introduction/scene2_outro.png";
+    public static final String Outro3 = "Scenes/Introduction/scene3_outro.png";
+
+    public static final String Kael1 = "Scenes/Kaelthorn/scene1_kael.png";
+    public static final String Kael2 = "Scenes/Kaelthorn/scene2_kael.png";
+    public static final String Kael3 = "Scenes/Kaelthorn/scene3_kael.png";
+
+    public static final String Syl1 = "Scenes/Sylvara/scene1_syl.png";
+    public static final String Syl2 = "Scenes/Sylvara/scene2_syl.png";
+    public static final String Syl3 = "Scenes/Sylvara/scene3_syl.png";
+
+    public static final String Emb1 = "Scenes/Embjorn/scene1_emb.png";
+    public static final String Emb2 = "Scenes/Embjorn/scene2_emb.png";
+    public static final String Emb3 = "Scenes/Embjorn/scene3_emb.png";
+
     //ICON
     public static final String GAME_ICON = "Icon.jpg";
 

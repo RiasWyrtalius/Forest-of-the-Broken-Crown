@@ -9,6 +9,7 @@ import Levels.Level;
 import Levels.LevelHandler;
 import Main.GameState;
 import Main.GameStates.*;
+import Main.GameStates.Scene.CutsceneState;
 import Main.UI.UI;
 import Objects.ObjectManager;
 import Utils.LoadSave;
@@ -35,6 +36,7 @@ public class Game implements Runnable {
     private PauseScreen pauseScreen;
     private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
+    private CutsceneState cutsceneState;
 
     // this makes the transition to black
     private boolean fadingOut       = false; // this fades to black
@@ -84,6 +86,7 @@ public class Game implements Runnable {
         pauseScreen = new PauseScreen(this);
         deathScreen = new DeathScreen(this);
         playing = new Playing(this);
+        cutsceneState = new CutsceneState(this);
     }
 
     public void initPlayerCharacter(PlayerCharacter selectedChar, int levelNum) {
@@ -132,7 +135,8 @@ public class Game implements Runnable {
             case PLAYING            -> playing.update();
             case CHARACTER_SELECT   -> characterSelect.update();
             case DEATH              -> deathScreen.update();
-            case PAUSED, SLOTS -> {} //insert any update() if theres any.
+            case CUTSCENE           -> cutsceneState.update();
+            case PAUSED, SLOTS      -> {} //insert any update() if theres any.
         }
 
         handleFadeLogic();
@@ -167,6 +171,7 @@ public class Game implements Runnable {
                 playing.draw(g);
                 deathScreen.draw(g);
             }
+            case CUTSCENE -> cutsceneState.draw(g);
         }
 
         // it draws a fade overlay on top of everything
@@ -191,6 +196,12 @@ public class Game implements Runnable {
         fadingIn   = false;
         fadeAlpha  = 0;
         fadeTarget = targetState;
+    }
+
+    public void cancelFade() {
+        this.fadingOut = false;
+        this.fadingIn = false;
+        this.fadeAlpha = 0;
     }
 
     /**
@@ -292,4 +303,5 @@ public class Game implements Runnable {
     public Playing getPlaying() { return playing; }
     public EnemyManager getEnemyManager() {return playing.getEnemyManager();}
     public static Game getInstance() { return instance; }
+    public CutsceneState getCutsceneState() { return cutsceneState; }
 }
