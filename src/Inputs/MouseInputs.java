@@ -45,6 +45,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case DEATH:
                 gamePanel.getGame().getDeathScreen().mouseClicked(adjustedEvent);
                 break;
+            case CUTSCENE:
+                gamePanel.getGame().getCutsceneState().mouseClicked(adjustedEvent);
             default:
                 break;
         }
@@ -66,6 +68,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             gamePanel.getGame().getPauseScreen().mouseClicked(e);
         } else if (Main.GameState.state == Main.GameState.DEATH) {
             gamePanel.getGame().getDeathScreen().mouseClicked(e);
+        }else if (Main.GameState.state == Main.GameState.CUTSCENE) {
+            gamePanel.getGame().getCutsceneState().mousePressed(e);
         }
     }
 
