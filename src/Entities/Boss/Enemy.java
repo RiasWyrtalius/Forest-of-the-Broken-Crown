@@ -121,7 +121,7 @@ public abstract class Enemy extends Entity {
         if (this.hitbox.intersects(player.getHitbox())) {
             if (!player.invincible) {
                 if (!player.canStomp()) {
-                    player.changeHealth(-1);
+                    //player.changeHealth(-1);
                     player.applyKnockback(this.hitbox.x);
                 }
             }

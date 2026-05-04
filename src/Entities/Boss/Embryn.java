@@ -67,7 +67,9 @@ public class Embryn extends Boss {
                 bossData.spriteA_DETECTLEFT,    // Row 7
                 bossData.spriteA_DETECTRIGHT,   // Row 8
                 bossData.spriteA_RUNLEFT,       // Row 9
-                bossData.spriteA_RUNRIGHT       // Row 10
+                bossData.spriteA_RUNRIGHT,      // Row 10
+                bossData.spriteA_ATTACKLEFT,    // Row 11
+                bossData.spriteA_ATTACKRIGHT    // Row 12
         };
 
         animations = new BufferedImage[spriteAmounts.length][];
@@ -115,7 +117,7 @@ public class Embryn extends Boss {
 
         liveCounts[IDLE] = bossData.spriteA_IDLE;
         liveCounts[RUNNING] = (walkDir == RIGHT) ? bossData.spriteA_RUNRIGHT : bossData.spriteA_RUNLEFT;
-        liveCounts[ATTACK] = (walkDir == RIGHT) ? bossData.spriteA_WALKRIGHT : bossData.spriteA_WALKLEFT;
+        liveCounts[ATTACK] = (walkDir == RIGHT) ? bossData.spriteA_ATTACKLEFT : bossData.spriteA_ATTACKRIGHT;
         liveCounts[HIT] = (walkDir == RIGHT) ? bossData.spriteA_DMGRIGHT : bossData.spriteA_DMGLEFT;
         liveCounts[DEAD] = (walkDir == RIGHT) ? bossData.spriteA_DIERIGHT : bossData.spriteA_DIELEFT;
         liveCounts[DETECT] = (walkDir == RIGHT) ? bossData.spriteA_DETECTRIGHT : bossData.spriteA_DETECTLEFT;
@@ -204,7 +206,11 @@ public class Embryn extends Boss {
                 }
 
                 case DETECT -> turnTowardsPlayer(player);
-                case ATTACK -> checkEnemyHit(attackBox, player);
+                case ATTACK -> {
+                    if (animationIndex >= 3 && animationIndex <= 5) {
+                        checkEnemyHit(attackBox, player);
+                    }
+                }
                 case DEAD -> {
                     if (!defeatMsgSent) {
                         Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED!");

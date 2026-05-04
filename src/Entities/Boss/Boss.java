@@ -31,8 +31,8 @@ public abstract class Boss extends Enemy {
 
     private int getCorrectRow() {
         return switch (enemyState) {
-            case ATTACK -> (walkDir == RIGHT) ? bossData.rowWALKRIGHT : bossData.rowWALKLEFT;
-            case RUNNING -> (walkDir == RIGHT) ? bossData.rowRUNRIGHT : bossData.rowRUNLEFT;
+            case ATTACK -> (walkDir == RIGHT) ? bossData.rowATTACKRIGHT : bossData.rowATTACKLEFT;
+            case RUNNING -> (walkDir == RIGHT) ? bossData.rowRUNLEFT : bossData.rowRUNRIGHT;
             case DETECT -> (walkDir == RIGHT) ? bossData.rowDETECTRIGHT : bossData.rowDETECTLEFT;
             case HIT -> (walkDir == RIGHT) ? bossData.rowDMGRIGHT : bossData.rowDMGLEFT;
             case DEAD -> (walkDir == RIGHT) ? bossData.rowDIERIGHT : bossData.rowDIELEFT;

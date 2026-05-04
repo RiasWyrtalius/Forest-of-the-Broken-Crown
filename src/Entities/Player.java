@@ -47,7 +47,7 @@ public class Player extends Entity{
     private final int INVINCIBILITY_TIME = 150; // 200 UPS = 1 sec / Quarter of a second
 
     //Mana
-    private int manaBottles; // temporary
+    private int manaBottles;
     private int maxManaBottles;
     private int manaRegenTick = 0;
     private final int REGEN_THRESHOLD = 5 * 200;
@@ -318,7 +318,7 @@ public class Player extends Entity{
     private void updatePos() {
         moving = false;
 
-        if (!left && !right && !inAir && !knockbackActive && extraHSpeed == 0) return;
+        if (!left && !right && !jump && !inAir && !knockbackActive && extraHSpeed == 0) return;
 
         float xSpeed = 0;
 
@@ -456,8 +456,7 @@ public class Player extends Entity{
         moving       = false;
         playerAction = IDLE;
         this.life    = maxLife;
-
-
+        this.manaBottles = maxManaBottles;
 
         hitbox.x = x;
         hitbox.y = y;
@@ -491,9 +490,9 @@ public class Player extends Entity{
         this.knockbackTick = 0;
 
         if (sourceX > hitbox.x) {
-            knockbackDir = -2;
+            knockbackDir = -1;
         } else {
-            knockbackDir = 2;
+            knockbackDir = 1;
         }
 
         this.inAir = true;
