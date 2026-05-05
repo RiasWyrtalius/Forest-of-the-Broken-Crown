@@ -53,15 +53,15 @@ public class CutsceneState {
         cutsceneDatabase.put("INTRO", intro);
 
         List<Scene> outroGood = new ArrayList<>();
-        outroGood.add(new Scene(Outro1, "With a final, deafening crack, the crown shatters into dust. The dark pulse of the forest finally falls silent."));
-        outroGood.add(new Scene(Outro2, "The corruption recedes from root and stone. For the first time in centuries, light pierces through the canopy."));
-        outroGood.add(new Scene(Outro3, "We remain the Forsaken, and the world may never thank us... but we leave this forest free."));
+        outroGood.add(new Scene(GoodEnding1, "With a final, deafening crack, the crown shatters into dust. The dark pulse of the forest finally falls silent."));
+        outroGood.add(new Scene(GoodEnding2, "The corruption recedes from root and stone. For the first time in centuries, light pierces through the canopy."));
+        outroGood.add(new Scene(GoodEnding2, "We remain the Forsaken, and the world may never thank us... but we leave this forest free."));
         cutsceneDatabase.put("OUTRO_GOOD", outroGood);
 
         List<Scene> outroBad = new ArrayList<>();
-        outroBad.add(new Scene(Outro1, "The fragments knit together in my grip. The corruption doesn't burn anymore... it obeys."));
-        outroBad.add(new Scene(Outro2, "Why destroy a kingdom when you can rule the shadows? The forest kneels before its new master."));
-        outroBad.add(new Scene(Outro3, "Let the world look toward these woods and tremble. The age of the Broken Crown has only just begun."));
+        outroBad.add(new Scene(BadEnding, "The fragments knit together in my grip. The corruption doesn't burn anymore... it obeys."));
+        outroBad.add(new Scene(BadEnding, "Why destroy a kingdom when you can rule the shadows? The forest kneels before its new master."));
+        outroBad.add(new Scene(BadEnding, "Let the world look toward these woods and tremble. The age of the Broken Crown has only just begun."));
         cutsceneDatabase.put("OUTRO_BAD", outroBad);
 
         List<Scene> embjorn = new ArrayList<>();

@@ -17,18 +17,21 @@ public class LoadSave {
     public static final String Intro2 = "Scenes/Introduction/scene2_intro.png";
     public static final String Intro3 = "Scenes/Introduction/scene3_intro.png";
 
-    public static final String Outro1 = "Scenes/Introduction/scene1_outro.png";
-    public static final String Outro2 = "Scenes/Introduction/scene2_outro.png";
-    public static final String Outro3 = "Scenes/Introduction/scene3_outro.png";
+    //GOOD ENDING
+    public static final String GoodEnding1 = "Scenes/Introduction/GoodEnding (1).jpeg";
+    public static final String GoodEnding2 = "Scenes/Introduction/GoodEnding (2).jpeg";
 
-    public static final String Kael1 = "Scenes/Kaelthorn/KaelthornCutscene.jpeg";
-    public static final String Kael2_3 = "Scenes/Kaelthorn/KaelthornCutscene2.jpeg";
+    //BAD ENDING
+    public static final String BadEnding = "Scenes/Introduction/BadEnding.jpeg";
 
-    public static final String Syl1 = "Scenes/Sylvara/SylvaraCutscene.jpeg";
-    public static final String Syl2_3 = "Scenes/Sylvara/SylvaraCutscene2.jpeg";
+    public static final String Kael1 = "Scenes/Kaelthorn/KaelthornCutscene (1).jpeg";
+    public static final String Kael2_3 = "Scenes/Kaelthorn/KaelthornCutscene (2).jpeg";
 
-    public static final String Emb1 = "Scenes/Embjorn/EmbjornCutscene.jpeg";
-    public static final String Emb2_3 = "Scenes/Embjorn/EmbjornCutscene2.jpeg";
+    public static final String Syl1 = "Scenes/Sylvara/SylvaraCutscene (1).jpeg";
+    public static final String Syl2_3 = "Scenes/Sylvara/SylvaraCutscene (2).jpeg";
+
+    public static final String Emb1 = "Scenes/Embjorn/EmbjornCutscene (1).jpeg";
+    public static final String Emb2_3 = "Scenes/Embjorn/EmbjornCutscene (2).jpeg";
 
     //ICON
     public static final String GAME_ICON = "Icon.jpg";
@@ -77,7 +80,7 @@ public class LoadSave {
     public static final String LEVELTHREE_BACKGROUND_IMAGE = "Levels/Level3/Castle.jpeg";
 
     //Level 3 - Boss
-    public static final String LEVEL_THREE_BOSS_DATA = "Levels/Level2_Boss/level_three_boss_data.png";
+    public static final String LEVEL_THREE_BOSS_DATA = "Levels/Level3_Boss/level_three_boss_data.png";
 
     //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
