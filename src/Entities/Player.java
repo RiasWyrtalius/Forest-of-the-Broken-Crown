@@ -318,7 +318,13 @@ public class Player extends Entity{
     private void updatePos() {
         moving = false;
 
-        if (!left && !right && !jump && !inAir && !knockbackActive && extraHSpeed == 0) return;
+        if (!inAir && !Utils.HelpMethods.isEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
+
+        if (!left && !right && !jump && !inAir && !knockbackActive && extraHSpeed == 0) {
+            return;
+        }
 
         float xSpeed = 0;
 
@@ -352,10 +358,6 @@ public class Player extends Entity{
                 xSpeed += walkSpeed;
                 faceDirection = WALKR;
             }
-        }
-
-        if (!inAir) {
-            if (!isEntityOnFloor(hitbox, lvlData)) inAir = true;
         }
 
         // VERTICAL (Gravity)

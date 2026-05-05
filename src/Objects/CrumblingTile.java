@@ -110,7 +110,7 @@ class CrumblingTile extends GameObject {
             frameTick = 0;
             drawCol++;
 
-            if (drawCol >= 8) {
+            if (drawCol >= 7) {
                 state       = State.GONE;
                 active      = false;
                 shakeOffset = 0;
