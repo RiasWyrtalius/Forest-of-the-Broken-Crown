@@ -6,30 +6,29 @@ import Utils.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static Utils.Constants.ObjectConstants.AIR;
-import static Utils.Constants.ObjectConstants.CRUMBLING_TILE;
+import static Utils.Constants.ObjectConstants.*;
 
 class CrumblingTile extends GameObject {
+    private static final int COLS        = 8;
+    private static final int ROWS        = 6;
+    private static final int FRAME_SPEED = 20; //tick between frames
 
-    // Sprite sheet layout: 512x128 px, 32x32 per frame, 16 columns x 4 rows
-    private static final int SPRITE_W    = 32;
-    private static final int SPRITE_H    = 32;
-    private static final int COLS        = 16;
-    private static final int ROWS        = 4;
-    private static final int FRAME_SPEED = 16; // ticks between animation frames
+    private int tileType;
+    /**
+        * 0 - Whole
+        * 1 - Left
+        * 2 - Right
+    * */
 
-    // Timings (game runs at ~200 UPS)
-    private static final int SHAKE_TICKS   = 80;  // ~0.4s of shaking before crumble begins
-    private static final int CRUMBLE_TICKS = 160; // ~0.8s for the crumble animation to finish
-    private static final int RESPAWN_TICKS = 800; // ~4s before the tile comes back
+    private static final int SHAKE_TICKS   = 80;  // 0.4s
+    private static final int RESPAWN_TICKS = 800; // 4s
 
-    private static BufferedImage[][] sprites; // [row][col], loaded once for all instances
+    private static BufferedImage[][] sprites;
 
     private enum State { IDLE, SHAKING, CRUMBLING, GONE }
     private State state = State.IDLE;
 
     private int shakeTick   = 0;
-    private int crumbleTick = 0;
     private int respawnTick = 0;
 
     // Shake visual wobble
@@ -45,17 +44,17 @@ class CrumblingTile extends GameObject {
     private final int tileGridX;
     private final int tileGridY;
 
-    public CrumblingTile(float x, float y) {
+    public CrumblingTile(float x, float y, int tileType) {
         super(x, y, CRUMBLING_TILE);
+        this.tileType = tileType;
+
+        //hitbox coords
         initHitbox(Game.TILES_DEFAULT_SIZE, Game.TILES_DEFAULT_SIZE);
         this.tileGridX = (int) (x / Game.TILES_SIZE);
         this.tileGridY = (int) (y / Game.TILES_SIZE);
+
         loadSprites();
     }
-
-    // -----------------------------------------------------------------------
-    // Sprite loading (shared across all instances)
-    // -----------------------------------------------------------------------
 
     private static void loadSprites() {
         if (sprites != null) return;
@@ -67,12 +66,11 @@ class CrumblingTile extends GameObject {
         for (int row = 0; row < ROWS; row++)
             for (int col = 0; col < COLS; col++)
                 sprites[row][col] = sheet.getSubimage(
-                        col * SPRITE_W, row * SPRITE_H, SPRITE_W, SPRITE_H);
+                        col * Game.TILES_DEFAULT_SIZE,
+                        row * Game.TILES_DEFAULT_SIZE
+                        , Game.TILES_DEFAULT_SIZE,
+                        Game.TILES_DEFAULT_SIZE);
     }
-
-    // -----------------------------------------------------------------------
-    // Update - called every game tick from ObjectManager
-    // -----------------------------------------------------------------------
 
     public void update(int[][] lvlData) {
         switch (state) {
@@ -84,41 +82,40 @@ class CrumblingTile extends GameObject {
     }
 
     private void updateIdle() {
-        drawRow = 0;
-        advanceFrame();
+        drawRow = tileType;
+        advanceFrame(5);
     }
 
     private void updateShaking() {
         shakeTick++;
-
-        // Wobble left/right a couple of pixels
         shakeDirTick++;
+
+        // wobble l/r
         if (shakeDirTick >= 5) {
             shakeDirTick = 0;
             shakeOffset  = (shakeOffset == -2) ? 2 : -2;
         }
 
-        drawRow = 0;
-        advanceFrame();
+        drawRow = tileType;
+        advanceFrame(5);
 
-        if (shakeTick >= SHAKE_TICKS)
-            beginCrumbling();
+        if (shakeTick >= SHAKE_TICKS) beginCrumbling();
     }
 
     private void updateCrumbling(int[][] lvlData) {
-        crumbleTick++;
+        drawRow = tileType + 3; // shift row 3,4,5
 
-        // Map crumble progress to rows 1-3
-        float progress = (float) crumbleTick / CRUMBLE_TICKS;
-        drawRow = 1 + Math.min((int) (progress * (ROWS - 1)), ROWS - 2);
+        frameTick++;
+        if (frameTick >= FRAME_SPEED) {
+            frameTick = 0;
+            drawCol++;
 
-        advanceFrame();
-
-        if (crumbleTick >= CRUMBLE_TICKS) {
-            state       = State.GONE;
-            active      = false;
-            shakeOffset = 0;
-            punchHole(lvlData, AIR); // player can now fall through
+            if (drawCol >= 8) {
+                state       = State.GONE;
+                active      = false;
+                shakeOffset = 0;
+                punchHole(lvlData, AIR);
+            }
         }
     }
 
@@ -128,15 +125,10 @@ class CrumblingTile extends GameObject {
             respawn(lvlData);
     }
 
-    // -----------------------------------------------------------------------
-    // State transitions
-    // -----------------------------------------------------------------------
-
     private void beginCrumbling() {
         state       = State.CRUMBLING;
-        crumbleTick = 0;
         shakeOffset = 0;
-        drawRow     = 1;
+        drawRow     = tileType + 3;
         drawCol     = 0;
         frameTick   = 0;
     }
@@ -145,18 +137,13 @@ class CrumblingTile extends GameObject {
         state       = State.IDLE;
         active      = true;
         shakeTick   = 0;
-        crumbleTick = 0;
         respawnTick = 0;
         shakeOffset = 0;
-        drawRow     = 0;
+        drawRow     = tileType;
         drawCol     = 0;
         frameTick   = 0;
-        punchHole(lvlData, 0); // restore to solid tile (index 0)
+        punchHole(lvlData, INVISIBLE_SOLID); // restore to solid tile
     }
-
-    // -----------------------------------------------------------------------
-    // Called by ObjectManager each tick the player is standing on this tile
-    // -----------------------------------------------------------------------
 
     public void onPlayerStanding() {
         if (state == State.IDLE) {
@@ -165,18 +152,12 @@ class CrumblingTile extends GameObject {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Draw
-    // -----------------------------------------------------------------------
-
+    //Draw
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         if (state == State.GONE || sprites == null) return;
 
-        int safeRow = Math.min(drawRow, ROWS - 1);
-        int safeCol = Math.min(drawCol, COLS - 1);
-
         g.drawImage(
-                sprites[safeRow][safeCol],
+                sprites[drawRow][drawCol],
                 (int) (hitbox.x - xLvlOffset) + shakeOffset,
                 (int) (hitbox.y - yLvlOffset),
                 Game.TILES_SIZE,
@@ -185,16 +166,16 @@ class CrumblingTile extends GameObject {
         );
     }
 
-    // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
-
+    //Helper Methods
     /** Advance animation frame column cyclically. */
-    private void advanceFrame() {
+    private void advanceFrame(int maxFrames) {
         frameTick++;
         if (frameTick >= FRAME_SPEED) {
             frameTick = 0;
-            drawCol   = (drawCol + 1) % COLS;
+            drawCol++;
+            if (drawCol >= maxFrames) {
+                drawCol = 0;
+            }
         }
     }
 
@@ -207,11 +188,13 @@ class CrumblingTile extends GameObject {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Getters
-    // -----------------------------------------------------------------------
+    public void forceRestore(int[][] lvlData) {
+        punchHole(lvlData, INVISIBLE_SOLID);
+    }
 
+    //Getter
     public boolean isGone()      { return state == State.GONE;      }
     public boolean isShaking()   { return state == State.SHAKING;   }
     public boolean isCrumbling() { return state == State.CRUMBLING; }
+    public int getTileType()     { return tileType; }
 }

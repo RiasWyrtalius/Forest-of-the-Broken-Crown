@@ -80,13 +80,12 @@ public class LoadSave {
     public static final String VASE_ATLAS = "Levels/Objects/Vase/vase_object.png";
     public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";
     public static final String LADDER_ATLAS = "Levels/Objects/Ladder/LadderSprite.png";
+    public static final String CRUMBLING_TILE_ATLAS = "Levels/Objects/CrumblingTile/CrumblingTile.png";
 
     //Potions
     public static final String HEALTH_POTION_ATLAS = "Levels/Objects/DropHealthSS.png";
     public static final String MANA_POTION_ATLAS = "Levels/Objects/DropManaSS.png";
 
-    //Crumbling Tile
-    public static final String CRUMBLING_TILE_ATLAS = "Levels/Objects/CrumblingTile.png";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;

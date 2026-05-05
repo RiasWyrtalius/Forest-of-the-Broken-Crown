@@ -115,7 +115,7 @@ public class HelpMethods {
                         blueValue == BOSS_LAYER) {
                     lvlData[j][i] = AIR;
                 } else if (blueValue == CRUMBLING_TILE_COLOR) {
-                    lvlData[j][i] = 0; // solid tile — CrumblingTile object will clear this to AIR when it crumbles
+                    lvlData[j][i] = INVISIBLE_SOLID;
                 } else if (blueValue == LADDER_COLOR) {
                     lvlData[j][i] = LADDER_COLOR; // 132
                 } else {

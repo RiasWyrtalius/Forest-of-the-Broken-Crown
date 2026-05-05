@@ -53,11 +53,8 @@ public class ObjectManager {
             float playerX = player.getHitbox().x + (player.getHitbox().width / 2);
             float npcX = npc.getHitbox().x + (npc.getHitbox().width / 2);
 
-            if (Math.abs(playerX - npcX) < 100) { // interaction range
-                npc.setHovered(true);
-            } else {
-                npc.setHovered(false);
-            }
+            // interaction range
+            npc.setHovered(Math.abs(playerX - npcX) < 100);
         }
 
         for (Potion p : potions) {
@@ -80,14 +77,12 @@ public class ObjectManager {
         for (Vase v : vases) {
             v.reset();
         }
-        // Crumbling tiles: restore their solid tile entries in lvlData, then reset state
+
         int[][] lvlData = game.getLevelHandler().getCurrentLevel().getLevelData();
         for (CrumblingTile ct : crumblingTiles) {
-            if (ct.isGone()) {
-                // Force-respawn so lvlData is patched back to solid
-                ct.onPlayerStanding(); // won't trigger since isGone - handled by direct respawn below
-            }
+            ct.forceRestore(lvlData);
         }
+
         // Simplest safe approach: reload objects fresh from the level image
         loadObjects(game.getLevelHandler().getCurrentLevel());
     }
@@ -137,7 +132,7 @@ public class ObjectManager {
                 if (value == VASE_COLOR) {
                     vases.add(new Vase(i * Game.TILES_SIZE, j * Game.TILES_SIZE, VASE));
                 } else if (value == CRUMBLING_TILE_COLOR) {
-                    crumblingTiles.add(new CrumblingTile(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                    crumblingTiles.add(new CrumblingTile(i * Game.TILES_SIZE, j * Game.TILES_SIZE, color.getGreen()));
                 } else if (value == SPIKE_COLOR) {
                     int spikeIndex = color.getGreen();
                     spikes.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, spikeIndex, spikeImgs, spikeIndex));

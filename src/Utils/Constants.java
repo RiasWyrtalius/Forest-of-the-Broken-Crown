@@ -23,6 +23,7 @@ public class Constants {
 
     public static class ObjectConstants {
         public static final int AIR = 18;
+        public static final int INVISIBLE_SOLID = 99;
 
         public static final int VASE = 0;
         public static final int VASE_COLOR = 130;
