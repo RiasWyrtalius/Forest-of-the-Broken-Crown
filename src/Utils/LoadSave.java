@@ -43,6 +43,9 @@ public class LoadSave {
     //Character Selection
     public static final String CSelection_Atlas = "Characters/CharacterSelectBG.png";
 
+    //Death Screen
+    public static final String DeathScreen = "DeathScreen/DeathScreen.jpeg";
+
     //Pause
     public static final String PauseBg = "Pause/PauseBg.png";
 

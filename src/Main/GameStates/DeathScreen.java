@@ -2,24 +2,26 @@ package Main.GameStates;
 
 import Main.Core.Game;
 import Main.GameState;
+import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class DeathScreen {
 
     private Game game;
+    private BufferedImage backgroundImg;
+    private Font customFont;
     private boolean animationPlaying = true;
     private long animationStartTime;
     private final long ANIMATION_DURATION = 2000; // 2 seconds animation
 
-    private int btnWidth = 250;
-    private int btnHeight = 55;
+    private int btnWidth = 300;
+    private int btnHeight = 70;
 
-    private int btnX = (Game.GAME_WIDTH / 2) - (btnWidth / 2);
-
-    private Rectangle btnMainMenu  = new Rectangle(btnX, 350, btnWidth, btnHeight);
-    private Rectangle btnRestart   = new Rectangle(btnX, 265, btnWidth, btnHeight);
+    private Rectangle btnRestart = new Rectangle(160, 500, btnWidth, btnHeight);
+    private Rectangle btnMainMenu = new Rectangle(800, 500, btnWidth, btnHeight);
 
     // Animation properties
     private final int START_FONT_SIZE = 24;
@@ -28,6 +30,8 @@ public class DeathScreen {
     public DeathScreen(Game game) {
         this.game = game;
         this.animationStartTime = System.currentTimeMillis();
+        this.backgroundImg = LoadSave.getSpriteAtlas(LoadSave.DeathScreen);
+        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
     }
 
     public void draw(Graphics g) {
@@ -54,7 +58,6 @@ public class DeathScreen {
 
         // Draw the animated "YOU DIED" text
         g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, currentFontSize));
         FontMetrics fm = g.getFontMetrics();
         String title = "YOU DIED";
         int titleX = (Game.GAME_WIDTH / 2) - (fm.stringWidth(title) / 2);
@@ -70,20 +73,25 @@ public class DeathScreen {
 
     private void drawDeathMenu(Graphics g) {
         // title
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        // 2. Draw "YOU DIED" Title
         g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, 48));
+        g.setFont(customFont.deriveFont(Font.BOLD, 72f)); // Made slightly larger for the background
         FontMetrics fm = g.getFontMetrics();
         String title = "YOU DIED";
         int titleX = (Game.GAME_WIDTH / 2) - (fm.stringWidth(title) / 2);
-        g.drawString(title, titleX, 200);
+        g.drawString(title, titleX, 80);
 
-        // subtitle
+        // 3. Draw Subtitle
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.PLAIN, 24));
-        String subtitle = "Game Over";
+        g.setFont(customFont.deriveFont(24f));
+        String subtitle = "Your journey ends here...";
         fm = g.getFontMetrics();
         int subtitleX = (Game.GAME_WIDTH / 2) - (fm.stringWidth(subtitle) / 2);
-        g.drawString(subtitle, subtitleX, 240);
+        g.drawString(subtitle, subtitleX, 110);
 
         // buttons
         drawButton(g, btnRestart, "Restart Game");
@@ -97,7 +105,7 @@ public class DeathScreen {
         g.setColor(Color.WHITE);
         g.drawRect(btn.x, btn.y, btn.width, btn.height);
 
-        g.setFont(new Font("Arial", Font.PLAIN, 22));
+        g.setFont(customFont);
         FontMetrics fm = g.getFontMetrics();
         int textX = btn.x + (btn.width  / 2) - (fm.stringWidth(label) / 2);
         int textY = btn.y + (btn.height / 2) + (fm.getAscent() / 2) - 2;

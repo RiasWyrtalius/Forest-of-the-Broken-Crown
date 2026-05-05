@@ -39,9 +39,9 @@ public class AudioPlayer {
         try {
             if (url == null) {
                 File[] fallbackFiles = new File[] {
-                    new File("Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
-                    new File("Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
-                    new File(System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav")
+                        new File("Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
+                        new File("Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav"),
+                        new File(System.getProperty("user.dir") + File.separator + "Forest-of-the-Broken-Crown" + File.separator + "Assets" + File.separator + "Audio" + File.separator + name + ".wav")
                 };
                 for (File file : fallbackFiles) {
                     if (file.exists()) {
