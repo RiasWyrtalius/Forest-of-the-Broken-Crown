@@ -68,10 +68,16 @@ public class LoadSave {
     public static final String LEVEL_TWO_DATA = "Levels/Level2/level_two_data.png";
     public static final String LEVELTWO_BACKGROUND_IMAGE = "Levels/Level2/Cave.jpeg";
 
+    //Level 2 - Boss
+    public static final String LEVEL_TWO_BOSS_DATA = "Levels/Level2_Boss/level_two_boss_data.png";
+
     //Level 3
     public static final String LevelThree_Atlas = "Levels/Level3/TSFloor3.png";
     public static final String LEVEL_THREE_DATA = "Levels/Level3/level_three_data.png";
     public static final String LEVELTHREE_BACKGROUND_IMAGE = "Levels/Level3/Castle.jpeg";
+
+    //Level 3 - Boss
+    public static final String LEVEL_THREE_BOSS_DATA = "Levels/Level2_Boss/level_three_boss_data.png";
 
     //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
