@@ -77,7 +77,7 @@ public class LoadSave {
     public static final String LEVELTHREE_BACKGROUND_IMAGE = "Levels/Level3/Castle.jpeg";
 
     //Level 3 - Boss
-    public static final String LEVEL_THREE_BOSS_DATA = "Levels/Level2_Boss/level_three_boss_data.png";
+    public static final String LEVEL_THREE_BOSS_DATA = "Levels/Level3_Boss/level_three_boss_data.png";
 
     //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
