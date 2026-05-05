@@ -7,7 +7,9 @@ public enum GameState {
     PAUSED,
     DEATH,
     CHARACTER_SELECT,
-    CUTSCENE;
+    CUTSCENE,
+    CREDITS;
+
 
     // The current active state
     public static GameState state = MENU;

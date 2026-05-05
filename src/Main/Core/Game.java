@@ -22,6 +22,7 @@ public class Game implements Runnable {
     private GameState previousState = GameState.MENU;
 
     private MainMenu mainMenu;
+    private Credits credits;
     private GameWindow gameWindow;
     private Playing playing;
     private GamePanel gamePanel;
@@ -87,6 +88,7 @@ public class Game implements Runnable {
         deathScreen = new DeathScreen(this);
         playing = new Playing(this);
         cutsceneState = new CutsceneState(this);
+        credits = new Credits(this);
     }
 
     public void initPlayerCharacter(PlayerCharacter selectedChar, int levelNum) {
@@ -136,6 +138,7 @@ public class Game implements Runnable {
             case CHARACTER_SELECT   -> characterSelect.update();
             case DEATH              -> deathScreen.update();
             case CUTSCENE           -> cutsceneState.update();
+            case CREDITS            -> credits.update();
             case PAUSED, SLOTS      -> {} //insert any update() if theres any.
         }
 
@@ -156,9 +159,11 @@ public class Game implements Runnable {
 
     public void render(Graphics g) {
         switch (GameState.state) {
-            case MENU -> mainMenu.draw(g);
-            case PLAYING -> playing.draw(g);
-            case CHARACTER_SELECT -> characterSelect.draw(g);
+            case MENU               -> mainMenu.draw(g);
+            case PLAYING            -> playing.draw(g);
+            case CHARACTER_SELECT   -> characterSelect.draw(g);
+            case CREDITS            -> credits.draw(g);
+            case CUTSCENE           -> cutsceneState.draw(g);
             case SLOTS -> {
                 playing.draw(g);
                 slotScreen.draw(g);
@@ -171,7 +176,6 @@ public class Game implements Runnable {
                 playing.draw(g);
                 deathScreen.draw(g);
             }
-            case CUTSCENE -> cutsceneState.draw(g);
         }
 
         // it draws a fade overlay on top of everything
@@ -304,4 +308,5 @@ public class Game implements Runnable {
     public EnemyManager getEnemyManager() {return playing.getEnemyManager();}
     public static Game getInstance() { return instance; }
     public CutsceneState getCutsceneState() { return cutsceneState; }
+    public Credits getCredits() { return credits; }
 }

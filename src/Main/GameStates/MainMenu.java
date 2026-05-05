@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 
 public class MainMenu {
 
-    private enum Screen { MAIN_MENU, OPTIONS, HOW_TO_PLAY, CREDITS }
+    private enum Screen { MAIN_MENU, OPTIONS, HOW_TO_PLAY }
 
     private Game game;
     private Screen currentScreen = Screen.MAIN_MENU;
@@ -79,7 +79,6 @@ public class MainMenu {
             case MAIN_MENU  -> drawMainMenu(g);
             case OPTIONS    -> drawOptions(g);
             case HOW_TO_PLAY-> drawHowToPlay(g);
-            case CREDITS    -> drawCredits(g);
         }
 
         g.drawString(message, btnQuitX, btnQuitY + 60);
@@ -110,16 +109,6 @@ public class MainMenu {
         g.drawString("Back",                        backBtnX, backBtnY);
     }
 
-    private void drawCredits(Graphics g) {
-        g.drawString("Credits",              btnX + 120, 390);
-        g.drawString("Chad Ellie Sanchez",   btnX, 460);
-        g.drawString("Sean Riley Dela Cruz", btnX, 500);
-        g.drawString("Alonzo Raganas",        btnX, 540);
-        g.drawString("Charlz David Despues", btnX, 580);
-        g.drawString("Niño Michael Mahusay", btnX, 620);
-        g.drawString("Back",                 backBtnX, backBtnY);
-    }
-
     //INPUT METHODS
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -134,7 +123,7 @@ public class MainMenu {
         switch (currentScreen) {
             case MAIN_MENU   -> handleMainMenuClick(mx, my);
             case OPTIONS     -> handleOptionsClick(mx, my);
-            case HOW_TO_PLAY, CREDITS -> {
+            case HOW_TO_PLAY -> {
                 if (isNearButton(mx, my, backBtnX, backBtnY)) goBack();
             }
         }
@@ -181,7 +170,8 @@ public class MainMenu {
         } else if (isNearButton(mx, my, btnX, btnOptionsY)) {
             currentScreen = Screen.OPTIONS;
         } else if (isNearButton(mx, my, btnX, btnCreditsY)) {
-            currentScreen = Screen.CREDITS;
+            game.getCredits().resetCredits();
+            GameState.state = GameState.CREDITS;
         } else if (isNearButton(mx, my, btnX, btnQuitY)) {
             System.exit(0);
         }
