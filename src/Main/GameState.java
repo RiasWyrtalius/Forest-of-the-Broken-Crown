@@ -8,7 +8,8 @@ public enum GameState {
     DEATH,
     CHARACTER_SELECT,
     CUTSCENE,
-    CREDITS;
+    CREDITS,
+    OPTIONS;
 
 
     // The current active state
