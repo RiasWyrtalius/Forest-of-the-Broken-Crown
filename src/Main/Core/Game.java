@@ -19,10 +19,7 @@ import java.awt.image.BufferedImage;
 
 public class Game implements Runnable {
 
-    private GameState previousState = GameState.MENU;
 
-    private MainMenu mainMenu;
-    private Credits credits;
     private GameWindow gameWindow;
     private Playing playing;
     private GamePanel gamePanel;
@@ -31,6 +28,8 @@ public class Game implements Runnable {
     private final int UPS_SET = 200;
     private static Game instance;
 
+    private Credits credits;
+    private MainMenu mainMenu;
     private Player player;
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
@@ -38,6 +37,7 @@ public class Game implements Runnable {
     private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
     private CutsceneState cutsceneState;
+    private OptionsScreen optionsScreen;
 
     // this makes the transition to black
     private boolean fadingOut       = false; // this fades to black
@@ -87,6 +87,7 @@ public class Game implements Runnable {
         pauseScreen = new PauseScreen(this);
         deathScreen = new DeathScreen(this);
         playing = new Playing(this);
+        optionsScreen = new OptionsScreen(this);
         cutsceneState = new CutsceneState(this);
         credits = new Credits(this);
     }
@@ -139,6 +140,7 @@ public class Game implements Runnable {
             case DEATH              -> deathScreen.update();
             case CUTSCENE           -> cutsceneState.update();
             case CREDITS            -> credits.update();
+            case OPTIONS            -> optionsScreen.update();
             case PAUSED, SLOTS      -> {} //insert any update() if theres any.
         }
 
@@ -157,6 +159,7 @@ public class Game implements Runnable {
             case CHARACTER_SELECT   -> characterSelect.draw(g);
             case CREDITS            -> credits.draw(g);
             case CUTSCENE           -> cutsceneState.draw(g);
+            case OPTIONS            -> optionsScreen.draw(g);
             case SLOTS -> {
                 playing.draw(g);
                 slotScreen.draw(g);
@@ -286,20 +289,20 @@ public class Game implements Runnable {
         this.backgroundImg = backgroundImg;
     }
 
-    public Player getPlayer() { return player;}
-    public MainMenu getMainMenu() {return mainMenu;}
-    public LevelHandler getLevelHandler() {return levelHandler;}
-    public SlotScreen getSlotScreen()     {return slotScreen;}
-    public PauseScreen getPauseScreen() {return pauseScreen;}
-    public DeathScreen getDeathScreen() {return deathScreen;}
-    public AudioPlayer getAudioPlayer() {return audioPlayer;}
+    public Player getPlayer()                   { return player;}
+    public MainMenu getMainMenu()               { return mainMenu;}
+    public LevelHandler getLevelHandler()       { return levelHandler;}
+    public SlotScreen getSlotScreen()           { return slotScreen;}
+    public PauseScreen getPauseScreen()         { return pauseScreen;}
+    public DeathScreen getDeathScreen()         { return deathScreen;}
+    public AudioPlayer getAudioPlayer()         { return audioPlayer;}
     public CharacterSelect getCharacterSelect() { return characterSelect; }
-    public ObjectManager getObjectManager() { return objectManager; }
-    public UI getUi() { return ui; }
-    public BufferedImage getBackgroundImg() { return backgroundImg; }
-    public Playing getPlaying() { return playing; }
-    public EnemyManager getEnemyManager() {return playing.getEnemyManager();}
-    public static Game getInstance() { return instance; }
-    public CutsceneState getCutsceneState() { return cutsceneState; }
-    public Credits getCredits() { return credits; }
+    public ObjectManager getObjectManager()     { return objectManager; }
+    public UI getUi()                           { return ui; }
+    public BufferedImage getBackgroundImg()     { return backgroundImg; }
+    public Playing getPlaying()                 { return playing; }
+    public static Game getInstance()            { return instance; }
+    public CutsceneState getCutsceneState()     { return cutsceneState; }
+    public Credits getCredits()                 { return credits; }
+    public OptionsScreen getOptionsScreen()     { return optionsScreen; }
 }

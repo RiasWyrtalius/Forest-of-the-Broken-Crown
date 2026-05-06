@@ -22,6 +22,7 @@ public class AudioPlayer {
     public AudioPlayer(){
         loadSongs();
         loadEffects();
+        setVolume(volume);
         playSong(MENU_1);
     }
 
@@ -92,5 +93,45 @@ public class AudioPlayer {
 
         effects[effectID].setFramePosition(0);
         effects[effectID].start();
+    }
+
+    //VOLUME CONTROL
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+        updateSongVolume();
+        updateEffectsVolume();
+    }
+
+    private void updateSongVolume() {
+        for (Clip c : songs) {
+            applyVolumeToClip(c, volume);
+        }
+    }
+
+    private void updateEffectsVolume() {
+        for (Clip c : effects) {
+            applyVolumeToClip(c, volume);
+        }
+    }
+
+    private void applyVolumeToClip(Clip clip, float vol) {
+        if (clip != null && clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+            float dB;
+            if (vol <= 0.01f) {
+                // If the slider is at 0%, mute it entirely using the lowest possible Decibel value
+                dB = gainControl.getMinimum();
+            } else {
+                // Convert linear volume (0.0 to 1.0) into logarithmic Decibels
+                dB = 20f * (float) Math.log10(vol);
+
+                dB = Math.max(dB, gainControl.getMinimum());
+                dB = Math.min(dB, gainControl.getMaximum());
+            }
+
+            gainControl.setValue(dB);
+        }
     }
 }

@@ -4,7 +4,6 @@ import Audio.AudioPlayer;
 import Main.Core.Game;
 import Main.GameState;
 import Main.UI.UI;
-import Utils.HelpMethods;
 import Utils.LoadSave;
 
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.awt.event.MouseEvent;
 
 public class MainMenu {
 
-    private enum Screen { MAIN_MENU, OPTIONS, HOW_TO_PLAY }
+    private enum Screen { MAIN_MENU, HOW_TO_PLAY }
 
     private Game game;
     private Screen currentScreen = Screen.MAIN_MENU;
@@ -78,7 +77,6 @@ public class MainMenu {
 
         switch (currentScreen) {
             case MAIN_MENU  -> drawMainMenu(g);
-            case OPTIONS    -> drawOptions(g);
             case HOW_TO_PLAY-> drawHowToPlay(g);
         }
 
@@ -97,15 +95,6 @@ public class MainMenu {
         UI.drawHoverableButton(g, optBtn.x + 50,  optBtn.y + 35,  "Options",   isOptHovered,  customFont);
         UI.drawHoverableButton(g, credBtn.x + 50, credBtn.y + 35, "Credits",   isCredHovered, customFont);
         UI.drawHoverableButton(g, quitBtn.x + 80, quitBtn.y + 35, "Quit",      isQuitHovered, customFont);
-    }
-
-    private void drawOptions(Graphics g) {
-        g.drawString("OPTIONS",           btnX + 100, 400);
-        g.drawString("Volume: " + volume + "%", btnX, 480);
-        g.drawString("+",                 btnX + 320, 480);
-        g.drawString("-",                 btnX + 220, 480);
-        g.drawString("How to Play",       btnX, 550);
-        g.drawString("Back",              backBtnX, backBtnY);
     }
 
     private void drawHowToPlay(Graphics g) {
@@ -129,7 +118,6 @@ public class MainMenu {
 
         switch (currentScreen) {
             case MAIN_MENU   -> handleMainMenuClick(mx, my);
-            case OPTIONS     -> handleOptionsClick(mx, my);
             case HOW_TO_PLAY -> {
                 if (isNearButton(mx, my, backBtnX, backBtnY)) goBack();
             }
@@ -175,7 +163,7 @@ public class MainMenu {
             game.getSlotScreen().setMode("LOAD");
             GameState.state = GameState.SLOTS;
         } else if (isNearButton(mx, my, btnX, btnOptionsY)) {
-            currentScreen = Screen.OPTIONS;
+            GameState.state = GameState.OPTIONS;
         } else if (isNearButton(mx, my, btnX, btnCreditsY)) {
             game.getCredits().resetCredits();
             GameState.state = GameState.CREDITS;
