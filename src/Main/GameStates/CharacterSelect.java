@@ -144,9 +144,13 @@ public class CharacterSelect {
     }
 
     private void drawUI(Graphics g) {
-        HelpMethods.DrawHoverableButton(g, leftArrow, "<", hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, rightArrow, ">", hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, selectBtn, "SELECT", hoveredBtn, customFont);
+        boolean isLeftHovered = (hoveredBtn == leftArrow);
+        boolean isRightHovered = (hoveredBtn == rightArrow);
+        boolean isSelectHovered = (hoveredBtn == selectBtn);
+
+        UI.drawHoverableButton(g, leftArrow.x + 20, leftArrow.y + 45, "<", isLeftHovered, customFont);
+        UI.drawHoverableButton(g, rightArrow.x + 20, rightArrow.y + 45, ">", isRightHovered, customFont);
+        UI.drawHoverableButton(g, selectBtn.x + 50, selectBtn.y + 40, "SELECT", isSelectHovered, customFont);
     }
 
     private void startTransition(int direction) {

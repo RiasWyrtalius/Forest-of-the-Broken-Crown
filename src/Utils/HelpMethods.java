@@ -130,27 +130,6 @@ public class HelpMethods {
         return lvlData;
     }
 
-    //UI Helper Method
-    public static void DrawHoverableButton(Graphics g, Rectangle btn, String label, Rectangle hoveredBtn, Font font) {
-        boolean isHovered = (hoveredBtn != null && hoveredBtn.equals(btn));
-
-        g.setFont(font);
-        FontMetrics fm = g.getFontMetrics();
-
-        int textX = btn.x + (btn.width / 2) - (fm.stringWidth(label) / 2);
-        int textY = btn.y + (btn.height / 2) + (fm.getAscent() / 2) - 2;
-
-        if (isHovered) {
-            g.setColor(new Color(255, 255, 255, 50));
-            g.drawString(label, textX + 2, textY + 2);
-            g.setColor(Color.YELLOW); // hover
-        } else {
-            g.setColor(Color.WHITE);
-        }
-
-        g.drawString(label, textX, textY);
-    }
-
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int tileY) {
         int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
         int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);

@@ -3,6 +3,7 @@ package Main.GameStates;
 import Audio.AudioPlayer;
 import Main.Core.Game;
 import Main.GameState;
+import Main.UI.UI;
 import Utils.HelpMethods;
 import Utils.LoadSave;
 
@@ -85,11 +86,17 @@ public class MainMenu {
     }
 
     private void drawMainMenu(Graphics g) {
-        HelpMethods.DrawHoverableButton(g, playBtn, "Play Game", hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, loadBtn, "Load Game", hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, optBtn,  "Options",   hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, credBtn, "Credits",   hoveredBtn, customFont);
-        HelpMethods.DrawHoverableButton(g, quitBtn, "Quit",      hoveredBtn, customFont);
+        boolean isPlayHovered = (hoveredBtn == playBtn);
+        boolean isLoadHovered = (hoveredBtn == loadBtn);
+        boolean isOptHovered  = (hoveredBtn == optBtn);
+        boolean isCredHovered = (hoveredBtn == credBtn);
+        boolean isQuitHovered = (hoveredBtn == quitBtn);
+
+        UI.drawHoverableButton(g, playBtn.x + 20, playBtn.y + 35, "Play Game", isPlayHovered, customFont);
+        UI.drawHoverableButton(g, loadBtn.x + 20, loadBtn.y + 35, "Load Game", isLoadHovered, customFont);
+        UI.drawHoverableButton(g, optBtn.x + 50,  optBtn.y + 35,  "Options",   isOptHovered,  customFont);
+        UI.drawHoverableButton(g, credBtn.x + 50, credBtn.y + 35, "Credits",   isCredHovered, customFont);
+        UI.drawHoverableButton(g, quitBtn.x + 80, quitBtn.y + 35, "Quit",      isQuitHovered, customFont);
     }
 
     private void drawOptions(Graphics g) {

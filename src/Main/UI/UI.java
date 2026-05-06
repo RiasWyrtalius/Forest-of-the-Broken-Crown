@@ -251,6 +251,20 @@ public class UI {
         }
     }
 
+    public static void drawHoverableButton(Graphics g, int x, int y, String label, boolean isHovered, Font font) {
+        g.setFont(font);
+
+        if (isHovered) {
+            g.setColor(new Color(255, 255, 255, 50));
+            g.drawString(label, x + 2, y + 2);
+            g.setColor(Color.YELLOW);
+        } else {
+            g.setColor(Color.WHITE);
+        }
+
+        g.drawString(label, x, y);
+    }
+
     public void drawBossDefeated(Graphics g) {
         if (!bossDefeatMsg.isEmpty()) {
             long elapsed = System.currentTimeMillis() - msgTimer;

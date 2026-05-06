@@ -3,6 +3,7 @@ package Main.GameStates;
 import Audio.AudioPlayer;
 import Main.Core.Game;
 import Main.GameState;
+import Main.UI.UI;
 import Utils.LoadSave;
 
 import java.awt.*;
@@ -45,9 +46,13 @@ public class PauseScreen {
 
         g.drawImage(pauseBg, bgX, bgY, bgW, bgH, null);
         // buttons
-        Utils.HelpMethods.DrawHoverableButton(g, btnContinue, "Continue", hoveredBtn, customFont);
-        Utils.HelpMethods.DrawHoverableButton(g, btnLoad, "Load Game", hoveredBtn, customFont);
-        Utils.HelpMethods.DrawHoverableButton(g, btnMainMenu, "Main Menu", hoveredBtn, customFont);
+        boolean isContinueHovered = (hoveredBtn == btnContinue);
+        boolean isLoadHovered     = (hoveredBtn == btnLoad);
+        boolean isMenuHovered     = (hoveredBtn == btnMainMenu);
+
+        UI.drawHoverableButton(g, btnContinue.x + 60, btnContinue.y + 38, "Continue", isContinueHovered, customFont);
+        UI.drawHoverableButton(g, btnLoad.x + 50,     btnLoad.y + 38,     "Load Game",  isLoadHovered, customFont);
+        UI.drawHoverableButton(g, btnMainMenu.x + 50, btnMainMenu.y + 38, "Main Menu",  isMenuHovered, customFont);
     }
 
     public void mouseMoved(int x, int y) {
