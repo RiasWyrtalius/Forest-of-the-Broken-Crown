@@ -150,13 +150,6 @@ public class Game implements Runnable {
         this.backgroundImg = Utils.LoadSave.getSpriteAtlas(bgPath);
     }
 
-    private void handleStateTransitions() {
-        if (GameState.state != previousState && GameState.state == GameState.DEATH) {
-            deathScreen.startAnimation();
-        }
-        previousState = GameState.state;
-    }
-
     public void render(Graphics g) {
         switch (GameState.state) {
             case MENU               -> mainMenu.draw(g);
