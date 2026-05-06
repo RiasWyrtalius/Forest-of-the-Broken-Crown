@@ -112,7 +112,8 @@ public class CutsceneState {
         // skip
         g.setColor(Color.WHITE);
         g.setFont(customFont);
-        g.drawString("Press ENTER to Next | Left-Click to Skip", Game.GAME_WIDTH - 300, 30);
+        g.drawString("Press ENTER | Left-Click to Skip", Game.GAME_WIDTH - 380, 30);
+        g.drawString("Press ESC to skip cutscene", Game.GAME_WIDTH - 380, 50);
     }
 
     private void drawDialogueBox(Graphics g) {
