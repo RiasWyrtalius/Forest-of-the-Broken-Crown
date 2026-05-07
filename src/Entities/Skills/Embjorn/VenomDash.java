@@ -10,10 +10,10 @@ import static Utils.Constants.PlayerConstants.WALKL;
 
 public class VenomDash implements Skill {
     private Player player;
-    private final int MANA_COST = 2;
+    private final int MANA_COST = 1;
 
     private final float FLING_FORCE = 12.0f; // High initial horizontal burst
-    private final float UPWARD_BOOST = -2.5f; //the upward lift
+    private final float UPWARD_BOOST = -3.5f; //the upward lift
     private final int DASH_DURATION = 15;
 
     private int dashTick = 0;

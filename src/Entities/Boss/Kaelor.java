@@ -14,11 +14,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static Utils.Constants.EnemyConstants.*;
 import static Utils.Constants.LEFT;
 import static Utils.Constants.RIGHT;
+import static Utils.LoadSave.getFont;
 
 public class Kaelor extends Boss {
     private LevelHandler lh;
+    private Font customFont;
 
-    private int survivalTimer = 30000; // 150 seconds * 200 UPS = 30,000 ticks
+    private int survivalTick = 15 * 200; // 150 seconds * 200 UPS = 30,000 ticks
+    private boolean survivalEnded = false;
+    private boolean timerStarted = false;
+    private int antiCheeseTick = 0;
+    private final int ANTI_CHEESE_MAX = 4 * 200;
+    private int rewardTick = 0;
+    private final int REWARD_INTERVAL = 30 * 200;
+
     private CopyOnWriteArrayList<Rock> rocks = new CopyOnWriteArrayList<>();
     private int rockCDTick = 0;
     private final int ROCK_CD_MAX = 2 * 200; // 2 seconds
@@ -35,16 +44,36 @@ public class Kaelor extends Boss {
         this.attackDistance = Game.TILES_SIZE * 1.5f;
         this.lh = Game.getInstance().getLevelHandler();
         initAttackBox();
+        customFont = getFont("Font/VCR.ttf").deriveFont(28f);
+    }
+
+    private void drawTimer(Graphics g, int xLvlOffset, int yLvlOffset) {
+        g.setFont(customFont);
+        g.setColor(Color.WHITE);
+
+        String timeText = getTimeLeftString();
+
+        int textWidth = g.getFontMetrics().stringWidth(timeText);
+        int xPos = (int) (hitbox.x - xLvlOffset + (hitbox.width / 2) - (textWidth / 2));
+        int yPos = (int) (hitbox.y - yLvlOffset - 20); //above boss
+
+        g.setColor(new Color(0, 0, 0, 150));
+        g.drawString(timeText, xPos + 2, yPos + 2);
+
+        g.setColor(Color.YELLOW);
+        g.drawString(timeText, xPos, yPos);
     }
 
     protected void loadAnimations() {
         BufferedImage img = Utils.LoadSave.getSpriteAtlas(LoadSave.KAELOR_ATLAS);
 
-        // Kaelor's Rows:
+        // Rows:
         // 0=IdleL, 1=IdleR,
         // 2=AtkL, 3=AtkR,
-        // 4=WalkL,
-        int[] spriteAmounts = { 6, 6, 6, 6, 8 };
+        // 4=WalkR, //TODO: ADD WALKL
+        // 5=ShutdownL, 6=ShutdownR,
+        // 7=DeadL, 8=DeadR
+        int[] spriteAmounts = { 6, 6, 6, 6, 8, 7, 7, 1, 1 };
 
         animations = new BufferedImage[spriteAmounts.length][];
 
@@ -77,13 +106,29 @@ public class Kaelor extends Boss {
 
     @Override
     public void update(int[][] lvlData, Player player) {
-        int currentLvl = lh.getLevelIndex();
+        updateSurvivalTimer(player);
 
+        if (enemyState == DEAD) {
+            return;
+        }
 
-        if (currentLvl == 3) { // Level 2 Boss (Index 3)
+        if (enemyState == SHUTDOWN) {
+            updateAnimationTick();
+
+            if (enemyState == SHUTDOWN && animationIndex >= 6) {
+                newState(DEAD);
+                //TODO: FIX NO LOOT DROPS
+            }
+            return; // stops everything
+        }
+
+        // normal logic
+        if (lh.getLevelIndex() == 3) {
             updateStationaryBehavior(player);
-            updateRocks(lvlData, player);
-        } else { // Level 3 Enemy (Mobile)
+            if (timerStarted && !survivalEnded) {
+                updateRocks(lvlData, player);
+            }
+        } else {
             updateMobileBehavior(lvlData, player);
         }
 
@@ -122,10 +167,18 @@ public class Kaelor extends Boss {
 
     private void updateRocks(int[][] lvlData, Player player) {
         rockCDTick++;
+        antiCheeseTick++;
 
+        //small rocks
         if (rockCDTick >= ROCK_CD_MAX) {
             spawnRockWave();
-            rockCDTick = 0; // reset
+            rockCDTick = 0;
+        }
+
+        //spawns rock on player
+        if (antiCheeseTick >= ANTI_CHEESE_MAX) {
+            spawnTargetedRock(player);
+            antiCheeseTick = 0;
         }
 
         for (int i = rocks.size() - 1; i >= 0; i--) {
@@ -133,8 +186,12 @@ public class Kaelor extends Boss {
             r.update(lvlData);
 
             if (r.getHitbox().intersects(player.getHitbox())) {
-                player.changeHealth(-1);
                 player.applyKnockback(r.getHitbox().x);
+
+                if (r.getSizeMult() >= 1.1f) {
+                    player.changeHealth(-1);
+                }
+
                 rocks.remove(i);
             } else if (!r.isActive()) {
                 rocks.remove(i);
@@ -161,9 +218,20 @@ public class Kaelor extends Boss {
         }
     }
 
+    private void spawnTargetedRock(Player player) {
+        float targetX = (player.getHitbox().x + (player.getHitbox().width / 2));
+        float spawnY = -rng.nextInt(300) - 500;
+        float size = 1.2f;
+        rocks.add(new Rock(targetX, spawnY, size));
+    }
+
     @Override
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         super.draw(g, xLvlOffset, yLvlOffset);
+
+        if (!survivalEnded) {
+            drawTimer(g, xLvlOffset, yLvlOffset);
+        }
 
         for (Rock r : rocks) {
             r.draw(g, xLvlOffset, yLvlOffset);
@@ -175,20 +243,68 @@ public class Kaelor extends Boss {
         }
     }
 
+    //TIME
+    private void updateSurvivalTimer(Player player) {
+        if (!timerStarted) {
+            float centerX = hitbox.x + (hitbox.width / 2);
+            float halfSpread = rockSpread / 2;
+
+            float leftBoundary = centerX - halfSpread;
+            float rightBoundary = centerX + halfSpread;
+
+            if (player.getHitbox().x >= leftBoundary && player.getHitbox().x <= rightBoundary) {
+                timerStarted = true;
+            }
+        }
+
+        // countdown logic
+        if (timerStarted && !survivalEnded) {
+            if (survivalTick > 0) {
+                survivalTick--;
+                rewardTick++;
+                if (rewardTick >= REWARD_INTERVAL) {
+                    applySurvivalReward(player);
+                    rewardTick = 0;
+                }
+            } else {
+                survivalEnded = true;
+                newState(SHUTDOWN);
+            }
+        }
+    }
+
+    private void applySurvivalReward(Player player) {
+        player.changeHealth(1);
+        player.addMana(5);
+//        System.out.println("Survival Reward granted!");
+    }
+
+    private String getTimeLeftString() {
+        int totalSeconds = survivalTick / 200; // Convert ticks back to seconds
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+
+        return String.format("%d:%02d", minutes, seconds);
+    }
+
     @Override
     protected int getAnimationRow() {
         return switch (enemyState) {
-            case ATTACK -> (walkDir == RIGHT) ? 3 : 2;
-            case RUNNING -> (walkDir == RIGHT) ? 5 : 4;
-            default -> (walkDir == RIGHT) ? 1 : 0;
+            case ATTACK -> (walkDir == RIGHT) ? 2 : 3;
+            case RUNNING -> (walkDir == RIGHT) ? 4 : 4; // REPLACE WITH WALKL SPRITE
+            case SHUTDOWN -> (walkDir == RIGHT) ? 6 : 5;
+            case DEAD -> (walkDir == RIGHT) ? 8 : 7;
+            default -> (walkDir == RIGHT) ? 0 : 1; // IDLE
         };
     }
 
     @Override
     public int getSpriteAmount() {
         return switch (enemyState) {
-            case RUNNING -> 8; // left/right
-            default -> 6;      // Idle and Attack
+            case RUNNING -> 8;
+            case SHUTDOWN -> 7;
+            case DEAD -> 1;
+            default -> 6; // Idle and Attack
         };
     }
 }

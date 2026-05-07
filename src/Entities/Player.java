@@ -580,4 +580,5 @@ public class Player extends Entity{
 
     public int getMaxManaBottles() { return maxManaBottles; }
     public int getManaBottles() { return manaBottles; }
+    public void addMana(int amount) { this.manaBottles = Math.min(maxManaBottles, this.manaBottles + amount); }
 }

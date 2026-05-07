@@ -157,6 +157,7 @@ public class Constants {
         public static final int ATTACK  = 2;
         public static final int HIT     = 3;
         public static final int DEAD    = 4;
+        public static final int SHUTDOWN = 5;
 
         public static final int ANI_SPEED = 25;
 

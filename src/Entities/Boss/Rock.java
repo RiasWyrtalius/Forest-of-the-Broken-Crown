@@ -17,6 +17,8 @@ public class Rock {
     private float padding;
 
     public Rock(float x, float y, float sizeMultiplier) {
+        this.sizeMult = sizeMultiplier;
+
         this.rockSize = (int) (64 * sizeMultiplier * Game.SCALE);
         this.speed = (1.5f + sizeMultiplier) * Game.SCALE;
         this.padding = 12 * sizeMultiplier * Game.SCALE;
@@ -53,11 +55,13 @@ public class Rock {
         int visualY = (int) (hitbox.y - padding - yOffset);
 
         g.drawImage(imgs[aniIndex], visualX, visualY, rockSize, rockSize, null);
-        
-        g.setColor(Color.PINK);
-        g.drawRect((int)(hitbox.x - xOffset), (int)(hitbox.y - yOffset), (int)hitbox.width, (int)hitbox.height);
+
+        //hitbox
+//        g.setColor(Color.PINK);
+//        g.drawRect((int)(hitbox.x - xOffset), (int)(hitbox.y - yOffset), (int)hitbox.width, (int)hitbox.height);
     }
 
     public boolean isActive() { return active; }
     public Rectangle2D.Float getHitbox() { return hitbox; }
+    public float getSizeMult() { return sizeMult;}
 }
