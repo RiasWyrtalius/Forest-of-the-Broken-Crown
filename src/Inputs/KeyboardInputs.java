@@ -36,6 +36,7 @@ public class KeyboardInputs implements KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     GameState.state = GameState.PLAYING;
             }
+            case OPTIONS -> game.getOptionsScreen().keyPressed(e);
         }
     }
 

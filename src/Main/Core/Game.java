@@ -59,6 +59,8 @@ public class Game implements Runnable {
     private UI ui;
     private ObjectManager objectManager;
     private CharacterSelect characterSelect;
+    private int lastFPS = 0;
+    private Font fpsFont = Utils.LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.BOLD, 18f);
 
     public Game() {
         LoadSave.getAllLevels();
@@ -122,6 +124,7 @@ public class Game implements Runnable {
         player.changeHealth(savedLife - player.getMaxLife()); // restore lives
 
         updateBackground();
+        playSongForLevel(levelNum);
         updateLevelOffsets();
         objectManager.loadObjects(cur);
         playing.resetCamera();
@@ -173,6 +176,11 @@ public class Game implements Runnable {
                 deathScreen.draw(g);
             }
         }
+        if (OptionsScreen.showFPS) {
+            g.setColor(Color.YELLOW);
+            g.setFont(fpsFont);
+            g.drawString("FPS: " + lastFPS, 10, 20);
+        }
 
         // it draws a fade overlay on top of everything
         if (fadingOut || fadingIn || fadeAlpha > 0) {
@@ -182,6 +190,7 @@ public class Game implements Runnable {
     }
 
     public void resetGame() {
+        audioPlayer.playSong(AudioPlayer.MENU_1);
         player.resetAll();
         objectManager.resetAllObjects();
         playing.resetCamera();
@@ -249,6 +258,7 @@ public class Game implements Runnable {
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
                 System.out.println("FPS: " + frames + " | UPS " + updates);
+                lastFPS = frames;
                 frames = 0;
                 updates = 0;
             }
@@ -279,6 +289,17 @@ public class Game implements Runnable {
                 fadeAlpha = 0;
                 fadingIn = false;
             }
+        }
+    }
+    public void playSongForLevel(int levelNum) {
+        switch (levelNum) {
+            case 1 -> audioPlayer.playSong(AudioPlayer.WORLD1);
+            case 2 -> audioPlayer.playSong(AudioPlayer.WORLD1_BOSS);
+            case 3 -> audioPlayer.playSong(AudioPlayer.WORLD2);
+            case 4 -> audioPlayer.playSong(AudioPlayer.WORLD2_BOSS);
+            case 5 -> audioPlayer.playSong(AudioPlayer.WORLD3);
+            case 6 -> audioPlayer.playSong(AudioPlayer.WORLD3_BOSS);
+            default -> audioPlayer.playSong(AudioPlayer.MENU_1);
         }
     }
 

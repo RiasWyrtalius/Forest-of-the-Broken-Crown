@@ -1,5 +1,6 @@
 package Main.GameStates;
 
+import Main.GameStates.OptionsScreen;
 import Entities.Boss.EnemyManager;
 import Entities.NPC;
 import Entities.Player;
@@ -149,10 +150,6 @@ public class Playing {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> player.setClimbUp(true);
             case KeyEvent.VK_S -> player.setDown(true);
-            case KeyEvent.VK_A -> player.setLeft(true);
-            case KeyEvent.VK_D -> player.setRight(true);
-            case KeyEvent.VK_SPACE -> player.setJump(true);
-            case KeyEvent.VK_E -> player.getActiveSkill().activate();
             case KeyEvent.VK_ESCAPE -> GameState.state = GameState.PAUSED;
             case KeyEvent.VK_ENTER -> {
                 NPC npc = objectManager.getHoveredNPC();
@@ -168,6 +165,12 @@ public class Playing {
                     }
                 }
             }
+            default -> {
+                if (e.getKeyCode() == OptionsScreen.keyJump)  player.setJump(true);
+                if (e.getKeyCode() == OptionsScreen.keyLeft)  player.setLeft(true);
+                if (e.getKeyCode() == OptionsScreen.keyRight) player.setRight(true);
+                if (e.getKeyCode() == OptionsScreen.keySkill) player.getActiveSkill().activate();
+            }
         }
     }
 
@@ -175,10 +178,12 @@ public class Playing {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> player.setClimbUp(false);
             case KeyEvent.VK_S -> player.setDown(false);
-            case KeyEvent.VK_A -> player.setLeft(false);
-            case KeyEvent.VK_D -> player.setRight(false);
-            case KeyEvent.VK_SPACE -> player.setJump(false);
-            case KeyEvent.VK_E -> player.getActiveSkill().deactivate();
+            default -> {
+                if (e.getKeyCode() == OptionsScreen.keyJump)  player.setJump(false);
+                if (e.getKeyCode() == OptionsScreen.keyLeft)  player.setLeft(false);
+                if (e.getKeyCode() == OptionsScreen.keyRight) player.setRight(false);
+                if (e.getKeyCode() == OptionsScreen.keySkill) player.getActiveSkill().deactivate();
+            }
         }
     }
 

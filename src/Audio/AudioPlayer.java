@@ -7,7 +7,14 @@ import javax.sound.sampled.*;
 
 public class AudioPlayer {
 
-    public static int MENU_1 = 0;
+    public static int MENU_1      = 0;
+    public static int CUTSCENE    = 1;
+    public static int WORLD1      = 2;
+    public static int WORLD1_BOSS = 3;
+    public static int WORLD2      = 4;
+    public static int WORLD2_BOSS = 5;
+    public static int WORLD3      = 6;
+    public static int WORLD3_BOSS = 7;
 
     public static int CLICK = 0;
     public static int HOVER = 1;
@@ -27,7 +34,16 @@ public class AudioPlayer {
     }
 
     private void loadSongs(){
-        String[] names = {"Bonfires of Yesterday"};
+        String[] names = {
+                "Bonfires of Yesterday",  // 0 - main menu
+                "Bonfires of Yesterday",               // 1 - cutscene
+                "Bonfires of Yesterday",                 // 2 - world1 ost
+                "Bonfires of Yesterday",            // 3 - world1_boss ost
+                "Bonfires of Yesterday",                 // 4 - world2 ost
+                "Bonfires of Yesterday",            // 5 - world2_boss ost
+                "Bonfires of Yesterday",                 // 6 - world3 ost
+                "Bonfires of Yesterday"             // 7 - world3_boss ost
+        };
         songs = new Clip[names.length];
         for(int i = 0; i < songs.length; i++)
             songs[i] = getClip(names[i]);
@@ -68,10 +84,13 @@ public class AudioPlayer {
     }
 
     public void playSong(int song){
+        if (song == currentSongId) return; // already playing this track
+
         if(songs[currentSongId].isActive())
             songs[currentSongId].stop();
 
         currentSongId = song;
+        songs[currentSongId].setFramePosition(0);
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
     }
 
@@ -95,13 +114,15 @@ public class AudioPlayer {
         effects[effectID].start();
     }
 
-    //VOLUME CONTROL
+    // volume control
 
     public void setVolume(float volume) {
         this.volume = volume;
         updateSongVolume();
         updateEffectsVolume();
     }
+
+    public float getVolume() { return volume; }
 
     private void updateSongVolume() {
         for (Clip c : songs) {
@@ -133,5 +154,6 @@ public class AudioPlayer {
 
             gainControl.setValue(dB);
         }
+
     }
 }

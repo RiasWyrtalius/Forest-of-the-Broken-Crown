@@ -75,8 +75,8 @@ public class Player extends Entity{
     }
 
     public void loseLife() {
-
-        if (invincible) return;
+            if (invincible) return;
+            if (Main.GameStates.OptionsScreen.godMode) return;
 
         life--;
         invincible = true;
@@ -137,6 +137,7 @@ public class Player extends Entity{
         }
 
         if (invincible) return;
+        if (Main.GameStates.OptionsScreen.godMode) return;
 
         life += value;
         invincible = true;

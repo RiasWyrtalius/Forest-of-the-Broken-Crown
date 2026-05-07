@@ -1,5 +1,6 @@
 package Main.GameStates.Scene;
 
+import Audio.AudioPlayer;
 import Main.Core.Game;
 import Main.GameState;
 import Utils.LoadSave;
@@ -150,6 +151,7 @@ public class CutsceneState {
         this.currentSceneIndex = 0;
 
         resetSceneVariables();
+        game.getAudioPlayer().playSong(AudioPlayer.CUTSCENE);
         fadingIn = true;
     }
 
@@ -211,6 +213,9 @@ public class CutsceneState {
         }
 
         scenes = null;
+        if (nextState == GameState.MENU) {
+            game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
+        }
         GameState.state = nextState;
     }
 
