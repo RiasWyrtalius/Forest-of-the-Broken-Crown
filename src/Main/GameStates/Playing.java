@@ -206,4 +206,5 @@ public class Playing {
     public int getyLvlOffset() { return yLvlOffset; }
     public void setPlayer(Player player) { this.player = player; }
     public EnemyManager getEnemyManager() {return enemyManager;}
+    public ObjectManager getObjectManager()     { return objectManager; }
 }

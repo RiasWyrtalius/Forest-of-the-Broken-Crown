@@ -71,9 +71,20 @@ public class HelpMethods {
     }
 
     public static boolean isEntityOnFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
-        if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
-            if (!IsSolid(hitbox.x + hitbox.width - 1, hitbox.y + hitbox.height + 1, lvlData))
+        if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData)) {
+            if (!IsSolid(hitbox.x + hitbox.width - 1, hitbox.y + hitbox.height + 1, lvlData)) {
+                if (!Game.getInstance().getPlaying().getPlayer().isDown()) {
+                    for (Objects.Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
+                        if (hitbox.x + hitbox.width > p.getHitbox().x && hitbox.x < p.getHitbox().x + p.getHitbox().width) {
+                            if (Math.abs((hitbox.y + hitbox.height) - p.getHitbox().y) < 2) {
+                                return true;
+                            }
+                        }
+                    }
+                }
                 return false;
+            }
+        }
         return true;
     }
 
@@ -106,6 +117,7 @@ public class HelpMethods {
                     lvlData[j][i] = AIR;
                 } else if ( blueValue == VASE_COLOR  ||
                         blueValue == SPIKE_COLOR ||
+                        blueValue == PLATFORM_COLOR ||
                         blueValue == NINO_TQ     ||
                         blueValue == CHAD_TB     ||
                         blueValue == CHARLZ_TS   ||
@@ -175,5 +187,10 @@ public class HelpMethods {
         if (yBotIndex < 0 || yBotIndex >= lvlData.length) return false;
 
         return lvlData[yTopIndex][xIndex] == 132 || lvlData[yBotIndex][xIndex] == 132;
+    }
+
+    public static boolean isTilePassable(float x, float y, int[][] lvlData) {
+        int value = lvlData[(int) (y / Game.TILES_SIZE)][(int) (x / Game.TILES_SIZE)];
+        return value == PLATFORM_COLOR;
     }
 }

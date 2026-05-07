@@ -27,12 +27,11 @@ public class Constants {
 
         public static final int VASE = 0;
         public static final int VASE_COLOR = 130;
-        public static final int SPIKE = 1;
         public static final int SPIKE_COLOR = 131;
-        public static final int LADDER = 2;
         public static final int LADDER_COLOR = 132;
         public static final int CRUMBLING_TILE = 3;
         public static final int CRUMBLING_TILE_COLOR = 150;
+        public static final int PLATFORM_COLOR = 133;
 
         public static final int SPIKE_FLOOR_MID = 0;
         public static final int SPIKE_FLOOR_RIGHT = 1;

@@ -1,7 +1,7 @@
 0.8066667
-true
-true
-true
+false
+false
+false
 32
 65
 68

@@ -8,8 +8,8 @@ import Utils.LoadSave;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static Utils.Constants.EnemyConstants.*;
 import static Utils.Constants.LEFT;
@@ -19,7 +19,7 @@ public class Kaelor extends Boss {
     private LevelHandler lh;
 
     private int survivalTimer = 30000; // 150 seconds * 200 UPS = 30,000 ticks
-    private java.util.concurrent.CopyOnWriteArrayList<Rock> rocks = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Rock> rocks = new CopyOnWriteArrayList<>();
     private int rockCDTick = 0;
     private final int ROCK_CD_MAX = 2 * 200; // 2 seconds
     private Random rng = new Random();

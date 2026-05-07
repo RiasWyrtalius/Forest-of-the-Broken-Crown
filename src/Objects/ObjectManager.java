@@ -27,6 +27,7 @@ public class ObjectManager {
     private BufferedImage[] spikeImgs;
     private CopyOnWriteArrayList<Potion> potions;
     private ArrayList<CrumblingTile> crumblingTiles;
+    private ArrayList<Platform> platforms;
     private Game game;
 
     public ObjectManager(Game game) {
@@ -36,6 +37,7 @@ public class ObjectManager {
         npcs = new ArrayList<>();
         potions = new CopyOnWriteArrayList<>();
         crumblingTiles = new ArrayList<>();
+        platforms = new ArrayList<>();
         loadSpikeImgs();
     }
 
@@ -119,6 +121,7 @@ public class ObjectManager {
         spikes.clear();
         npcs.clear();
         crumblingTiles.clear();
+        platforms.clear();
 
         BufferedImage img = level.getLevelDataImg();
 
@@ -149,6 +152,9 @@ public class ObjectManager {
                     int groundedY = (j * Game.TILES_SIZE) - 32;
 
                     npcs.add(new NPC(centeredX, groundedY, 64, 64, npcID, lines, canSave));
+                } else if (value == PLATFORM_COLOR) {
+                    int spriteIndex = color.getGreen();
+                    platforms.add(new Platform(i * Game.TILES_SIZE, j * Game.TILES_SIZE, PLATFORM_COLOR, spriteIndex));
                 }
             }
         }
@@ -215,6 +221,10 @@ public class ObjectManager {
 
         for (CrumblingTile ct : crumblingTiles) {
             ct.draw(g, xLvlOffset, yLvlOffset);
+        }
+
+        for (Platform p : platforms) {
+            p.draw(g, xLvlOffset, yLvlOffset);
         }
     }
 
@@ -305,4 +315,6 @@ public class ObjectManager {
         }
         return null;
     }
+
+    public ArrayList<Platform> getPlatforms() { return platforms; }
 }

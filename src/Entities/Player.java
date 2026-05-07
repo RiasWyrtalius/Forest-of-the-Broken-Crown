@@ -7,6 +7,7 @@ import static Utils.Constants.ANIMATION_SPEED;
 import static Utils.Constants.PlayerConstants.*;
 import static Utils.HelpMethods.*;
 
+import Objects.Platform;
 import Utils.HelpMethods;
 import Utils.LoadSave;
 import java.awt.*;
@@ -51,6 +52,8 @@ public class Player extends Entity{
     private int maxManaBottles;
     private int manaRegenTick = 0;
     private final int REGEN_THRESHOLD = 5 * 200;
+
+    private int dropThroughTick = 0;
 
     public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
@@ -345,6 +348,19 @@ public class Player extends Entity{
                 updateClimbing();
             } else {
                 if (jump) jump();
+
+                if (!inAir && down) {
+                    for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
+                        if (hitbox.x + hitbox.width > p.getHitbox().x && hitbox.x < p.getHitbox().x + p.getHitbox().width) {
+                            if (Math.abs((hitbox.y + hitbox.height) - p.getHitbox().y) < 5) {
+                                inAir = true;
+                                airSpeed = 0.5f;
+                                dropThroughTick = 15;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             xSpeed += extraHSpeed;
@@ -361,11 +377,31 @@ public class Player extends Entity{
             }
         }
 
+        if (down && jump) {
+            dropThroughTick = 20;
+        }
+
         // VERTICAL (Gravity)
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += characterData.defaultGravity;
+
+                if (dropThroughTick > 0) {
+                    dropThroughTick--;
+                } else {
+                    if (airSpeed > 0 && !down) {
+                        for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
+                            if (hitbox.intersects(p.getHitbox())) {
+                                if (hitbox.y + hitbox.height - airSpeed <= p.getHitbox().y) {
+                                    hitbox.y = p.getHitbox().y - hitbox.height;
+                                    resetInAir();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
                 if (airSpeed > 0) {

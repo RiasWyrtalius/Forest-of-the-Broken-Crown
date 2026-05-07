@@ -21,13 +21,10 @@ public class KeyboardInputs implements KeyListener {
         switch (GameState.state) {
             case MENU -> game.getMainMenu().keyPressed(e);
             case PLAYING -> {
-                //temp save keybind
-                if (e.getKeyCode() == KeyEvent.VK_F5) {
-                    game.getSlotScreen().saveToSlot(1);
-                    System.out.println("DEBUG: Quick Save Successful!");
-                } else {
-                    game.getPlaying().keyPressed(e);
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    game.getPlaying().getPlayer().setDown(true);
                 }
+                game.getPlaying().keyPressed(e);
             }
             case CREDITS -> game.getCredits().keyPressed(e);
             case CUTSCENE -> gamePanel.getGame().getCutsceneState().keyPressed(e);
@@ -43,9 +40,13 @@ public class KeyboardInputs implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (GameState.state) {
-            case MENU -> {}
-            case PLAYING -> game.getPlaying().keyReleased(e);
-            case CHARACTER_SELECT -> {}
+            case MENU, CHARACTER_SELECT -> {}
+            case PLAYING -> {
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    game.getPlaying().getPlayer().setDown(false);
+                }
+                game.getPlaying().keyReleased(e);
+            }
         }
     }
 
