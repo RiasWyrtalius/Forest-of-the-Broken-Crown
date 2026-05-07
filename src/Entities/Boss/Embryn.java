@@ -2,7 +2,6 @@ package Entities.Boss;
 
 import Entities.Player;
 import Main.Core.Game;
-import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -25,52 +24,34 @@ public class Embryn extends Boss {
 
     private boolean defeatMsgSent = false;
 
-    // i added an enraged system as told sa gc nato lel
+    // Enraged system
     private int hitsReceived = 0;
     private final int HITS_TO_ENRAGE = 2;
     private boolean isEnraged = false;
-    private int enrageDuration = 4 * 200; // 4 seconds, change this if u want
+    private int enrageDuration = 4 * 200; // 4 seconds
     private int enrageTimer = 0;
-    private float enrageSpeed = 4.5f * Game.SCALE; // how fast when enraged
+    private float enrageSpeed = 4.5f * Game.SCALE;
 
     public Embryn(float x, float y) {
         super(x, y, EMBRYN_WIDTH, EMBRYN_HEIGHT, EMBRYN);
-        loadAnimations();
+        loadAnimations(); // Loads her specific 13 rows
         initHitbox(bossData.hbWidth, bossData.hbHeight);
         initAttackBox();
         this.attackDistance = 0.8f * Game.TILES_SIZE;
     }
 
-    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
-        super.draw(g, xLvlOffset, yLvlOffset);
-
-        if (attackBox != null) {
-            g.setColor(Color.BLUE);
-            g.drawRect((int) attackBox.x - xLvlOffset,
-                    (int) attackBox.y - yLvlOffset,
-                    (int) attackBox.width,
-                    (int) attackBox.height);
-        }
-    }
-
     protected void loadAnimations() {
         BufferedImage img = Utils.LoadSave.getSpriteAtlas(Utils.LoadSave.EMBRYN_ATLAS);
 
-        int[] spriteAmounts = {
-                bossData.spriteA_IDLE,          // Row 0
-                bossData.spriteA_WALKLEFT,      // Row 1
-                bossData.spriteA_WALKRIGHT,     // Row 2
-                bossData.spriteA_DMGLEFT,       // Row 3
-                bossData.spriteA_DMGRIGHT,      // Row 4
-                bossData.spriteA_DIELEFT,       // Row 5
-                bossData.spriteA_DIERIGHT,      // Row 6
-                bossData.spriteA_DETECTLEFT,    // Row 7
-                bossData.spriteA_DETECTRIGHT,   // Row 8
-                bossData.spriteA_RUNLEFT,       // Row 9
-                bossData.spriteA_RUNRIGHT,      // Row 10
-                bossData.spriteA_ATTACKLEFT,    // Row 11
-                bossData.spriteA_ATTACKRIGHT    // Row 12
-        };
+        // Rows:
+        // 0    =   Idle,
+        // 1    =   WalkL,     2   =    WalkR,
+        // 3    =   DmgL,      4   =    DmgR,
+        // 5    =   DieL,      6   =    DieR,
+        // 7    =   DetectL,   8   =    DetectR,
+        // 9    =   RunL,      10  =    RunR,
+        // 11   =   AtkL,      12  =    AtkR
+        int[] spriteAmounts = { 6, 8, 8, 4, 4, 8, 8, 14, 14, 6, 6, 6, 6 };
 
         animations = new BufferedImage[spriteAmounts.length][];
 
@@ -86,10 +67,66 @@ public class Embryn extends Boss {
         }
     }
 
+    @Override
+    protected int getAnimationRow() {
+        return switch (enemyState) {
+            case RUNNING -> {
+
+                if (isTired) {
+                    yield (walkDir == RIGHT) ? 2 : 1; // walk animation
+                }
+
+                else {
+                    yield (walkDir == RIGHT) ? 9 : 10; // run animation
+                }
+            }
+            case ATTACK -> (walkDir == RIGHT) ? 12 : 11;
+            case DETECT -> (walkDir == RIGHT) ? 7 : 8;
+            case HIT ->    (walkDir == RIGHT) ? 4 : 3;
+            case DEAD ->   (walkDir == RIGHT) ? 6 : 5;
+            default -> 0; // IDLE
+        };
+    }
+
+    @Override
+    public int getSpriteAmount() {
+        return switch (enemyState) {
+            case RUNNING -> {
+                if (isTired) yield 8; // walk
+                else yield 6; //run
+            }
+            case DETECT -> 14;
+            case HIT -> 4;
+            case DEAD -> 8;
+            default -> 6; // IDLE and ATTACK
+        };
+    }
+
     private void initAttackBox() {
         attackBox = new Rectangle2D.Float(x, y,
                 (int) (100 * Game.SCALE),
                 (int) (40 * Game.SCALE));
+    }
+
+    private void updateAttackBox() {
+        if (walkDir == RIGHT)
+            attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * -40f);
+        else
+            attackBox.x = hitbox.x - attackBox.width - (int) (Game.SCALE * -40f);
+
+        attackBox.y = hitbox.y + (Game.SCALE * 40f);
+    }
+
+    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
+        super.draw(g, xLvlOffset, yLvlOffset);
+
+        if (attackBox != null) {
+            g.setColor(Color.BLUE);
+            g.drawRect((int) attackBox.x - xLvlOffset,
+                    (int) attackBox.y - yLvlOffset,
+                    (int) attackBox.width,
+                    (int) attackBox.height);
+        }
     }
 
     @Override
@@ -107,31 +144,15 @@ public class Embryn extends Boss {
         }
     }
 
+    @Override
     public void update(int[][] lvlData, Player player) {
         updateHealthStatus();
         updateBehavior(lvlData, player);
         if (isActive() && enemyState != DEAD) {
             checkBodyCollision(player);
         }
-        int[] liveCounts = new int[7];
 
-        liveCounts[IDLE] = bossData.spriteA_IDLE;
-        liveCounts[RUNNING] = (walkDir == RIGHT) ? bossData.spriteA_RUNRIGHT : bossData.spriteA_RUNLEFT;
-        liveCounts[ATTACK] = (walkDir == RIGHT) ? bossData.spriteA_ATTACKLEFT : bossData.spriteA_ATTACKRIGHT;
-        liveCounts[HIT] = (walkDir == RIGHT) ? bossData.spriteA_DMGRIGHT : bossData.spriteA_DMGLEFT;
-        liveCounts[DEAD] = (walkDir == RIGHT) ? bossData.spriteA_DIERIGHT : bossData.spriteA_DIELEFT;
-        liveCounts[DETECT] = (walkDir == RIGHT) ? bossData.spriteA_DETECTRIGHT : bossData.spriteA_DETECTLEFT;
-
-        updateAnimationTick(liveCounts);
-    }
-
-    private void updateAttackBox() {
-        if (walkDir == RIGHT)
-            attackBox.x = hitbox.x + hitbox.width + (int) (Game.SCALE * -40f);
-        else
-            attackBox.x = hitbox.x - attackBox.width - (int) (Game.SCALE * -40f);
-
-        attackBox.y = hitbox.y + (Game.SCALE * 40f);
+        updateAnimationTick();
     }
 
     private void updateBehavior(int[][] lvlData, Player player) {
@@ -206,11 +227,13 @@ public class Embryn extends Boss {
                 }
 
                 case DETECT -> turnTowardsPlayer(player);
+
                 case ATTACK -> {
                     if (animationIndex >= 3 && animationIndex <= 5) {
                         checkEnemyHit(attackBox, player);
                     }
                 }
+
                 case DEAD -> {
                     if (!defeatMsgSent) {
                         Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED!");

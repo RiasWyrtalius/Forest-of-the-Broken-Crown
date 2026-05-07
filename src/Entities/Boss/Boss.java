@@ -4,8 +4,8 @@ import Entities.Player;
 import Main.Core.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 import static Utils.Constants.EnemyConstants.*;
-import static Utils.Constants.RIGHT;
 
 public abstract class Boss extends Enemy {
     protected BufferedImage[][] animations;
@@ -20,7 +20,7 @@ public abstract class Boss extends Enemy {
 
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         if (active) {
-            int row = getCorrectRow();
+            int row = getAnimationRow();
 
             g.drawImage(animations[row][animationIndex],
                     (int) (hitbox.x - xLvlOffset - (bossData.drawOffX * Game.SCALE)),
@@ -29,24 +29,28 @@ public abstract class Boss extends Enemy {
         }
     }
 
-    private int getCorrectRow() {
-        return switch (enemyState) {
-            case ATTACK -> (walkDir == RIGHT) ? bossData.rowATTACKRIGHT : bossData.rowATTACKLEFT;
-            case RUNNING -> (walkDir == RIGHT) ? bossData.rowRUNLEFT : bossData.rowRUNRIGHT;
-            case DETECT -> (walkDir == RIGHT) ? bossData.rowDETECTRIGHT : bossData.rowDETECTLEFT;
-            case HIT -> (walkDir == RIGHT) ? bossData.rowDMGRIGHT : bossData.rowDMGLEFT;
-            case DEAD -> (walkDir == RIGHT) ? bossData.rowDIERIGHT : bossData.rowDIELEFT;
-            default -> bossData.rowIDLE;
-        };
+    protected void updateAnimationTick() {
+        animationTick++;
+        if (animationTick >= ANI_SPEED) {
+            animationTick = 0;
+            animationIndex++;
+
+            // This safely calls the getSpriteAmount() method from Embryn or Kaelor!
+            if (animationIndex >= getSpriteAmount()) {
+                animationIndex = 0;
+
+                switch (enemyState) {
+                    case DETECT -> newState(RUNNING);
+                    case ATTACK, HIT -> newState(IDLE);
+                    case DEAD -> active = false;
+                }
+            }
+        }
     }
 
+    protected abstract int getAnimationRow();
+    public abstract int getSpriteAmount();
     public abstract void update(int[][] lvlData, Player player);
-
-    @Override
-    protected int getEnemyDamage() { return bossData.damage; }
-
-    @Override
-    protected int getEnemyMaxHealth() {
-        return bossData.getHealth();
-    }
+    @Override protected int getEnemyDamage() { return bossData.damage; }
+    @Override protected int getEnemyMaxHealth() { return bossData.getHealth(); }
 }

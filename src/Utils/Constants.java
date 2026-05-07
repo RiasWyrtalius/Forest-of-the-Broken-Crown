@@ -145,13 +145,13 @@ public class Constants {
         }
     }
 
-    public class EnemyConstants {
+    public static class EnemyConstants {
         public static final int DETECT = 5;
 
         public static final int BOSS_LAYER = 199;
 
         public static final int EMBRYN = 0;
-        //TODO: future bosses
+        public static final int KAELOR = 1;
 
         public static final int IDLE    = 0;
         public static final int RUNNING = 1;
@@ -165,5 +165,10 @@ public class Constants {
         public static final int EMBRYN_HEIGHT_DEFAULT = 128;
         public static final int EMBRYN_WIDTH  = (int) (180 * Game.SCALE);
         public static final int EMBRYN_HEIGHT = (int) (180 * Game.SCALE);
+
+        public static final int KAELOR_WIDTH_DEFAULT = 256;
+        public static final int KAELOR_HEIGHT_DEFAULT = 256;
+        public static final int KAELOR_WIDTH = (int) (250 * Game.SCALE);
+        public static final int KAELOR_HEIGHT = (int) (250 * Game.SCALE);
     }
 }

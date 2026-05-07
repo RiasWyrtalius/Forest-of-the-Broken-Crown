@@ -8,8 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static Utils.Constants.EnemyConstants.BOSS_LAYER;
-import static Utils.Constants.EnemyConstants.EMBRYN;
+import static Utils.Constants.EnemyConstants.*;
 import static Utils.Constants.NPCConstants.*;
 import static Utils.Constants.ObjectConstants.*;
 import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
@@ -32,7 +31,7 @@ public class HelpMethods {
         return false;
     }
 
-    private static boolean IsSolid(float x, float y, int[][] lvlData) {
+    public static boolean IsSolid(float x, float y, int[][] lvlData) {
 
         int maxWidth = lvlData[0].length * Game.TILES_SIZE;
         int maxHeight = lvlData.length * Game.TILES_SIZE;
@@ -153,10 +152,9 @@ public class HelpMethods {
     }
 
     public static int getBossType(int greenValue) {
-        // Green 101 = Embryn
-        //       102 = next boss
         return switch (greenValue) {
             case 101 -> EMBRYN;
+            case 102 -> KAELOR;
             default -> -1;
         };
     }

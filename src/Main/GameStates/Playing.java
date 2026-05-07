@@ -80,12 +80,12 @@ public class Playing {
         float playerCenterY = player.getHitbox().y + (player.getHitbox().height / 2);
 
         // centering on player screen
-        float targetX = playerCenterX - (Game.GAME_WIDTH / 2);
-        float targetY = playerCenterY - (Game.GAME_HEIGHT / 2);
+        float targetX = playerCenterX - ((float) Game.GAME_WIDTH / 2);
+        float targetY = playerCenterY - ((float) Game.GAME_HEIGHT / 2);
 
         // deadzone
-        float currentCamCenterX = actualXOffset + (Game.GAME_WIDTH / 2);
-        float currentCamCenterY = actualYOffset + (Game.GAME_HEIGHT / 2);
+        float currentCamCenterX = actualXOffset + ((float) Game.GAME_WIDTH / 2);
+        float currentCamCenterY = actualYOffset + ((float) Game.GAME_HEIGHT / 2);
 
         if (Math.abs(playerCenterX - currentCamCenterX) < deadZone) {
             targetX = actualXOffset;

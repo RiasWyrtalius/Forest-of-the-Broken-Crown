@@ -87,6 +87,8 @@ public class LoadSave {
 
     //Bosses
     public static final String EMBRYN_ATLAS = "Characters/Enemy/Embryn.png";
+    public static final String KAELOR_ATLAS = "Characters/Enemy/Kaelor.png";
+    public static final String KAELOR_ATK_ATLAS = "Characters/Enemy/RockFalling.png";
 
     //Objects
     public static final String VASE_ATLAS = "Levels/Objects/Vase/vase_object.png";

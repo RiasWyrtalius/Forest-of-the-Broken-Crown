@@ -133,14 +133,13 @@ public abstract class Enemy extends Entity {
         if (animationTick >= ANI_SPEED) {
             animationTick = 0;
             animationIndex++;
+
             if (animationIndex >= spriteAmount[enemyState]) {
                 animationIndex = 0;
 
                 switch (enemyState) {
                     case DETECT -> newState(RUNNING);
-                    case ATTACK, HIT -> {
-                        newState(IDLE);
-                    }
+                    case ATTACK, HIT -> newState(IDLE);
                     case DEAD -> active = false;
                 }
             }
