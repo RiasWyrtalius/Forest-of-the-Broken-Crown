@@ -155,7 +155,8 @@ class CrumblingTile extends GameObject {
     //Draw
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         if (state == State.GONE || sprites == null) return;
-
+        if (drawRow < 0 || drawRow >= sprites.length) return;
+        if (drawCol < 0 || drawCol >= sprites[drawRow].length) return;
         g.drawImage(
                 sprites[drawRow][drawCol],
                 (int) (hitbox.x - xLvlOffset) + shakeOffset,

@@ -104,7 +104,6 @@ public class Game implements Runnable {
 
         updateLevelOffsets();
         playing.setPlayer(player);
-        objectManager.loadObjects(currentLevel);
         playing.resetCamera();
 
         startFadeTo(GameState.PLAYING);
