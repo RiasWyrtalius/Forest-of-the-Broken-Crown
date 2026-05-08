@@ -49,6 +49,9 @@ public class LoadSave {
     //Pause
     public static final String PauseBg = "Pause/PauseBg.png";
 
+    //Save
+    public static final String SaveBg = "SaveMenu/SaveMenu.png";
+
     //NPC
     public static final String Nino_Atlas = "Characters/NPC/TheQueerSS.png";
     public static final String Chad_Atlas = "Characters/NPC/TheBraveSS.png";

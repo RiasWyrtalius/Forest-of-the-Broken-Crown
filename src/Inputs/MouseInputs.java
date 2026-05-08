@@ -110,6 +110,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case PAUSED -> gamePanel.getGame().getPauseScreen().mouseMoved(adjustedX, adjustedY);
             case DEATH -> gamePanel.getGame().getDeathScreen().mouseMoved(adjustedX, adjustedY);
             case OPTIONS -> gamePanel.getGame().getOptionsScreen().mouseMoved(adjustedEvent);
+            case SLOTS -> gamePanel.getGame().getSlotScreen().mouseMoved(e);
             default -> {}
         }
     }

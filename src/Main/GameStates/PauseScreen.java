@@ -10,6 +10,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import static java.awt.Color.WHITE;
+import static java.awt.Color.YELLOW;
+
 public class PauseScreen {
 
     private Font customFont;
@@ -50,9 +53,9 @@ public class PauseScreen {
         boolean isLoadHovered     = (hoveredBtn == btnLoad);
         boolean isMenuHovered     = (hoveredBtn == btnMainMenu);
 
-        UI.drawHoverableButton(g, btnContinue.x + 60, btnContinue.y + 38, "Continue", isContinueHovered, customFont);
-        UI.drawHoverableButton(g, btnLoad.x + 50,     btnLoad.y + 38,     "Load Game",  isLoadHovered, customFont);
-        UI.drawHoverableButton(g, btnMainMenu.x + 50, btnMainMenu.y + 38, "Main Menu",  isMenuHovered, customFont);
+        UI.drawHoverableButton(g, btnContinue.x + 60, btnContinue.y + 38, "Continue", isContinueHovered, customFont, WHITE);
+        UI.drawHoverableButton(g, btnLoad.x + 50,     btnLoad.y + 38,     "Load Game",  isLoadHovered, customFont, WHITE);
+        UI.drawHoverableButton(g, btnMainMenu.x + 50, btnMainMenu.y + 38, "Main Menu",  isMenuHovered, customFont, WHITE);
     }
 
     public void mouseMoved(int x, int y) {

@@ -171,4 +171,19 @@ public class Constants {
         public static final int KAELOR_WIDTH = (int) (250 * Game.SCALE);
         public static final int KAELOR_HEIGHT = (int) (250 * Game.SCALE);
     }
+
+    public static class SlotUI {
+        public static final int OPENING = 0;
+        public static final int OPENED = 1;
+        public static final int CLOSING = 2;
+
+        public static int GetSpriteAmount(int state) {
+            return switch (state) {
+                case OPENING -> 6;
+                case OPENED -> 1;
+                case CLOSING -> 8;
+                default -> 0;
+            };
+        }
+    }
 }

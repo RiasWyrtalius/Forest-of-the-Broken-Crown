@@ -56,8 +56,8 @@ public class DeathScreen {
 
         boolean isRestartHovered = (hoveredBtn == btnRestart);
         boolean isMenuHovered = (hoveredBtn == btnMainMenu);
-        UI.drawHoverableButton(g, btnRestart.x + 35, btnRestart.y + 60, "Restart Game", isRestartHovered, customFont);
-        UI.drawHoverableButton(g, btnMainMenu.x + 10, btnMainMenu.y + 60, "Main Menu", isMenuHovered, customFont);
+        UI.drawHoverableButton(g, btnRestart.x + 35, btnRestart.y + 60, "Restart Game", isRestartHovered, customFont, Color.WHITE);
+        UI.drawHoverableButton(g, btnMainMenu.x + 10, btnMainMenu.y + 60, "Main Menu", isMenuHovered, customFont, Color.WHITE);
     }
 
     public void update() {}

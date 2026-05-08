@@ -3,12 +3,16 @@ package Main.GameStates;
 import Levels.Level;
 import Main.Core.Game;
 import Main.GameState;
+import Main.UI.UI;
 import Utils.LoadSave;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.swing.JOptionPane;
+
+import static Utils.Constants.SlotUI.*;
 
 public class SlotScreen {
     private Font customFont;
@@ -16,12 +20,21 @@ public class SlotScreen {
     private String mode = "SAVE";
     private Font saveMsgFont;
 
+    //animation
+    private BufferedImage[][] animations;
+    private int aniTick, aniIndex, aniSpeed = 12;
+    private int currentState = OPENING;
+    private boolean active = false;
+    private int mouseX, mouseY;
+
+    // Frame Dimensions
+    private final int FRAME_WIDTH = 240;
+    private final int FRAME_HEIGHT = 135;
+
     private Rectangle slot1 = new Rectangle(424, 150, 400, 70);
     private Rectangle slot2 = new Rectangle(424, 260, 400, 70);
     private Rectangle slot3 = new Rectangle(424, 370, 400, 70);
     private Rectangle btnBack = new Rectangle(424, 480, 400, 50);
-
-
     private Rectangle deleteBtn1 = new Rectangle(840, 165, 80, 40);
     private Rectangle deleteBtn2 = new Rectangle(840, 275, 80, 40);
     private Rectangle deleteBtn3 = new Rectangle(840, 385, 80, 40);
@@ -30,43 +43,88 @@ public class SlotScreen {
         this.game = game;
         customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(48f);
         saveMsgFont = customFont.deriveFont(32f);
+        loadAnimations();
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    private void loadAnimations() {
+        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.SaveBg);
+        animations = new BufferedImage[3][8];
+
+        for (int j = 0; j < animations.length; j++) {
+            for (int i = 0; i < GetSpriteAmount(j); i++) {
+                animations[j][i] = img.getSubimage(i * FRAME_WIDTH, j * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT);
+            }
+        }
+    }
+
+    public void update() {
+        if (active) {
+            updateAnimationTick();
+        }
+    }
+
+    private void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+
+            if (aniIndex >= GetSpriteAmount(currentState)) {
+                if (currentState == OPENING) {
+                    currentState = OPENED; // opened state
+                    aniIndex = 0;
+                } else if (currentState == CLOSING) {
+                    active = false; // Disable drawing
+                    GameState.state = GameState.PLAYING; // Return to game
+                } else {
+                    aniIndex = 0; // Stay on the 1 sprite in Row 1
+                }
+            }
+        }
     }
 
     public void draw(Graphics g) {
-        g.setColor(new Color(0, 0, 0, 180));
+        if (!active || animations == null) return;
+
+        g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
+        g.drawImage(animations[currentState][aniIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        if (currentState == OPENED) {
+            drawUIElements(g);
+        }
+    }
+
+    private void drawUIElements(Graphics g) {
+        //TITLE
         g.setColor(Color.WHITE);
         g.setFont(customFont);
         String title = mode.equals("SAVE") ? "Select a Save Slot" : "Select a Load Slot";
         FontMetrics fm = g.getFontMetrics();
-        g.drawString(title, (Game.GAME_WIDTH / 2) - (fm.stringWidth(title) / 2), 100);
+        g.drawString(title, (Game.GAME_WIDTH / 2) - (fm.stringWidth(title) / 2), 80);
+
         drawSlot(g, slot1, 1);
         drawSlot(g, slot2, 2);
         drawSlot(g, slot3, 3);
 
+        // DELETE
         if (mode.equals("LOAD")) {
-            drawDeleteButton(g, deleteBtn1, 1);
-            drawDeleteButton(g, deleteBtn2, 2);
-            drawDeleteButton(g, deleteBtn3, 3);
+            UI.drawHoverableButton(g, deleteBtn1.x, deleteBtn1.y + 25, "Delete", deleteBtn1.contains(mouseX, mouseY), customFont.deriveFont(30f), Color.RED);
+            UI.drawHoverableButton(g, deleteBtn2.x, deleteBtn2.y + 25, "Delete", deleteBtn2.contains(mouseX, mouseY), customFont.deriveFont(30f), Color.RED);
+            UI.drawHoverableButton(g, deleteBtn3.x, deleteBtn3.y + 25, "Delete", deleteBtn3.contains(mouseX, mouseY), customFont.deriveFont(30f), Color.RED);
         }
 
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(btnBack.x, btnBack.y, btnBack.width, btnBack.height);
-        g.setColor(Color.WHITE);
-        g.drawRect(btnBack.x, btnBack.y, btnBack.width, btnBack.height);
-        g.setFont(customFont);
-        g.drawString("Back", btnBack.x + (btnBack.width / 2) - 40, btnBack.y + 35);
+        Color customColor = new Color(60, 52, 16);
+        UI.drawHoverableButton(g, btnBack.x + (btnBack.width / 2) - 40, btnBack.y + 35,
+                "Back", btnBack.contains(mouseX, mouseY), customFont, customColor);
     }
 
     private void drawSlot(Graphics g, Rectangle slot, int slotNum) {
         File file = new File("save_slot" + slotNum + ".txt");
 
-        g.setColor(Color.DARK_GRAY);
+        Color customColor = new Color(46, 34, 47);
+        g.setColor(customColor);
         g.fillRect(slot.x, slot.y, slot.width, slot.height);
         g.setColor(Color.WHITE);
         g.drawRect(slot.x, slot.y, slot.width, slot.height);
@@ -95,41 +153,20 @@ public class SlotScreen {
         }
     }
 
-
-    private void drawDeleteButton(Graphics g, Rectangle btn, int slotNum) {
-        g.setColor(new Color(180, 0, 0));
-        g.fillRect(btn.x, btn.y, btn.width, btn.height);
-        g.setColor(Color.WHITE);
-        g.drawRect(btn.x, btn.y, btn.width, btn.height);
-
-        Font sFont = customFont.deriveFont(20f);
-        g.setFont(sFont);
-        g.drawString("Delete", btn.x + 12, btn.y + 26);
-    }
-
     public void mouseClicked(MouseEvent e) {
-        if (mode.equals("LOAD")) {
-            if (deleteBtn1.contains(e.getPoint())) {
-                deleteSlot(1);
-                return;
-            }
-            if (deleteBtn2.contains(e.getPoint())) {
-                deleteSlot(2);
-                return;
-            }
-            if (deleteBtn3.contains(e.getPoint())) {
-                deleteSlot(3);
-                return;
-            }
-        }
+        if (currentState != OPENED) return; // ignore clicks while open
 
+        if (mode.equals("LOAD")) {
+            if (deleteBtn1.contains(e.getPoint())) { deleteSlot(1); return; }
+            if (deleteBtn2.contains(e.getPoint())) { deleteSlot(2); return; }
+            if (deleteBtn3.contains(e.getPoint())) { deleteSlot(3); return; }
+        }
 
         if (slot1.contains(e.getPoint()))       handleSlot(1);
         else if (slot2.contains(e.getPoint()))  handleSlot(2);
         else if (slot3.contains(e.getPoint()))  handleSlot(3);
-
         else if (btnBack.contains(e.getPoint())) {
-            GameState.state = GameState.PLAYING;
+            closeMenu(); //closing animation
         }
     }
 
@@ -198,5 +235,26 @@ public class SlotScreen {
                 System.out.println("Failed to delete Slot " + slotNum);
             }
         }
+    }
+
+    //MOUSE
+    public void mouseMoved(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+    }
+
+    //HELPER
+    public void setMode(String mode) {
+        this.mode = mode;
+        this.active = true;
+        this.currentState = OPENING;
+        this.aniIndex = 0;
+        this.aniTick = 0;
+    }
+
+    private void closeMenu() {
+        this.currentState = CLOSING;
+        this.aniIndex = 0;
+        this.aniTick = 0;
     }
 }

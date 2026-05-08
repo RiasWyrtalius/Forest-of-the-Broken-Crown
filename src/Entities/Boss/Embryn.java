@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import static Utils.Constants.EnemyConstants.*;
-import static Utils.Constants.LEFT;
 import static Utils.Constants.RIGHT;
 
 public class Embryn extends Boss {

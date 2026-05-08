@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 import static Audio.AudioPlayer.CLICK;
+import static java.awt.Color.WHITE;
+import static java.awt.Color.YELLOW;
 
 public class OptionsScreen {
     private Game game;
@@ -110,7 +112,7 @@ public class OptionsScreen {
             g.setFont(customFont);
         }
 
-        UI.drawHoverableButton(g, backBtn.x, backBtn.y + 25, "BACK", isBackHovered, customFont);
+        UI.drawHoverableButton(g, backBtn.x, backBtn.y + 25, "BACK", isBackHovered, customFont, WHITE);
     }
 
     private void drawToggle(Graphics g, Rectangle btn, String label, boolean on) {

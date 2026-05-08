@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import static Main.GameState.CUTSCENE;
 import static Main.GameState.PLAYING;
 import static Utils.LoadSave.CSelection_Atlas;
+import static java.awt.Color.WHITE;
 
 public class CharacterSelect {
 
@@ -148,9 +149,9 @@ public class CharacterSelect {
         boolean isRightHovered = (hoveredBtn == rightArrow);
         boolean isSelectHovered = (hoveredBtn == selectBtn);
 
-        UI.drawHoverableButton(g, leftArrow.x + 20, leftArrow.y + 45, "<", isLeftHovered, customFont);
-        UI.drawHoverableButton(g, rightArrow.x + 20, rightArrow.y + 45, ">", isRightHovered, customFont);
-        UI.drawHoverableButton(g, selectBtn.x + 50, selectBtn.y + 40, "SELECT", isSelectHovered, customFont);
+        UI.drawHoverableButton(g, leftArrow.x + 20, leftArrow.y + 45, "<", isLeftHovered, customFont, WHITE);
+        UI.drawHoverableButton(g, rightArrow.x + 20, rightArrow.y + 45, ">", isRightHovered, customFont, WHITE);
+        UI.drawHoverableButton(g, selectBtn.x + 50, selectBtn.y + 40, "SELECT", isSelectHovered, customFont, WHITE);
     }
 
     private void startTransition(int direction) {

@@ -251,15 +251,16 @@ public class UI {
         }
     }
 
-    public static void drawHoverableButton(Graphics g, int x, int y, String label, boolean isHovered, Font font) {
+    public static void drawHoverableButton(Graphics g, int x, int y, String label, boolean isHovered, Font font, Color mainColor) {
         g.setFont(font);
 
         if (isHovered) {
             g.setColor(new Color(255, 255, 255, 50));
             g.drawString(label, x + 2, y + 2);
+
             g.setColor(Color.YELLOW);
         } else {
-            g.setColor(Color.WHITE);
+            g.setColor(mainColor);
         }
 
         g.drawString(label, x, y);

@@ -144,7 +144,8 @@ public class Game implements Runnable {
             case CUTSCENE           -> cutsceneState.update();
             case CREDITS            -> credits.update();
             case OPTIONS            -> optionsScreen.update();
-            case PAUSED, SLOTS      -> {} //insert any update() if theres any.
+            case SLOTS              -> slotScreen.update();
+            case PAUSED             -> {}
         }
 
         handleFadeLogic();
