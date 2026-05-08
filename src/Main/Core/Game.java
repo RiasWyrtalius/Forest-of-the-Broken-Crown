@@ -14,6 +14,7 @@ import Main.UI.UI;
 import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 
@@ -34,6 +35,7 @@ public class Game implements Runnable {
     private LevelHandler levelHandler;
     private SlotScreen slotScreen;
     private PauseScreen pauseScreen;
+    private WorldSelect worldSelect;
     private DeathScreen deathScreen;
     private AudioPlayer audioPlayer;
     private CutsceneState cutsceneState;
@@ -67,6 +69,7 @@ public class Game implements Runnable {
         initClasses();
         levelHandler.updateBackground();
         gamePanel = new GamePanel(this);
+        worldSelect = new WorldSelect(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
@@ -136,6 +139,7 @@ public class Game implements Runnable {
 
     public void update() {
         switch (GameState.state) {
+            case WORLD_SELECT       -> worldSelect.update();
             case MENU               -> mainMenu.update();
             case PLAYING            -> playing.update();
             case CHARACTER_SELECT   -> characterSelect.update();
@@ -157,6 +161,7 @@ public class Game implements Runnable {
 
     public void render(Graphics g) {
         switch (GameState.state) {
+            case WORLD_SELECT -> worldSelect.draw(g);
             case MENU               -> mainMenu.draw(g);
             case PLAYING            -> playing.draw(g);
             case CHARACTER_SELECT   -> characterSelect.draw(g);
@@ -326,4 +331,5 @@ public class Game implements Runnable {
     public CutsceneState getCutsceneState()     { return cutsceneState; }
     public Credits getCredits()                 { return credits; }
     public OptionsScreen getOptionsScreen()     { return optionsScreen; }
-}
+    public WorldSelect getWorldSelect() { return worldSelect; }
+    }

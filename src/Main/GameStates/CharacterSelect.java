@@ -11,9 +11,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-
-import static Main.GameState.CUTSCENE;
-import static Main.GameState.PLAYING;
 import static Utils.LoadSave.CSelection_Atlas;
 import static java.awt.Color.WHITE;
 
@@ -179,17 +176,15 @@ public class CharacterSelect {
             startTransition(1);
         } else if (selectBtn.contains(e.getPoint())) {
             game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
-            game.initPlayerCharacter(characters[currentIndex], 1);
-            game.cancelFade();
-            String cutsceneKey = "";
-            switch (characters[currentIndex]) {
-                case EMBJORN -> cutsceneKey = "EMBJORN";
-                case KAELTHORN -> cutsceneKey = "KAELTHORN";
-                case SYLVARA -> cutsceneKey = "SYLVARA";
-            }
-
-            game.getCutsceneState().startCutscene(cutsceneKey, PLAYING);
-            GameState.state = CUTSCENE;
+            String charKey = switch (characters[currentIndex]) {
+                case EMBJORN -> "EMBJORN";
+                case KAELTHORN -> "KAELTHORN";
+                case SYLVARA -> "SYLVARA";
+            };
+            game.getWorldSelect().setSelectedCharacter(characters[currentIndex]);
+            game.getWorldSelect().setCharacterKey(charKey);
+            game.getWorldSelect().onEnter();
+            GameState.state = GameState.WORLD_SELECT;
         }
     }
 
@@ -223,16 +218,15 @@ public class CharacterSelect {
                 break;
             case KeyEvent.VK_ENTER, KeyEvent.VK_SPACE:
                 game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
-                game.initPlayerCharacter(characters[currentIndex], 1);
-                game.cancelFade();
-                String key = "";
-                switch (characters[currentIndex]) {
-                    case EMBJORN -> key = "EMBJORN";
-                    case KAELTHORN -> key = "KAELTHORN";
-                    case SYLVARA -> key = "SYLVARA";
-                }
-                game.getCutsceneState().startCutscene(key, PLAYING);
-                GameState.state = CUTSCENE;
+                String charKey = switch (characters[currentIndex]) {
+                    case EMBJORN -> "EMBJORN";
+                    case KAELTHORN -> "KAELTHORN";
+                    case SYLVARA -> "SYLVARA";
+                };
+                game.getWorldSelect().setSelectedCharacter(characters[currentIndex]);
+                game.getWorldSelect().setCharacterKey(charKey);
+                game.getWorldSelect().onEnter();
+                GameState.state = GameState.WORLD_SELECT;
                 break;
         }
     }

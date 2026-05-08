@@ -9,7 +9,8 @@ public enum GameState {
     CHARACTER_SELECT,
     CUTSCENE,
     CREDITS,
-    OPTIONS;
+    OPTIONS,
+    WORLD_SELECT;
 
 
     // The current active state

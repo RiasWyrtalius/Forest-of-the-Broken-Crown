@@ -27,6 +27,9 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         MouseEvent adjustedEvent = getMouseEvent(e);
 
         switch (GameState.state) {
+            case WORLD_SELECT:
+                gamePanel.getGame().getWorldSelect().mouseClicked(adjustedEvent);
+                break;
             case MENU:
                 gamePanel.getGame().getMainMenu().mouseClicked(adjustedEvent);
                 break;
@@ -58,10 +61,11 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         MouseEvent adjustedEvent = getMouseEvent(e);
 
         long now = System.currentTimeMillis();
-        if (now - lastClickTime < CLICK_COOLDOWN) return;
+        if (now - lastClickTime < CLICK_COOLDOWN && GameState.state != GameState.WORLD_SELECT) return;
         lastClickTime = now;
 
         switch (GameState.state) {
+            case WORLD_SELECT -> gamePanel.getGame().getWorldSelect().mouseClicked(adjustedEvent);
             case MENU -> gamePanel.getGame().getMainMenu().mouseClicked(adjustedEvent);
             case CHARACTER_SELECT -> gamePanel.getGame().getCharacterSelect().mouseClicked(adjustedEvent);
             case SLOTS -> gamePanel.getGame().getSlotScreen().mouseClicked(adjustedEvent);
@@ -110,6 +114,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case PAUSED -> gamePanel.getGame().getPauseScreen().mouseMoved(adjustedX, adjustedY);
             case DEATH -> gamePanel.getGame().getDeathScreen().mouseMoved(adjustedX, adjustedY);
             case OPTIONS -> gamePanel.getGame().getOptionsScreen().mouseMoved(adjustedEvent);
+            case WORLD_SELECT -> gamePanel.getGame().getWorldSelect().mouseMoved(adjustedEvent);
             case SLOTS -> gamePanel.getGame().getSlotScreen().mouseMoved(e);
             default -> {}
         }

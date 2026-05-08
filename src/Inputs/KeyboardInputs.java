@@ -26,6 +26,10 @@ public class KeyboardInputs implements KeyListener {
                 }
                 game.getPlaying().keyPressed(e);
             }
+            case WORLD_SELECT -> {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    GameState.state = GameState.CHARACTER_SELECT;
+            }
             case CREDITS -> game.getCredits().keyPressed(e);
             case CUTSCENE -> gamePanel.getGame().getCutsceneState().keyPressed(e);
             case CHARACTER_SELECT -> game.getCharacterSelect().keyPressed(e);

@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 
 
 import Audio.AudioPlayer;
@@ -199,31 +200,31 @@ public class ObjectManager {
     }
 
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
-        for (Vase v : vases) {
+        for (Vase v : new ArrayList<>(vases)) {
             if (v.isActive()) {
                 v.draw(g, xLvlOffset, yLvlOffset);
             }
         }
 
-        for (Spike s : spikes) {
+        for (Spike s : new ArrayList<>(spikes)) {
             s.draw(g, xLvlOffset, yLvlOffset);
         }
 
-        for (NPC npc : npcs) {
+        for (NPC npc : new ArrayList<>(npcs)) {
             npc.draw(g, xLvlOffset, yLvlOffset);
         }
 
-        for (Potion p : potions) {
+        for (Potion p : new ArrayList<>(potions)) {
             if (p.isActive()) {
                 p.draw(g, xLvlOffset, yLvlOffset);
             }
         }
 
-        for (CrumblingTile ct : crumblingTiles) {
+        for (CrumblingTile ct : new ArrayList<>(crumblingTiles)) {
             ct.draw(g, xLvlOffset, yLvlOffset);
         }
 
-        for (Platform p : platforms) {
+        for (Platform p : new ArrayList<>(platforms)) {
             p.draw(g, xLvlOffset, yLvlOffset);
         }
     }
@@ -253,7 +254,7 @@ public class ObjectManager {
     }
 
     public void checkSpikesTouched(Player p) {
-        for (Spike s : spikes) {
+        for (Spike s : new ArrayList<>(spikes)) {
             if (s.getHitbox().intersects(p.getHitbox())) {
                 switch (s.getSpriteIndex()) {
                     case SPIKE_FLOOR_MID, SPIKE_FLOOR_LEFT, SPIKE_FLOOR_RIGHT, SPIKE_LEFT, SPIKE_RIGHT -> {

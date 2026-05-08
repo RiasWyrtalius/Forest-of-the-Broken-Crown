@@ -13,7 +13,7 @@ public class SteadyStep implements Skill {
     private Player player;
     private boolean charging = false;
     private float chargeAmount = 0f;
-    private final float MAX_CHARGE = 3f; // Cap so he doesn't go to the skies
+    private final float MAX_CHARGE = 2.5f; // Cap so he doesn't go to the skies
     private final float CHARGE_SPEED = 0.05f;
     private final int MANA_COST = 1;
 
