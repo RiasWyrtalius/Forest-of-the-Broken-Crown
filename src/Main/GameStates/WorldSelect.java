@@ -21,10 +21,10 @@ public class WorldSelect {
     private long entryTime = 0;
 
     // 3 world buttons, centered on screen
-    private Rectangle world1Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 375, 160, 50);
-    private Rectangle world2Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 455, 160, 50);
-    private Rectangle world3Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 535, 160, 50);
-    private Rectangle backBtn   = new Rectangle(Game.GAME_WIDTH / 2 - 50, 625, 120, 50);
+    private Rectangle world1Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 225, 160, 50);
+    private Rectangle world2Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 305, 160, 50);
+    private Rectangle world3Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 375, 160, 50);
+    private Rectangle backBtn   = new Rectangle(Game.GAME_WIDTH / 2 - 50, 525, 120, 50);
 
     private Rectangle hoveredBtn = null;
     private Rectangle lastHovered = null;
@@ -50,8 +50,7 @@ public class WorldSelect {
     public void update() {}
 
     public void draw(Graphics g) {
-        // reuse the main menu background
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(0, 0, 0));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setFont(customFont);
@@ -60,7 +59,7 @@ public class WorldSelect {
         // Title
         String title = "Select a World";
         int titleW = g.getFontMetrics().stringWidth(title);
-        g.drawString(title, (Game.GAME_WIDTH / 2) - (titleW / 2), 280);
+        g.drawString(title, (Game.GAME_WIDTH / 2) - (titleW / 2), 150);
 
         // Buttons
         UI.drawHoverableButton(g, world1Btn.x, world1Btn.y + 35, "World 1", hoveredBtn == world1Btn, customFont, WHITE);
