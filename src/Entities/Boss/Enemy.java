@@ -128,24 +128,6 @@ public abstract class Enemy extends Entity {
         }
     }
 
-    protected void updateAnimationTick(int[] spriteAmount) {
-        animationTick++;
-        if (animationTick >= ANI_SPEED) {
-            animationTick = 0;
-            animationIndex++;
-
-            if (animationIndex >= spriteAmount[enemyState]) {
-                animationIndex = 0;
-
-                switch (enemyState) {
-                    case DETECT -> newState(RUNNING);
-                    case ATTACK, HIT -> newState(IDLE);
-                    case DEAD -> active = false;
-                }
-            }
-        }
-    }
-
     protected void initHitbox(float width, float height) {
         float groundedY = y - (int)(height * Game.SCALE) + Game.TILES_SIZE;
 

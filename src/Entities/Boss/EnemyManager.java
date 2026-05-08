@@ -64,7 +64,7 @@ public class EnemyManager {
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Boss b : bosses) {
             b.draw(g, xLvlOffset, yLvlOffset);
-            b.drawHitbox(g, xLvlOffset, yLvlOffset);
+            //b.drawHitbox(g, xLvlOffset, yLvlOffset);
         }
     }
 

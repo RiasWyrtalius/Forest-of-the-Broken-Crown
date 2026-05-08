@@ -1,10 +1,13 @@
 package Entities.Skills.Kaelthorn;
 
+import Audio.AudioPlayer;
 import Entities.Skills.Skill;
 
 import java.awt.*;
 
 import Entities.Player;
+import Main.Core.Game;
+import Main.GameState;
 
 public class SteadyStep implements Skill {
     private Player player;
@@ -25,6 +28,12 @@ public class SteadyStep implements Skill {
 
     @Override
     public void update() {
+        if (GameState.state != GameState.PLAYING) {
+            charging = false;
+            chargeAmount = 0;
+            return;
+        }
+
         if (charging && player.getManaBottles() >= MANA_COST) {
             if (chargeAmount < MAX_CHARGE) {
                 chargeAmount += CHARGE_SPEED;
@@ -34,6 +43,7 @@ public class SteadyStep implements Skill {
 
     @Override
     public void activate() {
+        if (GameState.state != GameState.PLAYING) return;
         if (player.getManaBottles() >= MANA_COST) {
             charging = true;
         }
@@ -42,6 +52,7 @@ public class SteadyStep implements Skill {
     @Override
     public void deactivate() {
         if (charging) {
+            Game.getInstance().getAudioPlayer().playEffect(AudioPlayer.KAEL_SKILL);
             float totalJumpForce = player.getJumpSpeed() - chargeAmount;
             player.setAirSpeed(totalJumpForce);
             player.startAirborne();

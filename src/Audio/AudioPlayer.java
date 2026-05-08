@@ -16,11 +16,21 @@ public class AudioPlayer {
     public static int WORLD3      = 6;
     public static int WORLD3_BOSS = 7;
 
+
+
     public static int CLICK = 0;
     public static int HOVER = 1;
 
     public static int CONSUME_POTION = 2;
     public static int VASE_BREAK = 3;
+
+    public static int KAEL_HURT = 4;
+    public static int EMB_HURT = 5;
+    public static int SYL_HURT = 6;
+
+    public static int KAEL_SKILL = 7;
+    public static int EMB_SKILL = 8;
+    public static int SYL_SKILL = 9;
 
     private Clip[] songs, effects;
     private int currentSongId;
@@ -47,6 +57,17 @@ public class AudioPlayer {
         songs = new Clip[names.length];
         for(int i = 0; i < songs.length; i++)
             songs[i] = getClip(names[i]);
+    }
+
+    private void loadEffects() {
+        String[] effectNames = {"button_click", "button_hover", "consume_potion", "vase_break",
+                                "kaelthorn_hurt", "embjorn_hurt", "sylvara_hurt",
+                                "kaelthorn_jump", "embjorn_dash", "sylvara_doublejump"};
+        effects = new Clip[effectNames.length];
+
+        for(int i = 0; i < effects.length; i++) {
+            effects[i] = getClip(effectNames[i]);
+        }
     }
 
     private Clip getClip(String name) {
@@ -92,15 +113,6 @@ public class AudioPlayer {
         currentSongId = song;
         songs[currentSongId].setFramePosition(0);
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
-    }
-
-    private void loadEffects() {
-        String[] effectNames = {"button_click", "button_hover", "consume_potion", "vase_break"};
-        effects = new Clip[effectNames.length];
-
-        for(int i = 0; i < effects.length; i++) {
-            effects[i] = getClip(effectNames[i]);
-        }
     }
 
     public void playEffect(int effectID) {

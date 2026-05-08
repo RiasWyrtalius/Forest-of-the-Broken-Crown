@@ -1,7 +1,10 @@
 package Entities.Skills.Sylvara;
 
+import Audio.AudioPlayer;
 import Entities.Player;
 import Entities.Skills.Skill;
+import Main.Core.Game;
+import Main.GameState;
 
 import java.awt.*;
 
@@ -23,6 +26,7 @@ public class ZephyrBound implements Skill {
 
     @Override
     public void update() {
+        if (GameState.state != GameState.PLAYING) return;
         if (!player.isInAir()) {
             canDoubleJump = true;
         }
@@ -30,7 +34,9 @@ public class ZephyrBound implements Skill {
 
     @Override
     public void activate() {
+        if (GameState.state != GameState.PLAYING) return;
         if (player.isInAir() && canDoubleJump && player.getManaBottles() >= MANA_COST) {
+            Game.getInstance().getAudioPlayer().playEffect(AudioPlayer.SYL_SKILL);
             player.setAirSpeed(player.getJumpSpeed() * 0.8f);
             player.gainMana(-MANA_COST);
             player.setPlayerAction(DOUBLEJUMP);

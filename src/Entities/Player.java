@@ -131,6 +131,7 @@ public class Player extends Entity{
     }
 
     public void changeHealth(int value) {
+        if (GameState.state != GameState.PLAYING) return;
 
         //gain hp
         if (value > 0) {
@@ -141,6 +142,7 @@ public class Player extends Entity{
 
         if (invincible) return;
         if (Main.GameStates.OptionsScreen.godMode) return;
+        Game.getInstance().getAudioPlayer().playEffect(characterData.getHurtSoundID());
 
         life += value;
         invincible = true;
@@ -149,6 +151,11 @@ public class Player extends Entity{
         if (life <= 0) {
             GameState.state = GameState.DEATH;
         }
+    }
+
+    public void givePostCutsceneSafety() {
+        this.invincible = true;
+        this.invincibleCounter = 120;
     }
 
     public void gainMana(int value) {

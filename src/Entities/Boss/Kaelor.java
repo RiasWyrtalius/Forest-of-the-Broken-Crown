@@ -20,7 +20,7 @@ public class Kaelor extends Boss {
     private LevelHandler lh;
     private Font customFont;
 
-    private int survivalTick = 15 * 200; // 150 seconds * 200 UPS = 30,000 ticks
+    private int survivalTick = 150 * 200; // 150 seconds * 200 UPS = 30,000 ticks
     private boolean survivalEnded = false;
     private boolean timerStarted = false;
     private int antiCheeseTick = 0;
@@ -237,10 +237,11 @@ public class Kaelor extends Boss {
             r.draw(g, xLvlOffset, yLvlOffset);
         }
 
-        if (attackBox != null) {
-            g.setColor(Color.BLUE);
-            g.drawRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y - yLvlOffset), (int) attackBox.width, (int) attackBox.height);
-        }
+        //atk box hitbox
+//        if (attackBox != null) {
+//            g.setColor(Color.BLUE);
+//            g.drawRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y - yLvlOffset), (int) attackBox.width, (int) attackBox.height);
+//        }
     }
 
     //TIME

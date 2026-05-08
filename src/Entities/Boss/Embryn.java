@@ -120,13 +120,13 @@ public class Embryn extends Boss {
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         super.draw(g, xLvlOffset, yLvlOffset);
 
-        if (attackBox != null) {
-            g.setColor(Color.BLUE);
-            g.drawRect((int) attackBox.x - xLvlOffset,
-                    (int) attackBox.y - yLvlOffset,
-                    (int) attackBox.width,
-                    (int) attackBox.height);
-        }
+//        if (attackBox != null) {
+//            g.setColor(Color.BLUE);
+//            g.drawRect((int) attackBox.x - xLvlOffset,
+//                    (int) attackBox.y - yLvlOffset,
+//                    (int) attackBox.width,
+//                    (int) attackBox.height);
+//        }
     }
 
     @Override

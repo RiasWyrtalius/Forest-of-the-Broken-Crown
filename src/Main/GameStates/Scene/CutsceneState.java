@@ -213,6 +213,11 @@ public class CutsceneState {
         }
 
         scenes = null;
+
+        if (nextState == GameState.PLAYING) {
+            game.getPlayer().givePostCutsceneSafety();
+        }
+
         if (nextState == GameState.MENU) {
             game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
         }

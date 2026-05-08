@@ -1,7 +1,10 @@
 package Entities.Skills.Embjorn;
 
+import Audio.AudioPlayer;
 import Entities.Player;
 import Entities.Skills.Skill;
+import Main.Core.Game;
+import Main.GameState;
 
 import java.awt.*;
 
@@ -37,7 +40,11 @@ public class VenomDash implements Skill {
 
     @Override
     public void activate() {
+        if (GameState.state != GameState.PLAYING) return;
         if (canDash && player.getManaBottles() >= MANA_COST) {
+
+            Game.getInstance().getAudioPlayer().playEffect(AudioPlayer.EMB_SKILL);
+
             float dir = 0;
             if (player.isLeft()) {
                 dir = -1f;
