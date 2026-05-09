@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import static java.awt.Color.WHITE;
-import static java.awt.Color.YELLOW;
 
 public class MainMenu {
 
@@ -24,12 +23,14 @@ public class MainMenu {
     private int btnX        = 80;
     private int btnStartX   = 80;
     private int btnLoadX    = 80;
+    private int btnLeaderX  = 80;
     private int btnOptionsX = 50;
     private int btnCreditsX = 50;
     private int btnQuitX    = 20;
 
-    private int btnStartY   = 480;
-    private int btnLoadY    = 520;
+    private int btnStartY   = 440;
+    private int btnLoadY    = 480;
+    private int btnLeaderY  = 520;
     private int btnOptionsY = 560;
     private int btnCreditsY = 600;
     private int btnQuitY    = 640;
@@ -47,8 +48,9 @@ public class MainMenu {
     private Rectangle hoveredBtn = null;
     private Rectangle lastHovered = null;
 
-    private Rectangle playBtn = new Rectangle(btnStartX, btnStartY - 40, 220, 50);
-    private Rectangle loadBtn = new Rectangle(btnLoadX, btnLoadY - 40, 220, 50);
+    private Rectangle playBtn = new Rectangle(btnStartX, btnStartY - 40, 220, 45);
+    private Rectangle loadBtn = new Rectangle(btnLoadX, btnLoadY - 40, 220, 45);
+    private Rectangle lbBtn   = new Rectangle(btnLeaderX, btnLeaderY - 40, 280, 45);
     private Rectangle optBtn  = new Rectangle(btnOptionsX, btnOptionsY - 40, 220, 50);
     private Rectangle credBtn = new Rectangle(btnCreditsX, btnCreditsY - 40, 220, 50);
     private Rectangle quitBtn = new Rectangle(btnQuitX, btnQuitY - 40, 220, 50);
@@ -80,7 +82,6 @@ public class MainMenu {
 
         switch (currentScreen) {
             case MAIN_MENU  -> drawMainMenu(g);
-            case HOW_TO_PLAY-> drawHowToPlay(g);
         }
 
         g.drawString(message, btnQuitX, btnQuitY + 60);
@@ -89,23 +90,17 @@ public class MainMenu {
     private void drawMainMenu(Graphics g) {
         boolean isPlayHovered = (hoveredBtn == playBtn);
         boolean isLoadHovered = (hoveredBtn == loadBtn);
+        boolean isLBHovered = (hoveredBtn == lbBtn);
         boolean isOptHovered  = (hoveredBtn == optBtn);
         boolean isCredHovered = (hoveredBtn == credBtn);
         boolean isQuitHovered = (hoveredBtn == quitBtn);
 
         UI.drawHoverableButton(g, playBtn.x + 20, playBtn.y + 35, "Play Game", isPlayHovered, customFont, WHITE);
         UI.drawHoverableButton(g, loadBtn.x + 20, loadBtn.y + 35, "Load Game", isLoadHovered, customFont, WHITE);
+        UI.drawHoverableButton(g, lbBtn.x + 20,   lbBtn.y + 35, "Leaderboard", isLBHovered, customFont, WHITE);
         UI.drawHoverableButton(g, optBtn.x + 50,  optBtn.y + 35,  "Options",   isOptHovered,  customFont, WHITE);
         UI.drawHoverableButton(g, credBtn.x + 50, credBtn.y + 35, "Credits",   isCredHovered, customFont, WHITE);
         UI.drawHoverableButton(g, quitBtn.x + 80, quitBtn.y + 35, "Quit",      isQuitHovered, customFont, WHITE);
-    }
-
-    private void drawHowToPlay(Graphics g) {
-        g.drawString("How to Play",                 btnX + 80, 400);
-        g.drawString("A/D or Arrow Keys to move",   btnX, 480);
-        g.drawString("Space / W / Up to jump",      btnX, 520);
-        g.drawString("K to attack",                 btnX, 560);
-        g.drawString("Back",                        backBtnX, backBtnY);
     }
 
     //INPUT METHODS
@@ -131,13 +126,12 @@ public class MainMenu {
         Point mousePos = new Point(x, y);
         hoveredBtn = null;
 
-        if (currentScreen == Screen.MAIN_MENU) {
-            if (playBtn.contains(mousePos)) hoveredBtn = playBtn;
-            else if (loadBtn.contains(mousePos)) hoveredBtn = loadBtn;
-            else if (optBtn.contains(mousePos)) hoveredBtn = optBtn;
-            else if (credBtn.contains(mousePos)) hoveredBtn = credBtn;
-            else if (quitBtn.contains(mousePos)) hoveredBtn = quitBtn;
-        }
+        if (playBtn.contains(mousePos)) hoveredBtn = playBtn;
+        else if (loadBtn.contains(mousePos)) hoveredBtn = loadBtn;
+        else if (lbBtn.contains(mousePos)) hoveredBtn = lbBtn;
+        else if (optBtn.contains(mousePos)) hoveredBtn = optBtn;
+        else if (credBtn.contains(mousePos)) hoveredBtn = credBtn;
+        else if (quitBtn.contains(mousePos)) hoveredBtn = quitBtn;
 
         if (hoveredBtn != null && hoveredBtn != lastHovered) {
             game.getAudioPlayer().playEffect(AudioPlayer.HOVER);
@@ -150,42 +144,32 @@ public class MainMenu {
     }
 
     private void handleMainMenuClick(int mx, int my) {
+        Point mousePos = new Point(mx, my);
 
-        if (isNearButton(mx, my, btnX, btnStartY) ||
-                isNearButton(mx, my, btnX, btnLoadY) ||
-                isNearButton(mx, my, btnX, btnOptionsY) ||
-                isNearButton(mx, my, btnX, btnCreditsY) ||
-                isNearButton(mx, my, btnX, btnQuitY)) {
-
-            game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
-        }
-
-        if (isNearButton(mx, my, btnX, btnStartY)) {
+        if (playBtn.contains(mousePos)) {
+            playClick();
             GameState.state = GameState.CHARACTER_SELECT;
-        } else if (isNearButton(mx, my, btnX, btnLoadY)) {
+        } else if (loadBtn.contains(mousePos)) {
+            playClick();
             game.getSlotScreen().setMode("LOAD");
             GameState.state = GameState.SLOTS;
-        } else if (isNearButton(mx, my, btnX, btnOptionsY)) {
+        } else if (lbBtn.contains(mousePos)) {
+            playClick();
+            game.getLeaderboard().loadEntries(); // Refresh data from file
+            GameState.state = GameState.LEADERBOARD;
+        } else if (optBtn.contains(mousePos)) {
+            playClick();
             GameState.state = GameState.OPTIONS;
-        } else if (isNearButton(mx, my, btnX, btnCreditsY)) {
+        } else if (credBtn.contains(mousePos)) {
+            playClick();
             game.getCredits().resetCredits();
             GameState.state = GameState.CREDITS;
-        } else if (isNearButton(mx, my, btnX, btnQuitY)) {
+        } else if (quitBtn.contains(mousePos)) {
             System.exit(0);
         }
     }
 
-    private void handleOptionsClick(int mx, int my) {
-        if (mx >= btnX + 300 && mx <= btnX + 350 && my >= 450 && my <= 500) {
-            volume = Math.min(100, volume + 10);
-            message = "Volume increased";
-        } else if (mx >= btnX + 200 && mx <= btnX + 250 && my >= 450 && my <= 500) {
-            volume = Math.max(0, volume - 10);
-            message = "Volume decreased";
-        } else if (isNearButton(mx, my, btnX, 550)) {
-            currentScreen = Screen.HOW_TO_PLAY;
-        } else if (isNearButton(mx, my, backBtnX, backBtnY)) {
-            goBack();
-        }
+    private void playClick() {
+        game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
     }
 }

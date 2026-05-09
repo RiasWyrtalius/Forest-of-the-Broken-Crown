@@ -55,6 +55,9 @@ public class Player extends Entity{
 
     private int dropThroughTick = 0;
 
+    //death
+    private int deathCounter = 0;
+
     public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
         this.characterData = characterData;
@@ -498,6 +501,7 @@ public class Player extends Entity{
 
     public void resetAll() {
         resetDirectionBooleans();
+        deathCounter++;
         inAir        = true;
         moving       = false;
         playerAction = IDLE;
@@ -588,4 +592,6 @@ public class Player extends Entity{
     public int getMaxManaBottles() { return maxManaBottles; }
     public int getManaBottles() { return manaBottles; }
     public void addMana(int amount) { this.manaBottles = Math.min(maxManaBottles, this.manaBottles + amount); }
+    public int getDeathCounter() { return deathCounter; }
+    public void resetDeathCounter() {this.deathCounter = 0;}
 }

@@ -250,6 +250,18 @@ public class UI {
         }
     }
 
+    public void drawCenteredText(Graphics g, String text, int y, float size) {
+        g.setFont(vcrFont.deriveFont(size));
+        FontMetrics fm = g.getFontMetrics();
+        int x = (Game.GAME_WIDTH / 2) - (fm.stringWidth(text) / 2);
+
+        g.setColor(new Color(0, 0, 0, 150));
+        g.drawString(text, x + 2, y + 2);
+
+        g.setColor(Color.WHITE);
+        g.drawString(text, x, y);
+    }
+
     public static void drawHoverableButton(Graphics g, int x, int y, String label, boolean isHovered, Font font, Color mainColor) {
         g.setFont(font);
 
@@ -331,5 +343,9 @@ public class UI {
     public void setBossMsg(String msg) {
         this.bossDefeatMsg = msg;
         this.msgTimer = System.currentTimeMillis();
+    }
+
+    public String getFormattedTime() {
+        return formatTime(game.getSpeedrunTicks());
     }
 }

@@ -27,31 +27,15 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
         MouseEvent adjustedEvent = getMouseEvent(e);
 
         switch (GameState.state) {
-            case WORLD_SELECT:
-                gamePanel.getGame().getWorldSelect().mouseClicked(adjustedEvent);
-                break;
-            case MENU:
-                gamePanel.getGame().getMainMenu().mouseClicked(adjustedEvent);
-                break;
-            case CHARACTER_SELECT:
-                gamePanel.getGame().getCharacterSelect().mouseClicked(adjustedEvent);
-                break;
-            case PLAYING:
-                //insert logic if needed
-                break;
-            case PAUSED:
-                gamePanel.getGame().getPauseScreen().mouseClicked(adjustedEvent);
-                break;
-            case SLOTS:
-                gamePanel.getGame().getSlotScreen().mouseClicked(adjustedEvent);
-                break;
-            case DEATH:
-                gamePanel.getGame().getDeathScreen().mouseClicked(adjustedEvent);
-                break;
-            case CUTSCENE:
-                gamePanel.getGame().getCutsceneState().mouseClicked(adjustedEvent);
-            default:
-                break;
+            case WORLD_SELECT -> gamePanel.getGame().getWorldSelect().mouseClicked(adjustedEvent);
+            case MENU -> gamePanel.getGame().getMainMenu().mouseClicked(adjustedEvent);
+            case CHARACTER_SELECT -> gamePanel.getGame().getCharacterSelect().mouseClicked(adjustedEvent);
+            case PAUSED -> gamePanel.getGame().getPauseScreen().mouseClicked(adjustedEvent);
+            case SLOTS -> gamePanel.getGame().getSlotScreen().mouseClicked(adjustedEvent);
+            case DEATH -> gamePanel.getGame().getDeathScreen().mouseClicked(adjustedEvent);
+            case CUTSCENE -> gamePanel.getGame().getCutsceneState().mouseClicked(adjustedEvent);
+            case LEADERBOARD -> gamePanel.getGame().getLeaderboard().mouseClicked(adjustedEvent);
+            case PLAYING -> {}
         }
     }
 
@@ -115,7 +99,8 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case DEATH -> gamePanel.getGame().getDeathScreen().mouseMoved(adjustedX, adjustedY);
             case OPTIONS -> gamePanel.getGame().getOptionsScreen().mouseMoved(adjustedEvent);
             case WORLD_SELECT -> gamePanel.getGame().getWorldSelect().mouseMoved(adjustedEvent);
-            case SLOTS -> gamePanel.getGame().getSlotScreen().mouseMoved(e);
+            case SLOTS -> gamePanel.getGame().getSlotScreen().mouseMoved(adjustedEvent);
+            case LEADERBOARD -> gamePanel.getGame().getLeaderboard().mouseMoved(adjustedEvent);
             default -> {}
         }
     }

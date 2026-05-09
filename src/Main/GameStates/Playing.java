@@ -53,6 +53,7 @@ public class Playing {
         enemyManager.update(levelHandler.getCurrentLevel().getLevelData(), player);
         checkCloseToBorder();
         checkLevelCompleted();
+        checkVictory();
 
         if (dialogueManager.isActive()) {
             dialogueManager.update();
@@ -150,6 +151,14 @@ public class Playing {
                 // End of Game: Return to Menu
                 game.startFadeTo(Main.GameState.MENU);
                 game.resetGame();
+            }
+        }
+    }
+
+    private void checkVictory() {
+        if (game.getLevelHandler().getLevelIndex() == 5) {
+            if (enemyManager.isBossTypeDefeated(KAELOR)) {
+                GameState.state = GameState.NAME_INPUT;
             }
         }
     }

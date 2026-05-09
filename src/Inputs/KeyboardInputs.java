@@ -38,6 +38,8 @@ public class KeyboardInputs implements KeyListener {
                     GameState.state = GameState.PLAYING;
             }
             case OPTIONS -> game.getOptionsScreen().keyPressed(e);
+            case LEADERBOARD -> game.getLeaderboard().keyPressed(e);
+            case NAME_INPUT  -> game.getNameInputState().keyPressed(e);
         }
     }
 

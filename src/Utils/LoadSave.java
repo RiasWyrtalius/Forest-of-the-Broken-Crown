@@ -2,9 +2,7 @@ package Utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +102,8 @@ public class LoadSave {
     public static final String HEALTH_POTION_ATLAS = "Levels/Objects/DropHealthSS.png";
     public static final String MANA_POTION_ATLAS = "Levels/Objects/DropManaSS.png";
 
+    //Leaderboard
+    private static final String LEADERBOARD_FILE = "leaderboard.dat";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
@@ -160,6 +160,29 @@ public class LoadSave {
                 images.add(getSpriteAtlas(resourcePath));
                 System.out.println("Successfully Loaded: " + resourcePath);
             }
+        }
+    }
+
+    //LEADERBOARD
+    public static void AddLeaderboardEntry(LeaderboardEntry entry) {
+        ArrayList<LeaderboardEntry> list = GetLeaderboard();
+        list.add(entry);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(LEADERBOARD_FILE))) {
+            oos.writeObject(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<LeaderboardEntry> GetLeaderboard() {
+        File file = new File(LEADERBOARD_FILE);
+        if (!file.exists()) return new ArrayList<>();
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            return (ArrayList<LeaderboardEntry>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            // If the file is corrupted, return empty list
+            return new ArrayList<>();
         }
     }
 }

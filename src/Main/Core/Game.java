@@ -2,19 +2,19 @@
 package Main.Core;
 
 import Audio.AudioPlayer;
-import Entities.Boss.EnemyManager;
 import Entities.Player;
 import Entities.PlayerCharacter;
 import Levels.Level;
 import Levels.LevelHandler;
 import Main.GameState;
 import Main.GameStates.*;
+import Main.GameStates.Leaderboard.Leaderboard;
+import Main.GameStates.Leaderboard.NameInputState;
 import Main.GameStates.Scene.CutsceneState;
 import Main.UI.UI;
 import Objects.ObjectManager;
 import Utils.LoadSave;
 import java.awt.*;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 
@@ -65,9 +65,15 @@ public class Game implements Runnable {
     private Font fpsFont = Utils.LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.BOLD, 18f);
     private long speedrunTicks = 0;
 
+    //LEADERBOARD
+    private Leaderboard leaderboard;
+    private NameInputState nameInputState;
+
     public Game() {
         LoadSave.getAllLevels();
         initClasses();
+        leaderboard = new Leaderboard(this);
+        nameInputState = new NameInputState(this);
         levelHandler.updateBackground();
         gamePanel = new GamePanel(this);
         worldSelect = new WorldSelect(this);
@@ -76,6 +82,7 @@ public class Game implements Runnable {
         gamePanel.requestFocus();
         startGameLoop();
         instance = this;
+        seedLeaderboard();
     }
 
     public void initClasses() {
@@ -152,7 +159,7 @@ public class Game implements Runnable {
             case CREDITS            -> credits.update();
             case OPTIONS            -> optionsScreen.update();
             case SLOTS              -> slotScreen.update();
-            case PAUSED             -> {}
+            case PAUSED, LEADERBOARD, NAME_INPUT -> {}
         }
 
         handleFadeLogic();
@@ -172,6 +179,7 @@ public class Game implements Runnable {
             case CREDITS            -> credits.draw(g);
             case CUTSCENE           -> cutsceneState.draw(g);
             case OPTIONS            -> optionsScreen.draw(g);
+            case LEADERBOARD        -> leaderboard.draw(g);
             case SLOTS -> {
                 playing.draw(g);
                 slotScreen.draw(g);
@@ -209,6 +217,10 @@ public class Game implements Runnable {
         levelHandler.updateBackground();
         player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
         objectManager.loadObjects(levelHandler.getCurrentLevel());
+
+        if (player != null) {
+            player.resetDeathCounter();
+        }
     }
 
     public void startFadeTo(GameState targetState) {
@@ -314,6 +326,19 @@ public class Game implements Runnable {
         }
     }
 
+    //TESTING PURPOSES
+    public void seedLeaderboard() {
+        // Check if we already have data so we don't duplicate it every launch
+        if (Utils.LoadSave.GetLeaderboard().isEmpty()) {
+            System.out.println("Seeding Leaderboard with initial legends...");
+
+            // Manual entries: Name, Hero, Formatted Time, Deaths, Raw Ticks
+            Utils.LoadSave.AddLeaderboardEntry(new Utils.LeaderboardEntry("Charlz", "SYLVARA", "05:20.12", 2, 64024));
+            Utils.LoadSave.AddLeaderboardEntry(new Utils.LeaderboardEntry("Denver", "KAELTHORN", "08:45.00", 12, 105000));
+            Utils.LoadSave.AddLeaderboardEntry(new Utils.LeaderboardEntry("Riley", "EMBJORN", "04:12.55", 0, 50510));
+        }
+    }
+
     public void updateLevelOffsets()                          { playing.updateLevelOffsets(); }
     public void windowFocusLost()                             { player.resetDirectionBooleans(); }
     public void setBackgroundImg(BufferedImage backgroundImg) { this.backgroundImg = backgroundImg; }
@@ -339,4 +364,6 @@ public class Game implements Runnable {
     public Credits getCredits()                 { return credits; }
     public OptionsScreen getOptionsScreen()     { return optionsScreen; }
     public WorldSelect getWorldSelect()         { return worldSelect; }
+    public Leaderboard getLeaderboard() { return leaderboard; }
+    public NameInputState getNameInputState() { return nameInputState; }
 }
