@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 import static Main.Core.Game.GAME_WIDTH;
 import static java.awt.Font.PLAIN;
+import static java.awt.Font.getFont;
 
 public class UI {
     private Game game;
@@ -18,6 +19,7 @@ public class UI {
     private int slotX = (GAME_WIDTH / 2) - 300;
     private int slotY = 200;
     private Font customFont;
+    private Font vcrFont;
     private String tooltipText = null;
 
     private String saveMessage   = "";
@@ -29,7 +31,8 @@ public class UI {
         this.game = game;
         loadHeartImages();
         loadManaImages();
-        customFont = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
+        customFont  = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
+        vcrFont     = LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.PLAIN, 30f);
     }
 
     private void loadHeartImages() {
@@ -97,6 +100,7 @@ public class UI {
         }
 
         g2d.setComposite(originalComposite);
+        drawSpeedrunTimer(g);
     }
 
     public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero, int mouseX, int mouseY) {
@@ -201,7 +205,6 @@ public class UI {
         g.setColor(new Color(0, 0, 0, 220));
         g.fillRect(x + 15, y + 15, boxW, boxH);
 
-        //TODO: replace with graphics
         //border
         g.setColor(Color.LIGHT_GRAY);
         g.drawRect(x + 15, y + 15, boxW, boxH);
@@ -209,10 +212,6 @@ public class UI {
         //desc
         g.setColor(Color.WHITE);
         drawWrappedString(g, description, x + 15 + padding, y + 15 + padding + fm.getAscent(), boxW - padding);
-    }
-
-    private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
     private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {
@@ -284,6 +283,44 @@ public class UI {
                 bossDefeatMsg = "";
             }
         }
+    }
+
+    public void drawSpeedrunTimer(Graphics g) {
+        if (!Main.GameStates.OptionsScreen.speedrunTimer) return;
+
+        String timeStr = formatTime(game.getSpeedrunTicks());
+        g.setFont(vcrFont);
+
+        //center
+        FontMetrics fm = g.getFontMetrics();
+        int x = (Game.GAME_WIDTH / 2) - (fm.stringWidth(timeStr) / 2);
+        int y = 40; // Top of the screen
+
+        //shadow
+        g.setColor(new Color(0, 0, 0, 150));
+        g.drawString(timeStr, x + 2, y + 2);
+
+        //text
+        g.setColor(Color.WHITE);
+        g.drawString(timeStr, x, y);
+    }
+
+    private String formatTime(long ticks) {
+        long totalSeconds = ticks / 200;      // 200 UPS = 1 second
+        long centiseconds = (ticks % 200) / 2; // Convert remaining ticks to 0-99
+        long seconds = totalSeconds % 60;
+        long minutes = (totalSeconds / 60) % 60;
+        long hours = totalSeconds / 3600;
+
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds);
+        } else {
+            return String.format("%02d:%02d.%02d", minutes, seconds, centiseconds);
+        }
+    }
+
+    private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
     public void setSaveMessage(String msg) {

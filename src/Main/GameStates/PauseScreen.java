@@ -85,6 +85,8 @@ public class PauseScreen {
         } else if (btnMainMenu.contains(e.getPoint())) {
             // go back to main menu
             game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
+            game.resetSpeedrunTimer();
+            game.resetGame();
             GameState.state = GameState.MENU;
         }
     }

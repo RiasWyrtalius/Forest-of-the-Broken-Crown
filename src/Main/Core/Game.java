@@ -63,6 +63,7 @@ public class Game implements Runnable {
     private CharacterSelect characterSelect;
     private int lastFPS = 0;
     private Font fpsFont = Utils.LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.BOLD, 18f);
+    private long speedrunTicks = 0;
 
     public Game() {
         LoadSave.getAllLevels();
@@ -141,7 +142,10 @@ public class Game implements Runnable {
         switch (GameState.state) {
             case WORLD_SELECT       -> worldSelect.update();
             case MENU               -> mainMenu.update();
-            case PLAYING            -> playing.update();
+            case PLAYING            -> {
+                playing.update();
+                speedrunTicks++;
+            }
             case CHARACTER_SELECT   -> characterSelect.update();
             case DEATH              -> deathScreen.update();
             case CUTSCENE           -> cutsceneState.update();
@@ -195,10 +199,12 @@ public class Game implements Runnable {
     }
 
     public void resetGame() {
+        speedrunTicks = 0;
         audioPlayer.playSong(AudioPlayer.MENU_1);
         player.resetAll();
         objectManager.resetAllObjects();
         playing.resetCamera();
+        resetSpeedrunTimer();
         levelHandler.loadLevel(1);
         levelHandler.updateBackground();
         player.loadLvlData(levelHandler.getCurrentLevel().getLevelData());
@@ -308,28 +314,29 @@ public class Game implements Runnable {
         }
     }
 
-    public void updateLevelOffsets() { playing.updateLevelOffsets(); }
-    public void windowFocusLost() { player.resetDirectionBooleans(); }
-
-    public void setBackgroundImg(BufferedImage backgroundImg) {
-        this.backgroundImg = backgroundImg;
-    }
+    public void updateLevelOffsets()                          { playing.updateLevelOffsets(); }
+    public void windowFocusLost()                             { player.resetDirectionBooleans(); }
+    public void setBackgroundImg(BufferedImage backgroundImg) { this.backgroundImg = backgroundImg; }
+    public long getSpeedrunTicks()                            { return speedrunTicks; }
+    public void resetSpeedrunTimer()                          { this.speedrunTicks = 0; }
 
     public Player getPlayer()                   { return player;}
-    public MainMenu getMainMenu()               { return mainMenu;}
     public LevelHandler getLevelHandler()       { return levelHandler;}
-    public SlotScreen getSlotScreen()           { return slotScreen;}
-    public PauseScreen getPauseScreen()         { return pauseScreen;}
-    public DeathScreen getDeathScreen()         { return deathScreen;}
     public AudioPlayer getAudioPlayer()         { return audioPlayer;}
-    public CharacterSelect getCharacterSelect() { return characterSelect; }
     public ObjectManager getObjectManager()     { return objectManager; }
     public UI getUi()                           { return ui; }
     public BufferedImage getBackgroundImg()     { return backgroundImg; }
+
+    //GameStates
+    public CharacterSelect getCharacterSelect() { return characterSelect; }
+    public MainMenu getMainMenu()               { return mainMenu;}
+    public SlotScreen getSlotScreen()           { return slotScreen;}
+    public PauseScreen getPauseScreen()         { return pauseScreen;}
+    public DeathScreen getDeathScreen()         { return deathScreen;}
     public Playing getPlaying()                 { return playing; }
     public static Game getInstance()            { return instance; }
     public CutsceneState getCutsceneState()     { return cutsceneState; }
     public Credits getCredits()                 { return credits; }
     public OptionsScreen getOptionsScreen()     { return optionsScreen; }
-    public WorldSelect getWorldSelect() { return worldSelect; }
-    }
+    public WorldSelect getWorldSelect()         { return worldSelect; }
+}

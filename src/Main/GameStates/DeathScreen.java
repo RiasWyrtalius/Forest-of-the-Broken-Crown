@@ -88,6 +88,8 @@ public class DeathScreen {
             GameState.state = GameState.PLAYING;
         } else if (btnMainMenu.contains(e.getPoint())) { // Make sure Main Menu click works too!
             game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
+            game.resetSpeedrunTimer();
+            game.resetGame();
             GameState.state = GameState.MENU;
         }
     }
