@@ -104,4 +104,21 @@ public class EnemyManager {
             }
         }
     }
+
+    public boolean isBossTypeDefeated(int bossType) {
+        for (Boss b : bosses) {
+            // If we find a boss of this specific type and it's still active, return false
+            if (b.getEnemyType() == bossType && b.isActive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isAreaClear() {
+        for (Boss b : bosses) {
+            if (b.isActive()) return false;
+        }
+        return true;
+    }
 }

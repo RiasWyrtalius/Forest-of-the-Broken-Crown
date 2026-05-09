@@ -235,7 +235,7 @@ public class Embryn extends Boss {
 
                 case DEAD -> {
                     if (!defeatMsgSent) {
-                        Game.getInstance().getUi().setBossDefeatMsg("EMBRYN DEFEATED!");
+                        Game.getInstance().getUi().setBossMsg("EMBRYN DEFEATED!");
                         defeatMsgSent = true;
                     }
                 }

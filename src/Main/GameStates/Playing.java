@@ -15,6 +15,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import static Utils.Constants.EnemyConstants.EMBRYN;
+import static Utils.Constants.EnemyConstants.KAELOR;
+
 public class Playing {
     private Player player;
     private ObjectManager objectManager;
@@ -55,8 +58,6 @@ public class Playing {
             dialogueManager.update();
         }
     }
-
-
 
     public void draw(Graphics g) {
         g.drawImage(game.getBackgroundImg(), 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
@@ -115,21 +116,39 @@ public class Playing {
         yLvlOffset = (int) actualYOffset;
     }
 
-    //TEMPORARY
     public void checkLevelCompleted() {
         int lvlWidth = levelHandler.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE;
 
+        // if player has reached exit
         if (player.getHitbox().x >= lvlWidth - (Game.TILES_SIZE * 2)) {
+            int currentLvl = levelHandler.getCurrentLevelNum();
+
+            //specific boss progress requirements
+            boolean canProceed = switch (currentLvl) {
+                case 1 -> // Level 1: Forest - Embryn
+                        enemyManager.isBossTypeDefeated(EMBRYN);
+                case 3 -> // Level 2: Cave - Kaelor
+                        enemyManager.isBossTypeDefeated(KAELOR);
+                default -> enemyManager.isAreaClear();
+            };
+
+            if (!canProceed) {
+                game.getUi().setBossMsg("YOU CANNOT LEAVE!");
+                return;
+            }
+
+            //transition
             System.out.println("Level Complete Triggered!");
             int nextLevelNum = levelHandler.getCurrentLevelNum() + 1;
 
             if (nextLevelNum <= levelHandler.getAmountOfLevels()) {
                 game.setupLevel(nextLevelNum);
-                game.startFadeTo(GameState.PLAYING);
+                game.startFadeTo(Main.GameState.PLAYING);
                 xLvlOffset = 0;
                 resetCamera();
             } else {
-                game.startFadeTo(GameState.MENU);
+                // End of Game: Return to Menu
+                game.startFadeTo(Main.GameState.MENU);
                 game.resetGame();
             }
         }
@@ -185,10 +204,6 @@ public class Playing {
                 if (e.getKeyCode() == OptionsScreen.keySkill) player.getActiveSkill().deactivate();
             }
         }
-    }
-
-    public void mouseClicked(MouseEvent e) {
-        // Placeholder for future combat/interaction
     }
 
     public void loadEnemiesForLevel(int levelNum) {

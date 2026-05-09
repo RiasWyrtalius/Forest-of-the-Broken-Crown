@@ -273,8 +273,13 @@ public class UI {
                 g.setFont(customFont.deriveFont(Font.PLAIN, 50));
                 FontMetrics fm = g.getFontMetrics();
                 int msgX = (GAME_WIDTH / 2) - (fm.stringWidth(bossDefeatMsg) / 2);
+                int msgY = 150;
+
+                g.setColor(new Color(0, 0, 0, 150));
+                g.drawString(bossDefeatMsg, msgX + 2, msgY + 2);
+
                 g.setColor(Color.RED);
-                g.drawString(bossDefeatMsg, msgX, 150);
+                g.drawString(bossDefeatMsg, msgX, msgY);
             } else {
                 bossDefeatMsg = "";
             }
@@ -286,7 +291,7 @@ public class UI {
         this.msgTimer = System.currentTimeMillis();
     }
 
-    public void setBossDefeatMsg(String msg) {
+    public void setBossMsg(String msg) {
         this.bossDefeatMsg = msg;
         this.msgTimer = System.currentTimeMillis();
     }

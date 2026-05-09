@@ -48,9 +48,10 @@ public abstract class Boss extends Enemy {
         }
     }
 
+    public abstract void update(int[][] lvlData, Player player);
     protected abstract int getAnimationRow();
     public abstract int getSpriteAmount();
-    public abstract void update(int[][] lvlData, Player player);
+    public int getEnemyType() { return enemyType; }
     @Override protected int getEnemyDamage() { return bossData.damage; }
     @Override protected int getEnemyMaxHealth() { return bossData.getHealth(); }
 }
