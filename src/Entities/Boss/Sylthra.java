@@ -26,6 +26,9 @@ public class Sylthra extends Boss {
 
     public Sylthra(float x, float y) {
         super(x, y, SYLTHRA_WIDTH, SYLTHRA_HEIGHT, SYLTHRA);
+
+        this.maxHealth = BossData.SYLTHRA.getHealth();
+        this.currentHealth = maxHealth;
         loadAnimations();
         enemyState = IDLE;
     }

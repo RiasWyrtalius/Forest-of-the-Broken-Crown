@@ -164,9 +164,9 @@ public class HelpMethods {
     }
 
     public static int getBossType(int greenValue) {
-        if (greenValue == 0) return EMBRYN;
-        if (greenValue == 1) return KAELOR;
-        if (greenValue == 2) return SYLTHRA;
+        if (greenValue == 101) return EMBRYN;
+        if (greenValue == 102) return KAELOR;
+        if (greenValue == 103) return SYLTHRA;
 
         return -1;
     }
