@@ -41,7 +41,7 @@ The project is organized into a clean, modular package system:
 ## Controls
 | Action | Key / Input |
 | :--- | :--- |
-| **Move** | WASD or Arrow Keys |
+| **Move** | WASD |
 | **Jump** | Space |
 | **Interact** | Enter / Spacebar |
 | **Attack/Ability** | E |
