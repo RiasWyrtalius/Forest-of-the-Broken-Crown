@@ -42,6 +42,7 @@ public abstract class Boss extends Enemy {
                 switch (enemyState) {
                     case DETECT -> newState(RUNNING);
                     case ATTACK, HIT -> newState(IDLE);
+                    case RUNNING -> {}
                     case DEAD -> active = false;
                 }
             }

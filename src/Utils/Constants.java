@@ -152,12 +152,13 @@ public class Constants {
         public static final int EMBRYN = 0;
         public static final int KAELOR = 1;
 
-        public static final int IDLE    = 0;
-        public static final int RUNNING = 1;
-        public static final int ATTACK  = 2;
-        public static final int HIT     = 3;
-        public static final int DEAD    = 4;
+        public static final int IDLE     = 0;
+        public static final int RUNNING  = 1;
+        public static final int ATTACK   = 2;
+        public static final int HIT      = 3;
+        public static final int DEAD     = 4;
         public static final int SHUTDOWN = 5;
+        public static final int POWERUP  = 6;
 
         public static final int ANI_SPEED = 25;
 

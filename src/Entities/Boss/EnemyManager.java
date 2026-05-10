@@ -108,7 +108,7 @@ public class EnemyManager {
     public boolean isBossTypeDefeated(int bossType) {
         for (Boss b : bosses) {
             // If we find a boss of this specific type and it's still active, return false
-            if (b.getEnemyType() == bossType && b.isActive()) {
+            if (b.getEnemyType() == bossType && b.isActive() && b.enemyState != DEAD) {
                 return false;
             }
         }
@@ -117,7 +117,7 @@ public class EnemyManager {
 
     public boolean isAreaClear() {
         for (Boss b : bosses) {
-            if (b.isActive()) return false;
+            if (b.isActive() && b.enemyState != DEAD) return false;
         }
         return true;
     }

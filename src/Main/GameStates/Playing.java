@@ -1,6 +1,5 @@
 package Main.GameStates;
 
-import Main.GameStates.OptionsScreen;
 import Entities.Boss.EnemyManager;
 import Entities.NPC;
 import Entities.Player;
@@ -13,7 +12,6 @@ import Objects.ObjectManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import static Utils.Constants.EnemyConstants.EMBRYN;
 import static Utils.Constants.EnemyConstants.KAELOR;
