@@ -11,9 +11,9 @@ import javax.imageio.ImageIO;
 public class LoadSave {
 
     //CUTSCENE
-    public static final String Intro1 = "Scenes/Introduction/scene1_intro.png";
-    public static final String Intro2 = "Scenes/Introduction/scene2_intro.png";
-    public static final String Intro3 = "Scenes/Introduction/scene3_intro.png";
+    public static final String Intro1 = "Scenes/Introduction/scene1_intro.jpeg";
+    public static final String Intro2 = "Scenes/Introduction/scene2_intro.jpeg";
+    public static final String Intro3 = "Scenes/Introduction/scene3_intro.jpeg";
 
     //GOOD ENDING
     public static final String GoodEnding1 = "Scenes/Introduction/GoodEnding (1).jpeg";
