@@ -58,6 +58,8 @@ public class Player extends Entity{
     //death
     private int deathCounter = 0;
 
+    private float spawnX, spawnY;
+
     public Player(float x, float y, int width, int height, int[][] lvlData, PlayerCharacter characterData) {
         super(x, y, width, height);
         this.characterData = characterData;
@@ -594,4 +596,11 @@ public class Player extends Entity{
     public void addMana(int amount) { this.manaBottles = Math.min(maxManaBottles, this.manaBottles + amount); }
     public int getDeathCounter() { return deathCounter; }
     public void resetDeathCounter() {this.deathCounter = 0;}
+
+    public void setSpawn(float x, float y) {
+        this.spawnX = x;
+        this.spawnY = y;
+    }
+    public float getSpawnX() { return spawnX; }
+    public float getSpawnY() { return spawnY; }
 }

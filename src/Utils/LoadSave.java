@@ -91,6 +91,10 @@ public class LoadSave {
     public static final String KAELOR_ATLAS = "Characters/Enemy/Kaelor.png";
     public static final String KAELOR_ATK_ATLAS = "Characters/Enemy/RockFalling.png";
 
+    public static final String SYLTHRA_ATLAS = "Characters/Enemy/Sylthra.png";
+    public static final String SYLTHRA_ATK_ATLAS = "Characters/Enemy/Sylthra_projectile.png";
+    public static final String STARS_ATLAS = "Characters/Enemy/Stars.png";
+
     //Objects
     public static final String VASE_ATLAS = "Levels/Objects/Vase/vase_object.png";
     public static final String SPIKE_ATLAS = "Levels/Level1/spikes_object.png";

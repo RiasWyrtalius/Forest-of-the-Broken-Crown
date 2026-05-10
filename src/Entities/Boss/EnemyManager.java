@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static Utils.Constants.EnemyConstants.DEAD;
+import static Utils.Constants.EnemyConstants.STAR_SPAWN_ID;
 
 public class EnemyManager {
 
@@ -24,6 +25,8 @@ public class EnemyManager {
 
     public void loadEnemies(Level level) {
         bosses.clear();
+        Sylthra.globalStarSpawnPoints.clear();
+
         BufferedImage img = level.getLevelDataImage();
 
         for (int j = 0; j < img.getHeight(); j++) {
@@ -37,6 +40,12 @@ public class EnemyManager {
                         float spawnY = j * Game.TILES_SIZE - (30 * Game.SCALE);
 
                         bosses.add(BossFactory.CreateBoss(bossType, spawnX, spawnY));
+                    }
+
+                    if (c.getGreen() == STAR_SPAWN_ID) {
+                        float spawnX = i * Game.TILES_SIZE;
+                        float spawnY = j * Game.TILES_SIZE;
+                        Sylthra.globalStarSpawnPoints.add(new Point((int)spawnX, (int)spawnY));
                     }
                 }
             }
@@ -111,13 +120,6 @@ public class EnemyManager {
             if (b.getEnemyType() == bossType && b.isActive() && b.enemyState != DEAD) {
                 return false;
             }
-        }
-        return true;
-    }
-
-    public boolean isAreaClear() {
-        for (Boss b : bosses) {
-            if (b.isActive() && b.enemyState != DEAD) return false;
         }
         return true;
     }

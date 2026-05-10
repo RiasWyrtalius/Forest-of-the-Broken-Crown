@@ -10,7 +10,12 @@ public enum BossData {
     KAELOR(1,
             120, 180,
             65f, 54f,
-            15, 1);
+            15, 1),
+
+    SYLTHRA(2,
+            120, 180,
+            200f, 212f,
+            20, 1);
 
     public final int bossType;
     public final int hbWidth, hbHeight;

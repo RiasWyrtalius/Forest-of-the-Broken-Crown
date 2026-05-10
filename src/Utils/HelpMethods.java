@@ -113,7 +113,7 @@ public class HelpMethods {
                 if (greenValue == PLAYER_SPAWN) { //spawnpoint
                     playerSpawn.x = i * Game.TILES_SIZE;
                     playerSpawn.y = j * Game.TILES_SIZE;
-                    System.out.println("Spawn Found at Tile: " + i + ", " + j);
+                    //System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = AIR;
                 } else if ( blueValue == VASE_COLOR  ||
                         blueValue == SPIKE_COLOR ||
@@ -164,11 +164,11 @@ public class HelpMethods {
     }
 
     public static int getBossType(int greenValue) {
-        return switch (greenValue) {
-            case 101 -> EMBRYN;
-            case 102 -> KAELOR;
-            default -> -1;
-        };
+        if (greenValue == 0) return EMBRYN;
+        if (greenValue == 1) return KAELOR;
+        if (greenValue == 2) return SYLTHRA;
+
+        return -1;
     }
 
     public static boolean isEntityOnLadder(Rectangle2D.Float hitbox, int[][] lvlData) {
@@ -187,10 +187,5 @@ public class HelpMethods {
         if (yBotIndex < 0 || yBotIndex >= lvlData.length) return false;
 
         return lvlData[yTopIndex][xIndex] == 132 || lvlData[yBotIndex][xIndex] == 132;
-    }
-
-    public static boolean isTilePassable(float x, float y, int[][] lvlData) {
-        int value = lvlData[(int) (y / Game.TILES_SIZE)][(int) (x / Game.TILES_SIZE)];
-        return value == PLATFORM_COLOR;
     }
 }

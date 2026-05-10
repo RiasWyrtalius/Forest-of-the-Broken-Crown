@@ -151,6 +151,7 @@ public class Constants {
 
         public static final int EMBRYN = 0;
         public static final int KAELOR = 1;
+        public static final int SYLTHRA = 2;
 
         public static final int IDLE     = 0;
         public static final int RUNNING  = 1;
@@ -171,6 +172,15 @@ public class Constants {
         public static final int KAELOR_HEIGHT_DEFAULT = 256;
         public static final int KAELOR_WIDTH = (int) (250 * Game.SCALE);
         public static final int KAELOR_HEIGHT = (int) (250 * Game.SCALE);
+
+        public static final int SYLTHRA_WIDTH_DEFAULT = 256;
+        public static final int SYLTHRA_HEIGHT_DEFAULT = 256;
+        public static final int SYLTHRA_WIDTH = (int) (420 * Game.SCALE);
+        public static final int SYLTHRA_HEIGHT = (int) (420 * Game.SCALE);
+
+        public static final int PRE_SUMMON = 7;
+        public static final int SUMMON = 8;
+        public static final int STAR_SPAWN_ID = 99;
     }
 
     public static class SlotUI {

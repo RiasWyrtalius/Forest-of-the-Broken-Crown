@@ -22,7 +22,7 @@ public class WorldSelect {
 
     // 3 world buttons, centered on screen
     private Rectangle world1Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 225, 160, 50);
-    private Rectangle world2Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 305, 160, 50);
+    private Rectangle world2Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 300, 160, 50);
     private Rectangle world3Btn = new Rectangle(Game.GAME_WIDTH / 2 - 70, 375, 160, 50);
     private Rectangle backBtn   = new Rectangle(Game.GAME_WIDTH / 2 - 50, 525, 120, 50);
 
@@ -50,7 +50,7 @@ public class WorldSelect {
     public void update() {}
 
     public void draw(Graphics g) {
-        g.setColor(new Color(0, 0, 0));
+        g.setColor(new Color(46, 34, 46));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setFont(customFont);

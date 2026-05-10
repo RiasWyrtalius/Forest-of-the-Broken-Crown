@@ -7,6 +7,7 @@ public class BossFactory {
         return switch (bossType) {
             case EMBRYN -> new Embryn(x, y);
             case KAELOR -> new Kaelor(x, y);
+            case SYLTHRA -> new Sylthra(x, y);
             default -> null;
         };
     }

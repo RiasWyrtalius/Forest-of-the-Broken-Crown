@@ -140,9 +140,9 @@ public class LevelHandler {
             game.getPlaying().updateLevelOffsets();
         }
 
-        Point p = levels.get(lvlIndex).getPlayerSpawn();
-        //game.getPlayer().setSpawn(p);
-        System.out.println("Loaded Level " + levelNum + " - Spawn: " + p.x + ", " + p.y);
+        Point spawnPos = levels.get(lvlIndex).getPlayerSpawn();
+        game.getPlayer().setSpawn(spawnPos.x, spawnPos.y);
+        //System.out.println("Loaded Level " + levelNum + " - Spawn: " + p.x + ", " + p.y);
     }
 
     public void update() {}

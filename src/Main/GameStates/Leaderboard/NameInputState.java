@@ -20,7 +20,7 @@ public class NameInputState {
 
     public void draw(Graphics g) {
         //dark overlay
-        g.setColor(new Color(0, 0, 0, 220));
+        g.setColor(new Color(46, 34, 46));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         //text prompt

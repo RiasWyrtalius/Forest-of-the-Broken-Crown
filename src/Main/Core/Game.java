@@ -180,6 +180,7 @@ public class Game implements Runnable {
             case CUTSCENE           -> cutsceneState.draw(g);
             case OPTIONS            -> optionsScreen.draw(g);
             case LEADERBOARD        -> leaderboard.draw(g);
+            case NAME_INPUT         -> nameInputState.draw(g);
             case SLOTS -> {
                 playing.draw(g);
                 slotScreen.draw(g);

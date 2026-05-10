@@ -13,8 +13,7 @@ import Objects.ObjectManager;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static Utils.Constants.EnemyConstants.EMBRYN;
-import static Utils.Constants.EnemyConstants.KAELOR;
+import static Utils.Constants.EnemyConstants.*;
 
 public class Playing {
     private Player player;
@@ -128,7 +127,9 @@ public class Playing {
                         enemyManager.isBossTypeDefeated(EMBRYN);
                 case 3 -> // Level 2: Cave - Kaelor
                         enemyManager.isBossTypeDefeated(KAELOR);
-                default -> enemyManager.isAreaClear();
+                case 5 -> // Level 3: CASTLE - SYLTHRA
+                        enemyManager.isBossTypeDefeated(SYLTHRA);
+                default -> true;
             };
 
             if (!canProceed) {
@@ -154,8 +155,8 @@ public class Playing {
     }
 
     private void checkVictory() {
-        if (game.getLevelHandler().getLevelIndex() == 5) {
-            if (enemyManager.isBossTypeDefeated(KAELOR)) {
+        if (game.getLevelHandler().getLevelIndex() == 6) {
+            if (enemyManager.isBossTypeDefeated(SYLTHRA)) {
                 GameState.state = GameState.NAME_INPUT;
             }
         }

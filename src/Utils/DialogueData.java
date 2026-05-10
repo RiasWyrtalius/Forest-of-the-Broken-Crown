@@ -20,7 +20,7 @@ public class DialogueData {
         npcDialogues.put(CHAD_ID, new String[] {
                 "Wait! Shhh! Do you hear that? The rhythmic... squelching? That’s the Rotfang Boar, Embryn.",
                 "I was only trying to map the Den of Decay, but that beast turned my compass into a chew toy!",
-                "If you’re going forward, watch the platforms. They’re as rotten as the Boar’s tusks. World 1's master is just up ahead!",
+                "If you’re going forward, watch the platforms. They’re as rotten as the Boar’s tusks. Embryn is just up ahead!",
                 "I’m staying right here. Denbel says he's 'guarding' me, but I think he’s just asleep."
         });
 
@@ -28,8 +28,7 @@ public class DialogueData {
         npcDialogues.put(CHARLZ_ID, new String[] {
                 "Careful now. The air is getting thin and the floor is getting... melty.",
                 "The Ashbound Titan Kaelor waits in the furnace ahead. He was stone once; now he’s just rage and embers.",
-                "Don't stand still for too long, or you'll bake into the floorboards. The World 2 Boss is just beyond this vent!",
-                "If you see a rune crystal, hit it. It’s the only thing that cools that monster’s temper."
+                "Don't stand still for too long, or you'll bake into the floorboards. Kaelor is just beyond this vent!"
         });
 
         //203 = RILEY
