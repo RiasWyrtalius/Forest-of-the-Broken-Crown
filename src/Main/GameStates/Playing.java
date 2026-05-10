@@ -123,11 +123,11 @@ public class Playing {
 
             //specific boss progress requirements
             boolean canProceed = switch (currentLvl) {
-                case 1 -> // Level 1: Forest - Embryn
+                case 2 -> // Level 1: Forest - Embryn
                         enemyManager.isBossTypeDefeated(EMBRYN);
-                case 3 -> // Level 2: Cave - Kaelor
+                case 4 -> // Level 2: Cave - Kaelor
                         enemyManager.isBossTypeDefeated(KAELOR);
-                case 5 -> // Level 3: CASTLE - SYLTHRA
+                case 6 -> // Level 3: CASTLE - SYLTHRA
                         enemyManager.isBossTypeDefeated(SYLTHRA);
                 default -> true;
             };
@@ -136,6 +136,10 @@ public class Playing {
                 game.getUi().setBossMsg("YOU CANNOT LEAVE!");
                 return;
             }
+
+            if (currentLvl == 2) game.setEmbryDefeated(true);
+            if (currentLvl == 4) game.setKaelDefeated(true);
+            if (currentLvl == 6) game.setSylthraDefeated(true);
 
             //transition
             System.out.println("Level Complete Triggered!");

@@ -20,7 +20,9 @@ import java.awt.image.BufferedImage;
 
 public class Game implements Runnable {
 
-
+    private boolean embrynDefeated = false;
+    private boolean kaelDefeated   = false;
+    private boolean sylthraDefeated = false;
     private GameWindow gameWindow;
     private Playing playing;
     private GamePanel gamePanel;
@@ -346,6 +348,14 @@ public class Game implements Runnable {
     public void setBackgroundImg(BufferedImage backgroundImg) { this.backgroundImg = backgroundImg; }
     public long getSpeedrunTicks()                            { return speedrunTicks; }
     public void resetSpeedrunTimer()                          { this.speedrunTicks = 0; }
+
+    public boolean isEmbryDefeated()    { return embrynDefeated; }
+    public boolean isKaelDefeated()     { return kaelDefeated; }
+    public boolean isSylthraDefeated()  { return sylthraDefeated; }
+
+    public void setEmbryDefeated(boolean v)   { this.embrynDefeated = v; }
+    public void setKaelDefeated(boolean v)    { this.kaelDefeated = v; }
+    public void setSylthraDefeated(boolean v) { this.sylthraDefeated = v; }
 
     public Player getPlayer()                   { return player;}
     public LevelHandler getLevelHandler()       { return levelHandler;}

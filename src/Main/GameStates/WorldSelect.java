@@ -62,9 +62,12 @@ public class WorldSelect {
         g.drawString(title, (Game.GAME_WIDTH / 2) - (titleW / 2), 150);
 
         // Buttons
-        UI.drawHoverableButton(g, world1Btn.x, world1Btn.y + 35, "World 1", hoveredBtn == world1Btn, customFont, WHITE);
-        UI.drawHoverableButton(g, world2Btn.x, world2Btn.y + 35, "World 2", hoveredBtn == world2Btn, customFont, WHITE);
-        UI.drawHoverableButton(g, world3Btn.x, world3Btn.y + 35, "World 3", hoveredBtn == world3Btn, customFont, WHITE);
+        boolean w2Unlocked = game.isEmbryDefeated();
+        boolean w3Unlocked = game.isKaelDefeated();
+
+        UI.drawHoverableButton(g, world1Btn.x, world1Btn.y + 35, "World 1",          hoveredBtn == world1Btn,              customFont, WHITE);
+        UI.drawHoverableButton(g, world2Btn.x, world2Btn.y + 35, w2Unlocked ? "World 2" : "World 2 (Locked)", w2Unlocked && hoveredBtn == world2Btn, customFont, w2Unlocked ? WHITE : Color.GRAY);
+        UI.drawHoverableButton(g, world3Btn.x, world3Btn.y + 35, w3Unlocked ? "World 3" : "World 3 (Locked)", w3Unlocked && hoveredBtn == world3Btn, customFont, w3Unlocked ? WHITE : Color.GRAY);
         UI.drawHoverableButton(g, backBtn.x,   backBtn.y + 35,   "Back",    hoveredBtn == backBtn,   customFont, WHITE);
     }
 
@@ -81,11 +84,13 @@ public class WorldSelect {
             GameState.state = GameState.CUTSCENE;
 
         } else if (world2Btn.contains(p)) {
+            if (!game.isEmbryDefeated()) return;
             game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
             // World 2 → skip cutscene, jump to level 3 (first level of world 2)
             game.initPlayerCharacter(selectedCharacter, 3);
 
         } else if (world3Btn.contains(p)) {
+            if (!game.isKaelDefeated()) return;
             game.getAudioPlayer().playEffect(AudioPlayer.CLICK);
             // World 3 → skip cutscene, jump to level 5 (first level of world 3)
             game.initPlayerCharacter(selectedCharacter, 5);

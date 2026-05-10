@@ -45,14 +45,14 @@ public class AudioPlayer {
 
     private void loadSongs(){
         String[] names = {
-                "Bonfires of Yesterday",  // 0 - main menu
+                "Bonfires Of Yesterday",  // 0 - main menu
                 "Bonfires of Yesterday",               // 1 - cutscene
                 "Bonfires of Yesterday",                 // 2 - world1 ost
-                "Bonfires of Yesterday",            // 3 - world1_boss ost
-                "Bonfires of Yesterday",                 // 4 - world2 ost
-                "Bonfires of Yesterday",            // 5 - world2_boss ost
-                "Bonfires of Yesterday",                 // 6 - world3 ost
-                "Bonfires of Yesterday"             // 7 - world3_boss ost
+                "world1bossOST",            // 3 - world1_boss ost
+                "world2OST",                 // 4 - world2 ost
+                "world2bossOST",            // 5 - world2_boss ost
+                "world3OST",                 // 6 - world3 ost
+                "world3bossOST"             // 7 - world3_boss ost
         };
         songs = new Clip[names.length];
         for(int i = 0; i < songs.length; i++)
