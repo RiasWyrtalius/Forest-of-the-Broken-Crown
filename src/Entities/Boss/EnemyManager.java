@@ -90,6 +90,18 @@ public class EnemyManager {
         droppedLoot.clear();
     }
 
+    public void killAllBosses() {
+        for (Boss b : bosses) {
+            if (b.isActive()) {
+                if (b instanceof Sylthra s) {
+                    s.dealStarDamage();
+                } else {
+                    b.hurt(9999);
+                }
+            }
+        }
+    }
+
     public void checkPlayerStomp(Player player) {
         for (Boss b : bosses) {
             if (b.isActive() && b.enemyState != DEAD) {
@@ -123,12 +135,13 @@ public class EnemyManager {
     }
 
     public boolean isBossTypeDefeated(int bossType) {
+        boolean found = false;
         for (Boss b : bosses) {
-            // If we find a boss of this specific type and it's still active, return false
-            if (b.getEnemyType() == bossType && b.isActive() && b.enemyState != DEAD) {
-                return false;
+            if (b.getEnemyType() == bossType) {
+                found = true;
+                if (b.isActive() && b.enemyState != DEAD) return false;
             }
         }
-        return true;
+        return found; // returns false if no boss of that type was ever loaded
     }
 }

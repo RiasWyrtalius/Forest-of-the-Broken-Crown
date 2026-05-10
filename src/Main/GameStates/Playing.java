@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import static Utils.Constants.EnemyConstants.*;
 
 public class Playing {
+    private boolean victoryTriggered = false;
     private Player player;
     private ObjectManager objectManager;
     private Game game;
@@ -117,18 +118,13 @@ public class Playing {
     public void checkLevelCompleted() {
         int lvlWidth = levelHandler.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE;
 
-        // if player has reached exit
         if (player.getHitbox().x >= lvlWidth - (Game.TILES_SIZE * 2)) {
             int currentLvl = levelHandler.getCurrentLevelNum();
 
-            //specific boss progress requirements
             boolean canProceed = switch (currentLvl) {
-                case 2 -> // Level 1: Forest - Embryn
-                        enemyManager.isBossTypeDefeated(EMBRYN);
-                case 4 -> // Level 2: Cave - Kaelor
-                        enemyManager.isBossTypeDefeated(KAELOR);
-                case 6 -> // Level 3: CASTLE - SYLTHRA
-                        enemyManager.isBossTypeDefeated(SYLTHRA);
+                case 2 -> enemyManager.isBossTypeDefeated(EMBRYN);
+                case 4 -> enemyManager.isBossTypeDefeated(KAELOR);
+                case 6 -> enemyManager.isBossTypeDefeated(SYLTHRA);
                 default -> true;
             };
 
@@ -141,9 +137,8 @@ public class Playing {
             if (currentLvl == 4) game.setKaelDefeated(true);
             if (currentLvl == 6) game.setSylthraDefeated(true);
 
-            //transition
             System.out.println("Level Complete Triggered!");
-            int nextLevelNum = levelHandler.getCurrentLevelNum() + 1;
+            int nextLevelNum = currentLvl + 1;
 
             if (nextLevelNum <= levelHandler.getAmountOfLevels()) {
                 game.setupLevel(nextLevelNum);
@@ -151,7 +146,6 @@ public class Playing {
                 xLvlOffset = 0;
                 resetCamera();
             } else {
-                // End of Game: Return to Menu
                 game.startFadeTo(Main.GameState.MENU);
                 game.resetGame();
             }
@@ -159,9 +153,14 @@ public class Playing {
     }
 
     private void checkVictory() {
-        if (game.getLevelHandler().getLevelIndex() == 6) {
+        if (victoryTriggered) return;
+        if (game.getLevelHandler().getCurrentLevelNum() == 6) {
             if (enemyManager.isBossTypeDefeated(SYLTHRA)) {
-                GameState.state = GameState.NAME_INPUT;
+                victoryTriggered = true;
+                boolean goodEnding = player.getLife() > (player.getMaxLife() / 2);
+                String endingKey = goodEnding ? "OUTRO_GOOD" : "OUTRO_BAD";
+                game.getCutsceneState().startCutscene(endingKey, GameState.NAME_INPUT);
+                GameState.state = GameState.CUTSCENE;
             }
         }
     }
@@ -173,6 +172,9 @@ public class Playing {
 
     //INPUT METHODS
     public void keyPressed(KeyEvent e) {
+
+        if (e.getKeyCode() == KeyEvent.VK_K) enemyManager.killAllBosses();
+
         if (dialogueManager.isActive() && e.getKeyCode() == KeyEvent.VK_ENTER) {
             dialogueManager.skipOrNext();
             return;

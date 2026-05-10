@@ -1,7 +1,7 @@
 0.68666667
-false
-false
 true
+false
+false
 32
 65
 68
