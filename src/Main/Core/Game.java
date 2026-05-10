@@ -159,7 +159,7 @@ public class Game implements Runnable {
             case CREDITS            -> credits.update();
             case OPTIONS            -> optionsScreen.update();
             case SLOTS              -> slotScreen.update();
-            case PAUSED, LEADERBOARD, NAME_INPUT -> {}
+            case BOSS_DECISION, PAUSED, LEADERBOARD, NAME_INPUT -> {}
         }
 
         handleFadeLogic();
@@ -181,6 +181,7 @@ public class Game implements Runnable {
             case OPTIONS            -> optionsScreen.draw(g);
             case LEADERBOARD        -> leaderboard.draw(g);
             case NAME_INPUT         -> nameInputState.draw(g);
+            case BOSS_DECISION      -> ui.drawBossDecision(g);
             case SLOTS -> {
                 playing.draw(g);
                 slotScreen.draw(g);
@@ -367,4 +368,8 @@ public class Game implements Runnable {
     public WorldSelect getWorldSelect()         { return worldSelect; }
     public Leaderboard getLeaderboard() { return leaderboard; }
     public NameInputState getNameInputState() { return nameInputState; }
+
+    public boolean isSpeedrunActive() {
+        return Main.GameStates.OptionsScreen.speedrunTimer;
+    }
 }

@@ -16,11 +16,11 @@ public class LoadSave {
     public static final String Intro3 = "Scenes/Introduction/scene3_intro.jpeg";
 
     //GOOD ENDING
-    public static final String GoodEnding1 = "Scenes/Introduction/GoodEnding (1).jpeg";
-    public static final String GoodEnding2 = "Scenes/Introduction/GoodEnding (2).jpeg";
+    public static final String GoodEnding2 = "Scenes/Outro/Good/GoodEnding1.jpeg";
+    public static final String GoodEnding1 = "Scenes/Outro/Good/GoodEnding2.jpeg";
 
     //BAD ENDING
-    public static final String BadEnding = "Scenes/Introduction/BadEnding.jpeg";
+    public static final String BadEnding = "Scenes/Outro/Bad/BadEnding.jpeg";
 
     public static final String Kael1 = "Scenes/Kaelthorn/KaelthornCutscene (1).jpeg";
     public static final String Kael2_3 = "Scenes/Kaelthorn/KaelthornCutscene (2).jpeg";

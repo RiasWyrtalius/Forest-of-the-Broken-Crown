@@ -27,12 +27,18 @@ public class UI {
     private long msgTimer = 0;
     private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
+    private Rectangle takeCrownBtn, throwCrownBtn;
+    private boolean decisionActive = false;
+
     public UI(Game game) {
         this.game = game;
         loadHeartImages();
         loadManaImages();
         customFont  = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
         vcrFont     = LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.PLAIN, 30f);
+
+        takeCrownBtn = new Rectangle(Game.GAME_WIDTH / 2 - 250, 400, 200, 50);
+        throwCrownBtn = new Rectangle(Game.GAME_WIDTH / 2 + 50, 400, 200, 50);
     }
 
     private void loadHeartImages() {
@@ -348,4 +354,59 @@ public class UI {
     public String getFormattedTime() {
         return formatTime(game.getSpeedrunTicks());
     }
+
+    public void drawBossDecision(Graphics g) {
+        // Semi-transparent background
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+
+        g.setFont(vcrFont.deriveFont(Font.BOLD, 42f));
+        g.setColor(Color.WHITE);
+
+        String title = "THE CROWN LIES BEFORE YOU...";
+        // Now this method call will work!
+        int titleX = getXPosForCenteredText(title, g);
+        g.drawString(title, titleX, 300);
+
+        // Draw Buttons with specific theme colors
+        drawDecisionButton(g, takeCrownBtn, "CLAIM IT", new Color(150, 0, 0)); // Dark Red
+        drawDecisionButton(g, throwCrownBtn, "DESTROY IT", new Color(0, 150, 100)); // Forest Green
+    }
+
+    private void drawDecisionButton(Graphics g, Rectangle r, String text, Color theme) {
+        Graphics2D g2 = (Graphics2D) g;
+
+        // Fill the button background
+        g2.setColor(new Color(46, 34, 46));
+        g2.fillRect(r.x, r.y, r.width, r.height);
+
+        // DRAW THICK BORDER
+        g2.setColor(theme);
+        // This handles the "setStroke" error - 3 is the thickness in pixels
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRect(r.x, r.y, r.width, r.height);
+
+        // Reset stroke so other UI elements aren't thick
+        g2.setStroke(new BasicStroke(1));
+
+        // Draw the text inside
+        g2.setFont(vcrFont.deriveFont(22f));
+        g2.setColor(Color.WHITE);
+
+        // Center text inside the button
+        int textWidth = g2.getFontMetrics().stringWidth(text);
+        int textX = r.x + (r.width / 2) - (textWidth / 2);
+        int textY = r.y + (r.height / 2) + 10; // Simple vertical nudge
+
+        g2.drawString(text, textX, textY);
+    }
+
+    public int getXPosForCenteredText(String text, Graphics g) {
+        int length = (int) g.getFontMetrics().getStringBounds(text, g).getWidth();
+        return Game.GAME_WIDTH / 2 - length / 2;
+    }
+
+    // Add these getters for the input handler
+    public Rectangle getTakeCrownBtn() { return takeCrownBtn; }
+    public Rectangle getThrowCrownBtn() { return throwCrownBtn; }
 }

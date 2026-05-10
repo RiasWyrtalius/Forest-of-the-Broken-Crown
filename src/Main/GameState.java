@@ -12,7 +12,8 @@ public enum GameState {
     OPTIONS,
     WORLD_SELECT,
     LEADERBOARD,
-    NAME_INPUT;
+    NAME_INPUT,
+    BOSS_DECISION;
 
 
     // The current active state

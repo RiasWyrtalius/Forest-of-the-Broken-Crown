@@ -3,6 +3,7 @@ package Inputs;
 import Main.Core.Game;
 import Main.Core.GamePanel;
 import Main.GameState;
+import Main.UI.UI;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -36,6 +37,22 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case CUTSCENE -> gamePanel.getGame().getCutsceneState().mouseClicked(adjustedEvent);
             case LEADERBOARD -> gamePanel.getGame().getLeaderboard().mouseClicked(adjustedEvent);
             case PLAYING -> {}
+            case BOSS_DECISION -> {
+                UI ui = gamePanel.getGame().getUi();
+                Game game = gamePanel.getGame();
+
+                // Determine where to go AFTER the cutscene based on the speedrun timer toggle
+                GameState nextState = game.isSpeedrunActive() ? GameState.NAME_INPUT : GameState.CREDITS;
+
+                // USE adjustedEvent.getPoint() instead of e.getPoint()
+                if (ui.getTakeCrownBtn().contains(adjustedEvent.getPoint())) {
+                    game.getCutsceneState().startCutscene("OUTRO_BAD", nextState);
+                    GameState.state = GameState.CUTSCENE;
+                } else if (ui.getThrowCrownBtn().contains(adjustedEvent.getPoint())) {
+                    game.getCutsceneState().startCutscene("OUTRO_GOOD", nextState);
+                    GameState.state = GameState.CUTSCENE;
+                }
+            }
         }
     }
 
@@ -57,6 +74,22 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
             case DEATH -> gamePanel.getGame().getDeathScreen().mouseClicked(adjustedEvent);
             case CUTSCENE -> gamePanel.getGame().getCutsceneState().mousePressed(adjustedEvent);
             case OPTIONS -> gamePanel.getGame().getOptionsScreen().mousePressed(adjustedEvent);
+            case BOSS_DECISION -> {
+                UI ui = gamePanel.getGame().getUi();
+                Game game = gamePanel.getGame();
+
+                // Determine where to go AFTER the cutscene based on the speedrun timer toggle
+                GameState nextState = game.isSpeedrunActive() ? GameState.NAME_INPUT : GameState.CREDITS;
+
+                // USE adjustedEvent.getPoint() instead of e.getPoint()
+                if (ui.getTakeCrownBtn().contains(adjustedEvent.getPoint())) {
+                    game.getCutsceneState().startCutscene("OUTRO_BAD", nextState);
+                    GameState.state = GameState.CUTSCENE;
+                } else if (ui.getThrowCrownBtn().contains(adjustedEvent.getPoint())) {
+                    game.getCutsceneState().startCutscene("OUTRO_GOOD", nextState);
+                    GameState.state = GameState.CUTSCENE;
+                }
+            }
         }
     }
 
@@ -115,5 +148,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
 
-
+    public boolean isSpeedrunActive() {
+        return Main.GameStates.OptionsScreen.speedrunTimer;
+    }
 }

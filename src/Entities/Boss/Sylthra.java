@@ -2,6 +2,7 @@ package Entities.Boss;
 
 import Entities.Player;
 import Main.Core.Game;
+import Main.GameState;
 import Utils.LoadSave;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -185,7 +186,10 @@ public class Sylthra extends Boss {
                         newState(IDLE);
                     }
                     case HIT -> newState(IDLE);
-                    case DEAD -> active = false;
+                    case DEAD -> {
+                        active = false;
+                        GameState.state = GameState.BOSS_DECISION;
+                    }
                 }
             }
         }
