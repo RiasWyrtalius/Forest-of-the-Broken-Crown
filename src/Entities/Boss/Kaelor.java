@@ -20,7 +20,7 @@ public class Kaelor extends Boss {
     private LevelHandler lh;
     private Font customFont;
 
-    private int survivalTick = 10 * 200; // 150 seconds * 200 UPS = 30,000 ticks
+    private int survivalTick = 150 * 200; // 150 seconds * 200 UPS = 30,000 ticks
     private boolean survivalEnded = false;
     private boolean timerStarted = false;
     private int antiCheeseTick = 0;

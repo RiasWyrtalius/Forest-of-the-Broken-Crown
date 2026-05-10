@@ -67,6 +67,7 @@ public class Sylthra extends Boss {
     @Override
     public void update(int[][] lvlData, Player player) {
         if (!active) return;
+        updateHealthStatus();
         if (firstUpdate) {
             firstUpdateCheck(lvlData);
             spawnStars();
@@ -105,20 +106,27 @@ public class Sylthra extends Boss {
 
                 // When the 3rd star is grabbed...
                 if (starsCollected >= 3) {
-
                     // 1. DEDUCT BOSS HP!
                     currentHealth -= 1;
 
-                    // 2. Play the Hit animation (or Die if HP is 0)
+                    // 2. State Management
                     if (currentHealth <= 0) {
                         newState(DEAD);
+                        // We DO NOT teleport here. Let the player stand over
+                        // the boss while the 17-frame death animation plays.
                     } else {
                         newState(HIT);
+
+                        // 3. Reset the wave (only if she's still alive)
+                        spawnStars();
+                        starsCollected = 0;
+
+                        // 4. Teleport the player back (only if she's still alive)
+                        player.getHitbox().x = player.getSpawnX();
+                        player.getHitbox().y = player.getSpawnY() - (32 * Game.SCALE);
                     }
 
-                    // 3. Reset the wave
-                    spawnStars();
-                    break; // Stop the loop so we don't crash
+                    break; // Stop the star loop
                 }
             }
         }
@@ -127,7 +135,17 @@ public class Sylthra extends Boss {
     }
 
     // --- OVERRIDE HURT TO MAKE HIM IMMUNE WITHOUT STARS ---
-    @Override public void hurt(int amount) {super.hurt(amount);}
+    @Override public void hurt(int amount) {}
+
+    public void dealStarDamage() {
+        currentHealth--;
+        if (currentHealth <= 0) {
+            newState(DEAD);
+        } else {
+            newState(HIT);
+        }
+        System.out.println("Sylthra took STAR damage! HP: " + currentHealth);
+    }
 
     private void spawnStars() {
         activeStars.clear();
@@ -144,9 +162,11 @@ public class Sylthra extends Boss {
     }
 
     private void launchProjectiles(Player player) {
-        projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + 20, projectileImgs));
-        projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + 60, projectileImgs));
-        projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + 100, projectileImgs));
+        projectiles.add(new SylthraProjectile(hitbox.x, player.getHitbox().y, projectileImgs));
+
+        // 2. Spawns a high shot and a low shot
+        projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + (20 * Game.SCALE), projectileImgs));
+        projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + (150 * Game.SCALE), projectileImgs));
     }
 
     // Custom Animation loop to chain PRE_SUMMON -> SUMMON -> Kaelor Spawn
