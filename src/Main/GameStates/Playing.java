@@ -1,6 +1,7 @@
 package Main.GameStates;
 
 import Entities.Boss.EnemyManager;
+import Entities.Boss.Sylthra;
 import Entities.NPC;
 import Entities.Player;
 import Levels.Level;
@@ -69,6 +70,10 @@ public class Playing {
         dialogueManager.draw(g);
         game.getUi().drawBossDefeated(g);
         game.getUi().drawWorldName(g);
+
+        if (enemyManager.getBoss() instanceof Sylthra sylthra) {
+            game.getUi().drawStarCounter(g, sylthra.getStarsCollected());
+        }
     }
 
     public void updateLevelOffsets() {

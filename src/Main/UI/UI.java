@@ -284,6 +284,28 @@ public class UI {
         }
     }
 
+    public void drawStarCounter(Graphics g, int starsCollected) {
+        // only draw if boss is alive and player has started collecting
+        if (starsCollected > 0) {
+            g.setFont(vcrFont.deriveFont(Font.BOLD, 30f));
+            g.setColor(Color.WHITE);
+
+            // bottom left
+            int x = 40;
+            int y = Game.GAME_HEIGHT - 40;
+
+            String text = "STARS: " + starsCollected + "/3";
+
+            // Shadow for readability
+            g.setColor(new Color(0, 0, 0, 150));
+            g.drawString(text, x + 2, y + 2);
+
+            // Main text
+            g.setColor(Color.YELLOW);
+            g.drawString(text, x, y);
+        }
+    }
+
     public void drawSpeedrunTimer(Graphics g) {
         if (!Main.GameStates.OptionsScreen.speedrunTimer) return;
 

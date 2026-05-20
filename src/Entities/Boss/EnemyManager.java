@@ -141,4 +141,11 @@ public class EnemyManager {
         }
         return found; // returns false if no boss of that type was ever loaded
     }
+
+    public Boss getBoss() {
+        if (bosses != null && !bosses.isEmpty()) {
+            return bosses.get(0);
+        }
+        return null;
+    }
 }

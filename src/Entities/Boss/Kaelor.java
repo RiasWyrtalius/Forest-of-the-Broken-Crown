@@ -20,7 +20,7 @@ public class Kaelor extends Boss {
     private LevelHandler lh;
     private Font customFont;
 
-    private int survivalTick = 150 * 200; // 150 seconds * 200 UPS = 30,000 ticks
+    private int survivalTick = 120 * 200; // 120 seconds * 200 UPS = 24,000 ticks
     private boolean survivalEnded = false;
     private boolean timerStarted = false;
     private int antiCheeseTick = 0;
@@ -302,7 +302,7 @@ public class Kaelor extends Boss {
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         super.draw(g, xLvlOffset, yLvlOffset);
 
-        drawHitbox(g, xLvlOffset, yLvlOffset);
+        //drawHitbox(g, xLvlOffset, yLvlOffset);
 
         if (lh.getLevelIndex() == 3) {
             if (!survivalEnded) {

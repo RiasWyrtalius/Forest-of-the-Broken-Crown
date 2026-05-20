@@ -207,4 +207,8 @@ public class Sylthra extends Boss {
     @Override public int getSpriteAmount() {
         return switch(enemyState) { case IDLE->7; case PRE_SUMMON->6; case SUMMON->5; case HIT->3; case DEAD->17; default->7; };
     }
+
+    public int getStarsCollected() {
+        return starsCollected;
+    }
 }
