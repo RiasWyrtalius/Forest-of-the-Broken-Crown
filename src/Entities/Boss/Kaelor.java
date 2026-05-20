@@ -202,7 +202,7 @@ public class Kaelor extends Boss {
     private void updateStationaryBehavior(Player player) {
         //lock state if atking
         if (enemyState == ATTACK) {
-            if (animationIndex >= 3 && animationIndex <= 5) {
+            if (animationIndex == 3 || animationIndex == 4) {
                 checkEnemyHit(attackBox, player);
             }
             return;
@@ -224,7 +224,7 @@ public class Kaelor extends Boss {
         walkDir = targetDir;
 
         if (enemyState == ATTACK) {
-            if (animationIndex >= 3 && animationIndex <= 5) {
+            if (animationIndex == 3 || animationIndex == 4) {
                 checkEnemyHit(attackBox, player);
             }
         } else {
@@ -353,7 +353,7 @@ public class Kaelor extends Boss {
     }
 
     private void applySurvivalReward(Player player) {
-        player.changeHealth(1);
+        player.changeHealth(2);
         player.addMana(5);
 //        System.out.println("Survival Reward granted!");
     }

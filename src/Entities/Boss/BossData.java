@@ -15,7 +15,7 @@ public enum BossData {
     SYLTHRA(2,
             120, 180,
             200f, 212f,
-            15, 1);
+            12, 1);
 
     public final int bossType;
     public final int hbWidth, hbHeight;
