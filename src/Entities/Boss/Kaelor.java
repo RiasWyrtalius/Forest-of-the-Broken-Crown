@@ -273,7 +273,7 @@ public class Kaelor extends Boss {
     }
 
     private void spawnRockWave() {
-        int rockCount = 5;
+        int rockCount = 4;
         float totalSpread = rockSpread;
         float laneWidth = totalSpread / rockCount;
         float startX = (hitbox.x + hitbox.width / 2) - (totalSpread / 2);
