@@ -75,7 +75,7 @@ public class Sylthra extends Boss {
         }
         if (inAir) updateInAir(lvlData);
 
-        // 1. Handle Kaelor Summoning Timer (2000 ticks = 10 sec)
+        //kaelor spawn
         if (summonedKaelor != null && summonedKaelor.isActive()) {
             summonedKaelor.update(lvlData, player); // Pause timer while Kaelor is alive
         } else {
@@ -86,7 +86,7 @@ public class Sylthra extends Boss {
             }
         }
 
-        // 2. Handle Projectiles (2000 ticks = 10 sec)
+        //projectile spawn
         projectileTick++;
         if (projectileTick >= 2000 && enemyState == IDLE) {
             launchProjectiles(player);
@@ -98,31 +98,27 @@ public class Sylthra extends Boss {
             if (!p.isActive()) projectiles.remove(i);
         }
 
-        // 3. Handle Stars
         for (Star s : activeStars) {
             s.update();
             if (!s.collected && player.getHitbox().intersects(s.hitbox)) {
                 s.collected = true;
                 starsCollected++;
 
-                // When the 3rd star is grabbed...
                 if (starsCollected >= 3) {
-                    // 1. DEDUCT BOSS HP!
                     currentHealth -= 1;
 
-                    // 2. State Management
+                    // battle state
                     if (currentHealth <= 0) {
                         newState(DEAD);
-                        // We DO NOT teleport here. Let the player stand over
-                        // the boss while the 17-frame death animation plays.
+                        //no tp and let death animation play.
                     } else {
                         newState(HIT);
 
-                        // 3. Reset the wave (only if she's still alive)
+                        //reset if alive.
                         spawnStars();
                         starsCollected = 0;
 
-                        // 4. Teleport the player back (only if she's still alive)
+                        // tp back if alive
                         player.getHitbox().x = player.getSpawnX();
                         player.getHitbox().y = player.getSpawnY() - (32 * Game.SCALE);
                     }
@@ -135,7 +131,6 @@ public class Sylthra extends Boss {
         updateAnimationTick();
     }
 
-    // --- OVERRIDE HURT TO MAKE HIM IMMUNE WITHOUT STARS ---
     @Override public void hurt(int amount) {}
 
     public void dealStarDamage() {
@@ -152,7 +147,7 @@ public class Sylthra extends Boss {
         activeStars.clear();
         if (globalStarSpawnPoints.isEmpty()) return;
 
-        // Shuffle the spawn points and pick the first 3
+        // random spawn points
         Collections.shuffle(globalStarSpawnPoints);
         int spawnCount = Math.min(3, globalStarSpawnPoints.size());
 
@@ -165,12 +160,11 @@ public class Sylthra extends Boss {
     private void launchProjectiles(Player player) {
         projectiles.add(new SylthraProjectile(hitbox.x, player.getHitbox().y, projectileImgs));
 
-        // 2. Spawns a high shot and a low shot
+        // High and low shot
         projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + (20 * Game.SCALE), projectileImgs));
         projectiles.add(new SylthraProjectile(hitbox.x, hitbox.y + (150 * Game.SCALE), projectileImgs));
     }
 
-    // Custom Animation loop to chain PRE_SUMMON -> SUMMON -> Kaelor Spawn
     @Override
     protected void updateAnimationTick() {
         animationTick++;

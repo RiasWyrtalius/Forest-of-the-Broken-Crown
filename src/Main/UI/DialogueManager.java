@@ -61,6 +61,12 @@ public class DialogueManager {
 
         setSpriteRow(npc);
         loadNPCAnimations(npc);
+
+        if (npcAnimations != null && npcAnimations.length > 0) {
+            if (currentAniRow >= npcAnimations.length) {
+                currentAniRow = npcAnimations.length - 1;
+            }
+        }
     }
 
     private void setSpriteRow(NPC npc) {
@@ -112,7 +118,7 @@ public class DialogueManager {
     public void update() {
         if (!active) return;
 
-        if (npcAnimations == null || npcAnimations.length == 0 || npcAnimations[currentAniRow] == null) {
+        if (npcAnimations == null || npcAnimations.length == 0 || currentAniRow >= npcAnimations.length || npcAnimations[currentAniRow] == null) {
             return;
         }
 

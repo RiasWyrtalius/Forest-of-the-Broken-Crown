@@ -19,7 +19,7 @@ public class Star {
     public void update() {
         if (collected) return;
         aniTick++;
-        if (aniTick >= 25) { // Match standard animation speed
+        if (aniTick >= 25) {
             aniTick = 0;
             aniIndex++;
             if (aniIndex >= 6) aniIndex = 0;

@@ -20,6 +20,16 @@ public class KeyboardInputs implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (GameState.state) {
             case MENU -> game.getMainMenu().keyPressed(e);
+            case CREDITS -> game.getCredits().keyPressed(e);
+            case CUTSCENE -> gamePanel.getGame().getCutsceneState().keyPressed(e);
+            case CHARACTER_SELECT -> game.getCharacterSelect().keyPressed(e);
+            case OPTIONS -> game.getOptionsScreen().keyPressed(e);
+            case LEADERBOARD -> game.getLeaderboard().keyPressed(e);
+            case NAME_INPUT  -> game.getNameInputState().keyPressed(e);
+            case PAUSED -> {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                    GameState.state = GameState.PLAYING;
+            }
             case PLAYING -> {
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     game.getPlaying().getPlayer().setDown(true);
@@ -30,16 +40,6 @@ public class KeyboardInputs implements KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
                     GameState.state = GameState.CHARACTER_SELECT;
             }
-            case CREDITS -> game.getCredits().keyPressed(e);
-            case CUTSCENE -> gamePanel.getGame().getCutsceneState().keyPressed(e);
-            case CHARACTER_SELECT -> game.getCharacterSelect().keyPressed(e);
-            case PAUSED -> {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-                    GameState.state = GameState.PLAYING;
-            }
-            case OPTIONS -> game.getOptionsScreen().keyPressed(e);
-            case LEADERBOARD -> game.getLeaderboard().keyPressed(e);
-            case NAME_INPUT  -> game.getNameInputState().keyPressed(e);
         }
     }
 

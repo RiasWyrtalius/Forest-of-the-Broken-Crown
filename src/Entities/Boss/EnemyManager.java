@@ -35,21 +35,18 @@ public class EnemyManager {
                 int green = c.getGreen();
                 int blue = c.getBlue();
 
-                // 1. Identification Check: Does the pixel belong to the BOSS_LAYER (Blue 199)?
+                // check if boss layer value
                 if (HelpMethods.isBossPixel(blue)) {
 
-                    // 2. Identify WHICH boss it is using the Green channel (101, 102, 103)
                     int bossType = HelpMethods.getBossType(green);
 
                     if (bossType != -1) {
                         float spawnX = i * Game.TILES_SIZE;
-                        // Nudge Y based on scale to keep them on the floor
                         float spawnY = j * Game.TILES_SIZE - (30 * Game.SCALE);
                         bosses.add(BossFactory.CreateBoss(bossType, spawnX, spawnY));
                     }
 
-                    // 3. Identification Check for Sylthra's Star Spawns
-                    // Note: STAR_SPAWN_ID is 99 in your Constants.java
+                    // if sylthra
                     if (green == STAR_SPAWN_ID) {
                         float spawnX = i * Game.TILES_SIZE;
                         float spawnY = j * Game.TILES_SIZE;

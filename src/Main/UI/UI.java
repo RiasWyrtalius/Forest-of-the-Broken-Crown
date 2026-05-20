@@ -27,6 +27,10 @@ public class UI {
     private long msgTimer = 0;
     private final long MESSAGE_DURATION = 2000; // this shows the message for 2 seconds
 
+    private String worldNameMsg = "";
+    private long worldMsgTimer = 0;
+    private final long WORLD_MSG_DURATION = 3500;
+
     private Rectangle takeCrownBtn, throwCrownBtn;
     private boolean decisionActive = false;
 
@@ -364,36 +368,33 @@ public class UI {
         g.setColor(Color.WHITE);
 
         String title = "THE CROWN LIES BEFORE YOU...";
-        // Now this method call will work!
         int titleX = getXPosForCenteredText(title, g);
         g.drawString(title, titleX, 300);
 
-        // Draw Buttons with specific theme colors
-        drawDecisionButton(g, takeCrownBtn, "CLAIM IT", new Color(150, 0, 0)); // Dark Red
-        drawDecisionButton(g, throwCrownBtn, "DESTROY IT", new Color(0, 150, 100)); // Forest Green
+        drawDecisionButton(g, takeCrownBtn, "CLAIM IT", new Color(150, 0, 0));
+        drawDecisionButton(g, throwCrownBtn, "DESTROY IT", new Color(0, 150, 100));
     }
 
     private void drawDecisionButton(Graphics g, Rectangle r, String text, Color theme) {
         Graphics2D g2 = (Graphics2D) g;
 
-        // Fill the button background
+        // background btn
         g2.setColor(new Color(46, 34, 46));
         g2.fillRect(r.x, r.y, r.width, r.height);
 
-        // DRAW THICK BORDER
+        // thick border
         g2.setColor(theme);
-        // This handles the "setStroke" error - 3 is the thickness in pixels
         g2.setStroke(new BasicStroke(3));
         g2.drawRect(r.x, r.y, r.width, r.height);
 
-        // Reset stroke so other UI elements aren't thick
+        // reset stroke
         g2.setStroke(new BasicStroke(1));
 
-        // Draw the text inside
+        // text
         g2.setFont(vcrFont.deriveFont(22f));
         g2.setColor(Color.WHITE);
 
-        // Center text inside the button
+        // center text
         int textWidth = g2.getFontMetrics().stringWidth(text);
         int textX = r.x + (r.width / 2) - (textWidth / 2);
         int textY = r.y + (r.height / 2) + 10; // Simple vertical nudge
@@ -401,12 +402,58 @@ public class UI {
         g2.drawString(text, textX, textY);
     }
 
+    public void drawWorldName(Graphics g) {
+        if (!worldNameMsg.isEmpty()) {
+            long elapsed = System.currentTimeMillis() - worldMsgTimer;
+
+            if (elapsed < WORLD_MSG_DURATION) {
+                int alpha = getAlpha(elapsed);
+
+                g.setFont(vcrFont.deriveFont(Font.BOLD, 50f));
+                FontMetrics fm = g.getFontMetrics();
+
+                int msgX = (Game.GAME_WIDTH / 2) - (fm.stringWidth(worldNameMsg) / 2);
+                int msgY = 120;
+                int shadowAlpha = (int) (180 * (alpha / 255.0f));
+
+                // text shadow
+                g.setColor(new Color(0, 0, 0, shadowAlpha));
+                g.drawString(worldNameMsg, msgX + 3, msgY + 3);
+
+                // main text
+                g.setColor(new Color(255, 255, 255, alpha));
+                g.drawString(worldNameMsg, msgX, msgY);
+
+            } else {
+                worldNameMsg = ""; // reset timer
+            }
+        }
+    }
+
+    private int getAlpha(long elapsed) {
+        int alpha = 255;
+        int fadeStartDelay = 2000; // 2 sec
+
+        // if past 2 sec, fade
+        if (elapsed > fadeStartDelay) {
+            float fadeProgress = (float) (elapsed - fadeStartDelay) / (WORLD_MSG_DURATION - fadeStartDelay);
+            alpha = 255 - (int) (255 * fadeProgress);
+            //safety check
+            if (alpha < 0) alpha = 0;
+        }
+        return alpha;
+    }
+
+    public void setWorldNameMsg(String msg) {
+        this.worldNameMsg = msg;
+        this.worldMsgTimer = System.currentTimeMillis();
+    }
+
     public int getXPosForCenteredText(String text, Graphics g) {
         int length = (int) g.getFontMetrics().getStringBounds(text, g).getWidth();
         return Game.GAME_WIDTH / 2 - length / 2;
     }
 
-    // Add these getters for the input handler
     public Rectangle getTakeCrownBtn() { return takeCrownBtn; }
     public Rectangle getThrowCrownBtn() { return throwCrownBtn; }
 }

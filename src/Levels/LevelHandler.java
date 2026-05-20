@@ -132,6 +132,17 @@ public class LevelHandler {
         this.currentLevelNum = levelNum;
         importAllLevelsAtlases();
 
+        String worldName = switch (levelNum) {
+            case 1 -> "THE FORSAKEN FOREST";
+            case 2 -> "FOREST: EMBRYN'S LAIR";
+            case 3 -> "THE DEEP CAVES";
+            case 4 -> "CAVES: KAELOR'S DOMAIN";
+            case 5 -> "THE BROKEN CASTLE";
+            case 6 -> "CASTLE: SYLTHRA'S PINNACLE";
+            default -> "UNKNOWN REGION";
+        };
+        game.getUi().setWorldNameMsg(worldName);
+
         Level currentLevel = levels.get(lvlIndex);
         game.getObjectManager().loadObjects(currentLevel);
 

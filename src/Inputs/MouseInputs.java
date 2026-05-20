@@ -44,7 +44,6 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
                 // Determine where to go AFTER the cutscene based on the speedrun timer toggle
                 GameState nextState = game.isSpeedrunActive() ? GameState.NAME_INPUT : GameState.CREDITS;
 
-                // USE adjustedEvent.getPoint() instead of e.getPoint()
                 if (ui.getTakeCrownBtn().contains(adjustedEvent.getPoint())) {
                     game.getCutsceneState().startCutscene("OUTRO_BAD", nextState);
                     GameState.state = GameState.CUTSCENE;
@@ -81,7 +80,6 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
                 // Determine where to go AFTER the cutscene based on the speedrun timer toggle
                 GameState nextState = game.isSpeedrunActive() ? GameState.NAME_INPUT : GameState.CREDITS;
 
-                // USE adjustedEvent.getPoint() instead of e.getPoint()
                 if (ui.getTakeCrownBtn().contains(adjustedEvent.getPoint())) {
                     game.getCutsceneState().startCutscene("OUTRO_BAD", nextState);
                     GameState.state = GameState.CUTSCENE;
@@ -147,8 +145,4 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
 
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
-
-    public boolean isSpeedrunActive() {
-        return Main.GameStates.OptionsScreen.speedrunTimer;
-    }
 }

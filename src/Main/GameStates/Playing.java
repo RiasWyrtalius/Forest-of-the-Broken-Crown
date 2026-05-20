@@ -68,6 +68,7 @@ public class Playing {
         game.getUi().drawSaveMessage(g);
         dialogueManager.draw(g);
         game.getUi().drawBossDefeated(g);
+        game.getUi().drawWorldName(g);
     }
 
     public void updateLevelOffsets() {
