@@ -40,7 +40,7 @@ public class Player extends Entity{
     //Attack
     private boolean canStomp = true;
     private int stompCDTick = 0;
-    private final int STOMP_CD = 1000;
+    private final int STOMP_CD = 600;
 
     //Lives
     public boolean invincible = false;
@@ -333,87 +333,25 @@ public class Player extends Entity{
 
     private void updatePos() {
         moving = false;
+        handleInputAndState();
+        applyGravity();
+        applyHorizontalMovement();
+    }
 
-        if (!inAir && !Utils.HelpMethods.isEntityOnFloor(hitbox, lvlData)) {
+    private void applyGravity() {
+        if (climbing) return; // ignore if on ladder
+
+        if (!isEntityOnFloor(hitbox, lvlData)) {
             inAir = true;
         }
 
-        if (!left && !right && !jump && !inAir && !knockbackActive && extraHSpeed == 0) {
-            return;
-        }
-
-        float xSpeed = 0;
-
-        if (knockbackActive) {
-            knockbackTick++;
-            if (knockbackTick >= KNOCKBACK_DURATION) {
-                knockbackActive = false;
-            } else {
-                xSpeed = knockbackSpeed * knockbackDir;
-            }
-        } else {
-            climbing = HelpMethods.isEntityOnLadder(hitbox, lvlData);
-
-            if (climbing) {
-                inAir = false;
-                airSpeed = 0;
-                updateClimbing();
-            } else {
-                if (jump) jump();
-
-                if (!inAir && down) {
-                    for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
-                        if (hitbox.x + hitbox.width > p.getHitbox().x && hitbox.x < p.getHitbox().x + p.getHitbox().width) {
-                            if (Math.abs((hitbox.y + hitbox.height) - p.getHitbox().y) < 5) {
-                                inAir = true;
-                                airSpeed = 0.5f;
-                                dropThroughTick = 15;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            xSpeed += extraHSpeed;
-            extraHSpeed *= 0.92f;
-            if (Math.abs(extraHSpeed) < 0.1f) extraHSpeed = 0;
-
-            if (left) {
-                xSpeed -= walkSpeed;
-                faceDirection = WALKL;
-            }
-            if (right) {
-                xSpeed += walkSpeed;
-                faceDirection = WALKR;
-            }
-        }
-
-        if (down && jump) {
-            dropThroughTick = 20;
-        }
-
-        // VERTICAL (Gravity)
         if (inAir) {
             if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += characterData.defaultGravity;
 
-                if (dropThroughTick > 0) {
-                    dropThroughTick--;
-                } else {
-                    if (airSpeed > 0 && !down) {
-                        for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
-                            if (hitbox.intersects(p.getHitbox())) {
-                                if (hitbox.y + hitbox.height - airSpeed <= p.getHitbox().y) {
-                                    hitbox.y = p.getHitbox().y - hitbox.height;
-                                    resetInAir();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                if (dropThroughTick > 0) dropThroughTick--;
+                else checkPlatformCollision();
             } else {
                 hitbox.y = getEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
                 if (airSpeed > 0) {
@@ -428,20 +366,88 @@ public class Player extends Entity{
                 }
             }
         }
+    }
 
-        // HORIZONTAL (Collision)
+    private void applyHorizontalMovement() {
+        // setup speed
+        float xSpeed = 0;
+        if (knockbackActive) {
+            xSpeed = knockbackSpeed * knockbackDir;
+        } else {
+            xSpeed += extraHSpeed;
+            extraHSpeed *= 0.92f;
+            if (Math.abs(extraHSpeed) < 0.1f) extraHSpeed = 0;
+
+            if (left) {
+                xSpeed -= walkSpeed;
+                faceDirection = WALKL;
+            }
+            if (right) {
+                xSpeed += walkSpeed;
+                faceDirection = WALKR;
+            }
+        }
+
+        // resolve collision
         if (xSpeed != 0) {
             if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.x += xSpeed;
-
-                // play animation if normal walking
                 if (extraHSpeed == 0 && !knockbackActive) moving = true;
             } else {
                 hitbox.x = getEntityXPosNextToWall(hitbox, xSpeed);
                 extraHSpeed = 0;
-
-                // if wall hit, cancel kb
                 if (knockbackActive) knockbackActive = false;
+            }
+        }
+    }
+
+    private void handleInputAndState() {
+        if (jump) jump();
+
+        climbing = HelpMethods.isEntityOnLadder(hitbox, lvlData);
+        if (climbing) {
+            inAir = false;
+            airSpeed = 0;
+            updateClimbing();
+        } else {
+            if (!inAir && down) {
+                handlePlatformDrop();
+            }
+        }
+
+        if (knockbackActive) {
+            knockbackTick++;
+            if (knockbackTick >= KNOCKBACK_DURATION) {
+                knockbackActive = false;
+            }
+        }
+    }
+
+    private void handlePlatformDrop() {
+        for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
+            if (hitbox.x + hitbox.width > p.getHitbox().x && hitbox.x < p.getHitbox().x + p.getHitbox().width) {
+                if (Math.abs((hitbox.y + hitbox.height) - p.getHitbox().y) < 5) {
+                    inAir = true;
+                    airSpeed = 0.5f;
+                    dropThroughTick = 15;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkPlatformCollision() {
+        // if moving downwards and not pressing down
+        if (airSpeed > 0 && !down) {
+            for (Platform p : Game.getInstance().getPlaying().getObjectManager().getPlatforms()) {
+                if (hitbox.intersects(p.getHitbox())) {
+                    // if above platform.
+                    if (hitbox.y + hitbox.height - airSpeed <= p.getHitbox().y) {
+                        hitbox.y = p.getHitbox().y - hitbox.height;
+                        resetInAir();
+                        break;
+                    }
+                }
             }
         }
     }
@@ -502,21 +508,10 @@ public class Player extends Entity{
     }
 
     public void resetAll() {
-        resetDirectionBooleans();
+        teleportToSpawn();
         deathCounter++;
-        inAir        = true;
-        moving       = false;
-        playerAction = IDLE;
         this.life    = maxLife;
         this.manaBottles = maxManaBottles;
-
-        hitbox.x = x;
-        hitbox.y = y;
-
-        // Check if respawn point is in the air
-        if (!isEntityOnFloor(hitbox, lvlData)) {
-            inAir = true;
-        }
     }
 
     public void teleportToSpawn() {
@@ -525,9 +520,14 @@ public class Player extends Entity{
         moving = false;
         playerAction = IDLE;
 
-        //spawn point
+        // Spawn point
         hitbox.x = x;
         hitbox.y = y;
+
+        // if in air
+        if (lvlData != null && !isEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
     }
 
     public void updateLevelData(int[][] lvlData) {

@@ -36,33 +36,13 @@ public class UI {
 
     public UI(Game game) {
         this.game = game;
-        loadHeartImages();
-        loadManaImages();
+        heartSprite = loadUIImages(LoadSave.Hearts_Atlas);
+        manaSprite = loadUIImages(LoadSave.Mana_Atlas);
         customFont  = LoadSave.getFont("Font/GrapeSoda.ttf").deriveFont(PLAIN, 40);
         vcrFont     = LoadSave.getFont("Font/VCR.ttf").deriveFont(Font.PLAIN, 30f);
 
         takeCrownBtn = new Rectangle(Game.GAME_WIDTH / 2 - 250, 400, 200, 50);
         throwCrownBtn = new Rectangle(Game.GAME_WIDTH / 2 + 50, 400, 200, 50);
-    }
-
-    private void loadHeartImages() {
-        BufferedImage spriteSheet = LoadSave.getSpriteAtlas(LoadSave.Hearts_Atlas);
-
-        int width = spriteSheet.getWidth() / 2;
-        int height = spriteSheet.getHeight();
-
-        heartSprite[0] = spriteSheet.getSubimage(0, 0, width, height);
-        heartSprite[1] = spriteSheet.getSubimage(width, 0, width, height);
-    }
-
-    private void loadManaImages() {
-        BufferedImage spriteSheet = LoadSave.getSpriteAtlas(LoadSave.Mana_Atlas);
-
-        int width = spriteSheet.getWidth() / 2;
-        int height = spriteSheet.getHeight();
-
-        manaSprite[0] = spriteSheet.getSubimage(0, 0, width, height);
-        manaSprite[1] = spriteSheet.getSubimage(width, 0, width, height);
     }
 
     public void draw(Graphics g) {
@@ -113,13 +93,33 @@ public class UI {
         drawSpeedrunTimer(g);
     }
 
+    /**
+     * HEARTS / MANA
+     * */
+    private BufferedImage[] loadUIImages(String atlasPath) {
+        BufferedImage spriteSheet = LoadSave.getSpriteAtlas(atlasPath);
+        int width = spriteSheet.getWidth() / 2;
+        int height = spriteSheet.getHeight();
+
+        return new BufferedImage[]{
+                spriteSheet.getSubimage(0, 0, width, height),
+                spriteSheet.getSubimage(width, 0, width, height)
+        };
+    }
+
+    /**
+     * CHARACTER SELECT
+     * */
+
     public void drawCharacterStats(Graphics g, PlayerCharacter selectedHero, int mouseX, int mouseY) {
         tooltipText = null;
 
         drawHeroLore(g, selectedHero);
         drawVitalStats(g, selectedHero);
-        drawPassiveSection(g, selectedHero, mouseX, mouseY);
-        drawAbilitySection(g, selectedHero, mouseX, mouseY);
+        drawStatSection(g, "Passive: ", selectedHero.getPassive().getName(), selectedHero.getPassive().getDescription(),
+                Color.YELLOW, slotY + 100, mouseX, mouseY);
+        drawStatSection(g, "Skill: ", selectedHero.getSkill(game.getPlayer()).getName(), selectedHero.getSkill(game.getPlayer()).getSkillDescription(),
+                new Color(0, 255, 150), slotY + 180, mouseX, mouseY);
 
         if (tooltipText != null) {
             drawTooltip(g, mouseX, mouseY, tooltipText);
@@ -135,6 +135,29 @@ public class UI {
         drawWrappedString(g, hero.getDescription(), descX + 20, slotY + 300, descWidth - 40);
     }
 
+    private void drawStatSection(Graphics g, String label, String name, String desc, Color nameColor, int labelY, int mouseX, int mouseY) {
+        g.setFont(customFont.deriveFont(Font.PLAIN, 25));
+        int labelX = slotX + 500;
+
+        // label
+        g.setColor(new Color(170, 168, 168));
+        g.drawString(label, labelX, labelY);
+
+        // name
+        int labelWidth = g.getFontMetrics().stringWidth(label);
+        g.setColor(nameColor);
+        g.drawString(name, labelX + labelWidth, labelY);
+
+        // tooltip
+        int height = g.getFontMetrics().getHeight();
+        int nameWidth = g.getFontMetrics().stringWidth(name);
+        int textTop = labelY - height + 10;
+
+        if (isMouseOver(mouseX, mouseY, labelX + labelWidth, textTop, nameWidth, height)) {
+            tooltipText = desc;
+        }
+    }
+
     private void drawVitalStats(Graphics g, PlayerCharacter hero) {
         g.setFont(customFont);
 
@@ -147,58 +170,6 @@ public class UI {
         g.drawImage(manaSprite[0], slotX, slotY + 150, 64, 64, null);
         g.setColor(new Color(0, 150, 255));
         g.drawString(String.valueOf(hero.getMana()), slotX + 70, slotY + 190);
-    }
-
-    private void drawPassiveSection(Graphics g, PlayerCharacter hero, int mouseX, int mouseY) {
-        g.setFont(customFont.deriveFont(Font.PLAIN, 25));
-        int labelX = slotX + 500;
-        int labelY = slotY + 100;
-
-        //label
-        g.setColor(new Color(170, 168, 168));
-        String label = "Passive: ";
-        g.drawString(label, labelX, labelY);
-
-        //name
-        int labelWidth = g.getFontMetrics().stringWidth(label);
-        g.setColor(Color.YELLOW);
-        String passiveName = hero.getPassive().getName();
-        g.drawString(passiveName, labelX + labelWidth, labelY);
-
-        //tooltip check
-        int height = g.getFontMetrics().getHeight();
-        int nameWidth = g.getFontMetrics().stringWidth(passiveName);
-        int textTop = labelY - height + 10; // Calculate the top of the letters
-
-        if (isMouseOver(mouseX, mouseY, labelX + labelWidth, textTop, nameWidth, height)) {
-            tooltipText = hero.getPassive().getDescription();
-        }
-    }
-
-    private void drawAbilitySection(Graphics g, PlayerCharacter hero, int mouseX, int mouseY) {
-        g.setFont(customFont.deriveFont(Font.PLAIN, 25));
-        int labelX = slotX + 500;
-        int labelY = slotY + 180;
-
-        //label
-        g.setColor(new Color(170, 168, 168));
-        String label = "Skill: ";
-        g.drawString(label, labelX, labelY);
-
-        //SKILL NAME
-        int labelWidth = g.getFontMetrics().stringWidth(label);
-        g.setColor(new Color(0, 255, 150));
-
-        String skillName = hero.getSkill(game.getPlayer()).getName();
-        g.drawString(skillName, labelX + labelWidth, labelY);
-
-        int height = g.getFontMetrics().getHeight();
-        int nameWidth = g.getFontMetrics().stringWidth(skillName);
-        int textTop = labelY - height + 10; // Same calculation
-
-        if (isMouseOver(mouseX, mouseY, labelX + labelWidth, textTop, nameWidth, height)) {
-            tooltipText = hero.getSkill(game.getPlayer()).getSkillDescription();
-        }
     }
 
     private void drawTooltip(Graphics g, int x, int y, String description) {
@@ -244,6 +215,9 @@ public class UI {
         g.drawString(line.toString(), x, currentY);
     }
 
+    /**
+     * SAVE
+     * */
     public void drawSaveMessage(Graphics g) {
         if (!saveMessage.isEmpty()) {
             long elapsed = System.currentTimeMillis() - msgTimer;
@@ -272,6 +246,9 @@ public class UI {
         g.drawString(text, x, y);
     }
 
+    /**
+     * GENERAL UI
+     **/
     public static void drawHoverableButton(Graphics g, int x, int y, String label, boolean isHovered, Font font, Color mainColor) {
         g.setFont(font);
 
@@ -341,24 +318,6 @@ public class UI {
         }
     }
 
-    private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-    }
-
-    public void setSaveMessage(String msg) {
-        this.saveMessage = msg;
-        this.msgTimer = System.currentTimeMillis();
-    }
-
-    public void setBossMsg(String msg) {
-        this.bossDefeatMsg = msg;
-        this.msgTimer = System.currentTimeMillis();
-    }
-
-    public String getFormattedTime() {
-        return formatTime(game.getSpeedrunTicks());
-    }
-
     public void drawBossDecision(Graphics g) {
         // Semi-transparent background
         g.setColor(new Color(0, 0, 0, 200));
@@ -402,6 +361,9 @@ public class UI {
         g2.drawString(text, textX, textY);
     }
 
+    /**
+     * WORLD
+     * */
     public void drawWorldName(Graphics g) {
         if (!worldNameMsg.isEmpty()) {
             long elapsed = System.currentTimeMillis() - worldMsgTimer;
@@ -430,6 +392,29 @@ public class UI {
         }
     }
 
+    public void setWorldNameMsg(String msg) {
+        this.worldNameMsg = msg;
+        this.worldMsgTimer = System.currentTimeMillis();
+    }
+
+    public void setSaveMessage(String msg) {
+        this.saveMessage = msg;
+        this.msgTimer = System.currentTimeMillis();
+    }
+
+    public void setBossMsg(String msg) {
+        this.bossDefeatMsg = msg;
+        this.msgTimer = System.currentTimeMillis();
+    }
+
+    public String getFormattedTime() {
+        return formatTime(game.getSpeedrunTicks());
+    }
+
+    private boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+    }
+
     private int getAlpha(long elapsed) {
         int alpha = 255;
         int fadeStartDelay = 2000; // 2 sec
@@ -442,11 +427,6 @@ public class UI {
             if (alpha < 0) alpha = 0;
         }
         return alpha;
-    }
-
-    public void setWorldNameMsg(String msg) {
-        this.worldNameMsg = msg;
-        this.worldMsgTimer = System.currentTimeMillis();
     }
 
     public int getXPosForCenteredText(String text, Graphics g) {

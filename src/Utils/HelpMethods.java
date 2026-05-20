@@ -15,20 +15,17 @@ import static Utils.Constants.PlayerConstants.PLAYER_SPAWN;
 
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
-        // Check Corners
-        if (!IsSolid(x, y, lvlData)) // Top-Left
-            if (!IsSolid(x + width, y, lvlData)) // Top-Right
-                if (!IsSolid(x, y + height, lvlData)) // Bottom-Left
-                    if (!IsSolid(x + width, y + height, lvlData)) // Bottom-Right
+        // if any is solid then u cant move here
+        if (IsSolid(x, y, lvlData)) return false;                              // Top-Left
+        if (IsSolid(x + width, y, lvlData)) return false;                   // Top-Right
+        if (IsSolid(x, y + height, lvlData)) return false;                  // Bottom-Left
+        if (IsSolid(x + width, y + height, lvlData)) return false;       // Bottom-Right
+        if (IsSolid(x, y + (height / 2), lvlData)) return false;            // Left-Middle
+        if (IsSolid(x + width, y + (height / 2), lvlData)) return false; // Right-Middle
+        if (IsSolid(x + (width / 2), y, lvlData)) return false;             // Top-Middle
+        if (IsSolid(x + (width / 2), y + height, lvlData)) return false; // Bottom-Middle
 
-                        if (!IsSolid(x, y + (height / 2), lvlData)) // Left-Middle
-                            if (!IsSolid(x + width, y + (height / 2), lvlData)) // Right-Middle
-
-                                if (!IsSolid(x + (width / 2), y, lvlData)) // Top-Middle
-                                    if (!IsSolid(x + (width / 2), y + height, lvlData)) // Bottom-Middle
-
-                                        return true; //if solid then no return
-        return false;
+        return true; // space is clear or air
     }
 
     public static boolean IsSolid(float x, float y, int[][] lvlData) {
@@ -115,25 +112,14 @@ public class HelpMethods {
                     playerSpawn.y = j * Game.TILES_SIZE;
                     //System.out.println("Spawn Found at Tile: " + i + ", " + j);
                     lvlData[j][i] = AIR;
-                } else if ( blueValue == VASE_COLOR  ||
-                        blueValue == SPIKE_COLOR ||
-                        blueValue == PLATFORM_COLOR ||
-                        blueValue == NINO_TQ     ||
-                        blueValue == CHAD_TB     ||
-                        blueValue == CHARLZ_TS   ||
-                        blueValue == RILEY_TZ    ||
-                        blueValue == DENVER_TC   ||
-                        blueValue == BOSS_LAYER) {
-                    lvlData[j][i] = AIR;
-                } else if (blueValue == CRUMBLING_TILE_COLOR) {
-                    lvlData[j][i] = INVISIBLE_SOLID;
-                } else if (blueValue == LADDER_COLOR) {
-                    lvlData[j][i] = LADDER_COLOR; // 132
                 } else {
-                    if (redValue >= 50) {
-                        lvlData[j][i] = AIR;
-                    } else {
-                        lvlData[j][i] = redValue;
+                    switch (blueValue) {
+                        case VASE_COLOR, SPIKE_COLOR, PLATFORM_COLOR, BOSS_LAYER,
+                             NINO_TQ, CHAD_TB, CHARLZ_TS, RILEY_TZ, DENVER_TC ->
+                            lvlData[j][i] = AIR;
+                        case CRUMBLING_TILE_COLOR -> lvlData[j][i] = INVISIBLE_SOLID;
+                        case LADDER_COLOR -> lvlData[j][i] = LADDER_COLOR; // 132
+                        default -> lvlData[j][i] = (redValue >= 50) ? AIR : redValue;
                     }
                 }
             }
