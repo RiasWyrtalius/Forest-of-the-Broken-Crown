@@ -25,6 +25,7 @@ These are not noble heroes, but individuals desperate for meaning in a world tha
 | **Kaelthorn, The Wolf Knight** | **Steady Step (Skill):** Hold to concentrate Kaelthorn’s strength into his stance. Releasing the charge propels him upward, with height increasing the longer the power is held. <br> **Feral Mending (Passive):** Every 15 seconds, Kaelthorn’s knightly resolve and lupine spirit harmonize, restoring 1 health. | <img width="150" alt="Kaelthorn" src="https://github.com/user-attachments/assets/db10596f-a273-4f09-b80a-938f39f654ed" /> |
 | **Sylvara, The Owl Mage** | **Zephyr Bound (Skill):** Harness a burst of magical wind to kick off the air, allowing for a second jump mid-flight. <br> **Sylph’s Descent (Passive):** Gravity holds less sway over Sylvara; she glides gently toward the earth after any leap. | <img width="150" alt="Sylvara" src="https://github.com/user-attachments/assets/47827a27-399e-4c5a-a199-1fdd6f64cab2" /> |
 
+## Bosses
 | Boss | Mechanics | Sprite Preview |
 | :--- | :--- | :--- |
 | **Embryn, Rotfang Boar** | **Charge:** Embryn charges and lunges at you with great speed and strength |<img width="642" height="407" alt="image" src="https://github.com/user-attachments/assets/bb3f8bee-53fe-4ba4-b5d6-13eeb3c4e303" /> |
