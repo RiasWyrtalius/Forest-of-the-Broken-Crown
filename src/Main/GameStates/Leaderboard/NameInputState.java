@@ -6,6 +6,7 @@ import Utils.LeaderboardEntry;
 import Utils.LoadSave;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class NameInputState {
     private Game game;
@@ -61,8 +62,9 @@ public class NameInputState {
         String time = game.getUi().getFormattedTime();
         int deaths = game.getPlaying().getPlayer().getDeathCounter();
         long ticks = game.getSpeedrunTicks();
-
+        ArrayList<LeaderboardEntry> list = LoadSave.GetLeaderboard();
         LoadSave.AddLeaderboardEntry(new LeaderboardEntry(finalName, hero, time, deaths, ticks));
+        LoadSave.SaveLeaderboardAsText(list);
 
         // Reset for next time and move to Leaderboard
         playerName.setLength(0);

@@ -84,7 +84,7 @@ public class Game implements Runnable {
         gamePanel.requestFocus();
         startGameLoop();
         instance = this;
-        seedLeaderboard();
+        //seedLeaderboard();
     }
 
     public void initClasses() {

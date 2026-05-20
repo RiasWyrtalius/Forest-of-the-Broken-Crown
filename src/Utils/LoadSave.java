@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -179,14 +180,40 @@ public class LoadSave {
     }
 
     public static ArrayList<LeaderboardEntry> GetLeaderboard() {
-        File file = new File(LEADERBOARD_FILE);
-        if (!file.exists()) return new ArrayList<>();
+        ArrayList<LeaderboardEntry> entries = new ArrayList<>();
+        File file = new File("leaderboard.txt");
+        if (!file.exists()) return entries;
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (ArrayList<LeaderboardEntry>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            // If the file is corrupted, return empty list
-            return new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    entries.add(new LeaderboardEntry(parts[0], parts[1], parts[2],
+                            Integer.parseInt(parts[3]), Long.parseLong(parts[4])));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return entries;
+    }
+
+    public static void SaveLeaderboardAsText(ArrayList<LeaderboardEntry> entries) {
+        // Keep only top 10 best (lowest ticks)
+        entries.sort(Comparator.comparingLong(LeaderboardEntry::getRawTicks));
+        if (entries.size() > 10) {
+            entries = new ArrayList<>(entries.subList(0, 10));
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter("leaderboard.txt"))) {
+            for (LeaderboardEntry e : entries) {
+                writer.println(e.getName() + "," + e.getCharacter() + "," +
+                        e.getTime() + "," + e.getDeaths() + "," + e.getRawTicks());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 }
