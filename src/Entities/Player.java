@@ -521,8 +521,8 @@ public class Player extends Entity{
         playerAction = IDLE;
 
         // Spawn point
-        hitbox.x = x;
-        hitbox.y = y;
+        hitbox.x = (spawnX != 0) ? spawnX : x;
+        hitbox.y = (spawnY != 0) ? spawnY : y;
 
         // if in air
         if (lvlData != null && !isEntityOnFloor(hitbox, lvlData)) {

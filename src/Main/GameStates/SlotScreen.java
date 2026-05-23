@@ -5,6 +5,7 @@ import Main.Core.Game;
 import Main.GameState;
 import Main.UI.UI;
 import Utils.LoadSave;
+import Entities.PlayerCharacter;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -19,6 +20,7 @@ public class SlotScreen {
     private Game game;
     private String mode = "SAVE";
     private Font saveMsgFont;
+    private GameState returnState = GameState.PLAYING;
 
     //animation
     private BufferedImage[][] animations;
@@ -48,7 +50,7 @@ public class SlotScreen {
 
     private void loadAnimations() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.SaveBg);
-        animations = new BufferedImage[3][8];
+        animations = new BufferedImage[3][9];
 
         for (int j = 0; j < animations.length; j++) {
             for (int i = 0; i < GetSpriteAmount(j); i++) {
@@ -75,7 +77,7 @@ public class SlotScreen {
                     aniIndex = 0;
                 } else if (currentState == CLOSING) {
                     active = false; // Disable drawing
-                    GameState.state = GameState.PLAYING; // Return to game
+                    GameState.state = returnState; // Return to game
                 } else {
                     aniIndex = 0; // Stay on the 1 sprite in Row 1
                 }
@@ -89,7 +91,8 @@ public class SlotScreen {
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
-        g.drawImage(animations[currentState][aniIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        int safeIndex = Math.min(aniIndex, GetSpriteAmount(currentState) - 1);
+        g.drawImage(animations[currentState][safeIndex], 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
         if (currentState == OPENED) {
             drawUIElements(g);
@@ -184,8 +187,10 @@ public class SlotScreen {
             fw.write(game.getPlayer().getHitbox().x + "\n");
             fw.write(game.getPlayer().getHitbox().y + "\n");
             fw.write(game.getLevelHandler().getCurrentLevelNum() + "\n");
+            fw.write(game.getPlayer().getCharacterData().name() + "\n");
             fw.close();
 
+            game.getPlayer().setSpawn(game.getPlayer().getHitbox().x, game.getPlayer().getHitbox().y);
             game.getUi().setSaveMessage("Game Progress Saved!");
             GameState.state = GameState.PLAYING;
 
@@ -202,6 +207,8 @@ public class SlotScreen {
             float x = Float.parseFloat(br.readLine().trim());
             float y = Float.parseFloat(br.readLine().trim());
             int levelNum = Integer.parseInt(br.readLine().trim());
+            String charName = br.readLine().trim();
+            PlayerCharacter character = PlayerCharacter.valueOf(charName);
 
             // load world assets
             game.getLevelHandler().loadLevel(levelNum);
@@ -213,6 +220,8 @@ public class SlotScreen {
             }
 
             // place player to saved location.
+            game.initPlayerCharacter(character, levelNum);
+            game.getPlayer().setSpawn(x, y);
             game.getPlayer().getHitbox().x = x;
             game.getPlayer().getHitbox().y = y;
             game.getPlayer().updateLevelData(game.getLevelHandler().getCurrentLevel().getLevelData());
@@ -245,6 +254,7 @@ public class SlotScreen {
 
     //HELPER
     public void setMode(String mode) {
+        this.returnState = mode.equals("LOAD") ? GameState.MENU : GameState.PLAYING;
         this.mode = mode;
         this.active = true;
         this.currentState = OPENING;

@@ -130,6 +130,7 @@ public class Game implements Runnable {
 
         player.setX(spawn.x);
         player.setY(spawn.y - (player.getHitbox().height - TILES_SIZE));
+        player.setSpawn(spawn.x, spawn.y - (player.getHitbox().height - TILES_SIZE));
         player.updateLevelData(cur.getLevelData());
         int savedLife = player.getLife();   // save lives before reset
         player.resetAll();                  // reset position/state

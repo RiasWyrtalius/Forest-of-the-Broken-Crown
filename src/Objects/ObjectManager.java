@@ -258,8 +258,8 @@ public class ObjectManager {
             if (s.getHitbox().intersects(p.getHitbox())) {
                 switch (s.getSpriteIndex()) {
                     case SPIKE_FLOOR_MID, SPIKE_FLOOR_LEFT, SPIKE_FLOOR_RIGHT, SPIKE_LEFT, SPIKE_RIGHT -> {
-                        p.teleportToSpawn();
                         p.loseLife();
+                        p.teleportToSpawn();
                     }
                     default -> {
                         p.changeHealth(-1); //ceiling/wall spikes
