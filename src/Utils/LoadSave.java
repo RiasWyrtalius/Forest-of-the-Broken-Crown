@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 
 public class LoadSave {
 
+    private static final String LEADERBOARD_FILE = "leaderboard.txt";
+
     //CUTSCENE
     public static final String Intro1 = "Scenes/Introduction/scene1_intro.jpeg";
     public static final String Intro2 = "Scenes/Introduction/scene2_intro.jpeg";
@@ -108,7 +110,6 @@ public class LoadSave {
     public static final String MANA_POTION_ATLAS = "Levels/Objects/DropManaSS.png";
 
     //Leaderboard
-    private static final String LEADERBOARD_FILE = "leaderboard.dat";
 
     public static BufferedImage getSpriteAtlas(String fileName) {
         BufferedImage img = null;
@@ -172,16 +173,17 @@ public class LoadSave {
     public static void AddLeaderboardEntry(LeaderboardEntry entry) {
         ArrayList<LeaderboardEntry> list = GetLeaderboard();
         list.add(entry);
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(LEADERBOARD_FILE))) {
-            oos.writeObject(list);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Automatically sort and cap to top 10 best runs before saving
+        list.sort(Comparator.comparingLong(LeaderboardEntry::getRawTicks));
+        if (list.size() > 10) {
+            list = new ArrayList<>(list.subList(0, 10));
         }
+        SaveLeaderboardAsText(list);
     }
 
     public static ArrayList<LeaderboardEntry> GetLeaderboard() {
         ArrayList<LeaderboardEntry> entries = new ArrayList<>();
-        File file = new File("leaderboard.txt");
+        File file = new File(LEADERBOARD_FILE);
         if (!file.exists()) return entries;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -189,8 +191,13 @@ public class LoadSave {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 5) {
-                    entries.add(new LeaderboardEntry(parts[0], parts[1], parts[2],
-                            Integer.parseInt(parts[3]), Long.parseLong(parts[4])));
+                    entries.add(new LeaderboardEntry(
+                            parts[0],
+                            parts[1],
+                            parts[2],
+                            Integer.parseInt(parts[3]),
+                            Long.parseLong(parts[4])
+                    ));
                 }
             }
         } catch (IOException e) {
@@ -200,13 +207,12 @@ public class LoadSave {
     }
 
     public static void SaveLeaderboardAsText(ArrayList<LeaderboardEntry> entries) {
-        // Keep only top 10 best (lowest ticks)
         entries.sort(Comparator.comparingLong(LeaderboardEntry::getRawTicks));
         if (entries.size() > 10) {
             entries = new ArrayList<>(entries.subList(0, 10));
         }
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter("leaderboard.txt"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(LEADERBOARD_FILE))) {
             for (LeaderboardEntry e : entries) {
                 writer.println(e.getName() + "," + e.getCharacter() + "," +
                         e.getTime() + "," + e.getDeaths() + "," + e.getRawTicks());

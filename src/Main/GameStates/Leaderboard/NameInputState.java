@@ -62,11 +62,16 @@ public class NameInputState {
         String time = game.getUi().getFormattedTime();
         int deaths = game.getPlaying().getPlayer().getDeathCounter();
         long ticks = game.getSpeedrunTicks();
+        LeaderboardEntry newEntry = new LeaderboardEntry(finalName, hero, time, deaths, ticks);
+
+        // Add it to the local data history structure
         ArrayList<LeaderboardEntry> list = LoadSave.GetLeaderboard();
-        LoadSave.AddLeaderboardEntry(new LeaderboardEntry(finalName, hero, time, deaths, ticks));
+        list.add(newEntry);
+
+        // Force clean serialization tracking as string lines
         LoadSave.SaveLeaderboardAsText(list);
 
-        // Reset for next time and move to Leaderboard
+        // Reset components for your UI rendering loop
         playerName.setLength(0);
         game.getLeaderboard().loadEntries();
         GameState.state = GameState.LEADERBOARD;
